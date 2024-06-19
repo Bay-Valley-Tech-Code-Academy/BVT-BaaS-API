@@ -6,7 +6,7 @@ import DashboardHome from "./pages/DashboardHome";
 import APIKeys from "./pages/APIKeys";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
-import DashboardLayout from "./pages/DashboardLayout";
+import DashboardLayout from "./components/DashboardLayout";
 
 const router = createBrowserRouter([
   {
