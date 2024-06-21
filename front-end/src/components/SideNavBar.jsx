@@ -17,7 +17,7 @@ export default function SideNavBar() {
         {({ isActive }) => (
           <div className="mt-3 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-slate-700">
             <span className={isActive ? "text-purple-700" : ""}>
-              <Home size={32} />
+              <Home size={27} />
             </span>
             <span
               className={
@@ -35,7 +35,7 @@ export default function SideNavBar() {
         {({ isActive }) => (
           <div className="mt-3 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-slate-700">
             <span>
-              <Users size={32} className={isActive ? "text-purple-700" : ""} />
+              <Users size={27} className={isActive ? "text-purple-700" : ""} />
             </span>
             <span
               className={
@@ -54,7 +54,7 @@ export default function SideNavBar() {
           <div className="mt-3 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-slate-700">
             <span>
               <KeyRound
-                size={32}
+                size={27}
                 className={isActive ? "text-purple-700" : ""}
               />
             </span>
@@ -75,7 +75,7 @@ export default function SideNavBar() {
           <div className="mt-3 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-slate-700">
             <span>
               <Settings
-                size={32}
+                size={27}
                 className={isActive ? "text-purple-700" : ""}
               />
             </span>
@@ -94,7 +94,7 @@ export default function SideNavBar() {
       <div className="my-4 h-[1px] bg-gray-300"></div>
       <div className="mt-1 flex cursor-pointer items-center justify-self-end rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-red-400">
         <span>
-          <LogOut size={32} />
+          <LogOut size={27} />
         </span>
         <span className="ml-4 text-[15px] font-bold">Logout</span>
       </div>
