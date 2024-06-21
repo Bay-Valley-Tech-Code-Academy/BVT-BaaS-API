@@ -4,6 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
+        dashboard: {
+          gray: {
+            50: "#A3AED0",
+            100: "#F4F7FE",
+          },
+        },
         landing: {
           blue: {
             100: "#00218F",
