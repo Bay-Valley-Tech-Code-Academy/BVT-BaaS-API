@@ -6,9 +6,9 @@ export default function SideNavBar() {
   return (
     <div className="h-dvh w-full flex-col p-2 text-center">
       <NavLink to="/dashboard">
-        <div className="text-xl text-dashboard-gray-50">
-          <div className="mt-1 flex items-center rounded-md p-2.5 transition-colors hover:bg-blue-50 hover:text-slate-700">
-            <h1 className="ml-4 text-[15px] font-bold">Name</h1>
+        <div className="text-xl text-slate-700">
+          <div className="mt-1 flex items-center rounded-md p-2.5 transition-colors hover:text-slate-700">
+            <h1 className="ml-4 text-[15px] font-bold">SaaS-Name</h1>
           </div>
           <div className="my-2 h-[1px] bg-gray-300"></div>
         </div>

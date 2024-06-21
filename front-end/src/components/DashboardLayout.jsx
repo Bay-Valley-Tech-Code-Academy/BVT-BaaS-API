@@ -7,7 +7,7 @@ export default function DashboardLayout() {
       <div className="hidden w-64 sm:flex">
         <SideNavBar />
       </div>
-      <div className="h-full flex-1 bg-dashboard-gray-100 p-8">
+      <div className="h-full flex-1 bg-dashboard-gray-100 p-6">
         <Outlet />
       </div>
     </div>
