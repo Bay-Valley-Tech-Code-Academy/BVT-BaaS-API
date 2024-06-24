@@ -1,7 +1,9 @@
+import PageHeader from "../components/PageHeader";
+
 export default function Users() {
   return (
     <>
-      <h1>Users Page placeholder</h1>
+      <PageHeader path="Dashboard / Users" header="Users" />
     </>
   );
 }
