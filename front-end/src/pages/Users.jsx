@@ -4,44 +4,44 @@ import Active from "../components/Active";
 import { ArrowBigDownDash } from "lucide-react";
 
 export default function Users() {
-  const dummyData = {
-    0: {
+  const dummyData = [
+    {
       email: "johnDoe@gmail.com",
       status: 1,
       lastSignedIn: "06/08/2024 6:00PM",
       joined: "06/04/2024",
     },
-    1: {
+    {
       email: "janeDoe@gmail.com",
       status: 0,
       lastSignedIn: "06/07/2024 4:00PM",
       joined: "06/03/2024",
     },
-    2: {
+    {
       email: "bobSmith@gmail.com",
       status: 1,
       lastSignedIn: "06/06/2024 2:00PM",
       joined: "06/02/2024",
     },
-    3: {
+    {
       email: "aliceJohnson@gmail.com",
       status: 0,
       lastSignedIn: "06/05/2024 12:00PM",
       joined: "06/01/2024",
     },
-    4: {
+    {
       email: "charlieBrown@gmail.com",
       status: 1,
       lastSignedIn: "06/04/2024 10:00AM",
       joined: "05/31/2024",
     },
-    5: {
+    {
       email: "davidWilliams@gmail.com",
       status: 0,
       lastSignedIn: "06/03/2024 8:00AM",
       joined: "05/30/2024",
     },
-  };
+  ];
 
   return (
     <>
@@ -65,17 +65,15 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {Object.keys(dummyData).map((idx) => {
+            {dummyData.map((obj) => {
               return (
                 <tr className="border-b border-gray-300 text-left">
-                  <td className="p-5">{dummyData[idx].email}</td>
+                  <td className="p-5">{obj.email}</td>
                   <td className="flex p-5">
-                    {dummyData[idx].status ? <Active /> : <Inactive />}
+                    {obj.status ? <Active /> : <Inactive />}
                   </td>
-                  <td className="p-5 font-light">
-                    {dummyData[idx].lastSignedIn}
-                  </td>
-                  <td className="p-5 font-light">{dummyData[idx].joined}</td>
+                  <td className="p-5 font-light">{obj.lastSignedIn}</td>
+                  <td className="p-5 font-light">{obj.joined}</td>
                 </tr>
               );
             })}
