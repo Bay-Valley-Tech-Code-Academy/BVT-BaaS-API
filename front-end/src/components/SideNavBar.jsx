@@ -7,7 +7,7 @@ export default function SideNavBar() {
       <NavLink to="/dashboard">
         <div className="text-xl text-slate-700">
           <div className="mt-1 flex items-center rounded-md p-2.5 transition-colors hover:text-slate-700">
-            <h1 className="ml-4 text-base font-bold">SaaS-Name</h1>
+            <h1 className="mb-3 ml-4 mt-3 text-2xl font-bold">SaaS-Name</h1>
           </div>
           <div className="my-2 h-[1px] bg-gray-300"></div>
         </div>

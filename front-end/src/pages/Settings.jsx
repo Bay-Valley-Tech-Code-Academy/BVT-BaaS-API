@@ -1,7 +1,9 @@
+import PageHeaderNoSearch from "../components/PageHeaderNoSearch";
+
 export default function Settings() {
   return (
     <>
-      <h1>Settings Page placeholder</h1>
+      <PageHeaderNoSearch path="Dashboard / Settings" header="Settings" />
     </>
   );
 }
