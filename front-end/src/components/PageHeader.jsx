@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 
 export default function PageHeader(props) {
   return (
-    <div className="flex justify-between">
+    <div className="mb-4 flex justify-between">
       <div className="flex-col">
         <p className="font-light">{props.path}</p>
         <p className="text-2xl font-bold">{props.header}</p>
