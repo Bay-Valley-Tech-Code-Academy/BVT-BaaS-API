@@ -4,10 +4,49 @@ import Active from "../components/Active";
 import { ArrowBigDownDash } from "lucide-react";
 
 export default function Users() {
+  const dummyData = {
+    0: {
+      email: "johnDoe@gmail.com",
+      status: 1,
+      lastSignedIn: "06/08/2024 6:00PM",
+      joined: "06/04/2024",
+    },
+    1: {
+      email: "janeDoe@gmail.com",
+      status: 0,
+      lastSignedIn: "06/07/2024 4:00PM",
+      joined: "06/03/2024",
+    },
+    2: {
+      email: "bobSmith@gmail.com",
+      status: 1,
+      lastSignedIn: "06/06/2024 2:00PM",
+      joined: "06/02/2024",
+    },
+    3: {
+      email: "aliceJohnson@gmail.com",
+      status: 0,
+      lastSignedIn: "06/05/2024 12:00PM",
+      joined: "06/01/2024",
+    },
+    4: {
+      email: "charlieBrown@gmail.com",
+      status: 1,
+      lastSignedIn: "06/04/2024 10:00AM",
+      joined: "05/31/2024",
+    },
+    5: {
+      email: "davidWilliams@gmail.com",
+      status: 0,
+      lastSignedIn: "06/03/2024 8:00AM",
+      joined: "05/30/2024",
+    },
+  };
+
   return (
     <>
       <PageHeader path="Dashboard / Users" header="Users" />
-      <div className="h-4/5 w-full rounded-2xl border-[1px] bg-white">
+      <div className="h-4/5 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
         <table className="w-full table-auto">
           <thead>
             <tr className="rounded-xl bg-gray-100 text-left">
@@ -26,38 +65,20 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            <tr className="border-b border-gray-300 text-left">
-              <td className="p-5">johnDoe@gmail.com</td>
-              <td className="p-5">
-                <Active />
-              </td>
-              <td className="p-5 font-light">06/08/2024 6:00PM</td>
-              <td className="p-5 font-light">06/05/2024</td>
-            </tr>
-            <tr className="border-b border-gray-300 text-left">
-              <td className="p-5">johnDoe@gmail.com</td>
-              <td className="p-5">
-                <Inactive />
-              </td>
-              <td className="p-5 font-light">06/08/2024 6:00PM</td>
-              <td className="p-5 font-light">06/05/2024</td>
-            </tr>
-            <tr className="border-b border-gray-300 text-left">
-              <td className="p-5">johnDoe@gmail.com</td>
-              <td className="p-5">
-                <Active />
-              </td>
-              <td className="p-5 font-light">06/08/2024 6:00PM</td>
-              <td className="p-5 font-light">06/05/2024</td>
-            </tr>
-            <tr className="border-b border-gray-300 text-left">
-              <td className="p-5">johnDoe@gmail.com</td>
-              <td className="p-5">
-                <Inactive />
-              </td>
-              <td className="p-5 font-light">06/08/2024 6:00PM</td>
-              <td className="p-5 font-light">06/05/2024</td>
-            </tr>
+            {Object.keys(dummyData).map((idx) => {
+              return (
+                <tr className="border-b border-gray-300 text-left">
+                  <td className="p-5">{dummyData[idx].email}</td>
+                  <td className="flex p-5">
+                    {dummyData[idx].status ? <Active /> : <Inactive />}
+                  </td>
+                  <td className="p-5 font-light">
+                    {dummyData[idx].lastSignedIn}
+                  </td>
+                  <td className="p-5 font-light">{dummyData[idx].joined}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
