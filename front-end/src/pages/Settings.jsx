@@ -1,7 +1,11 @@
+import SettingsUserStorage from "../components/SettingComponents/SettingsUserStorage";
+import SettingsNotifications from "../components/SettingComponents/SettingsNotifications";
+
 export default function Settings() {
   return (
     <>
-      <h1>Settings Page placeholder</h1>
+      <SettingsUserStorage />
+      <SettingsNotifications />
     </>
   );
 }
