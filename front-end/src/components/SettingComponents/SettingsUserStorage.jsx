@@ -4,14 +4,14 @@ import {Cloud, Check} from "lucide-react";
 export default function SettingsUserStorage() {
     return (
         <div>
-            <div id="user-storage" className="flex flex-col justify-between items-center bg-white rounded-2xl h-96 w-96 p-4 mb-6">
+            <div id="user-storage" className="flex flex-col justify-between items-center bg-white rounded-2xl h-96 w-96 p-4 mr-6">
                 <div className="flex flex-col items-center">
-                    <div id="cloud-check" className="flex justify-center items-center rounded-full bg-dashboard-gray-100 w-44 h-44">
-                        <Cloud className="text-dashboard-purple-300" size={140}/>
-                        <Check className="absolute top-28 text-dashboard-purple-300" size={50}/>
+                    <div id="cloud-check" className="flex justify-center items-center rounded-full bg-dashboard-gray-100 w-32 h-32">
+                        <Cloud className="text-dashboard-purple-300" size={100}/>
+                        <Check className="absolute top-24 text-dashboard-purple-300" size={40}/>
                     </div>
-                    <h1 className="font-bold text-2xl">User Storage</h1>
-                    <p className=" font-bold text-dashboard-gray-50">
+                    <h1 className="font-bold text-xl">User Storage</h1>
+                    <p className="text-dashboard-gray-50">
                         Supervise your user limit
                     </p>
                 </div>
