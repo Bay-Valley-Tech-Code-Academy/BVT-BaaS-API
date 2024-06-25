@@ -13,10 +13,17 @@ const payload = {
   }),
 };
 
+const loginPayload = { body: payload.body.omit({ name: true }) };
+
 const createOrganizationSchema = object({
   ...payload,
 });
 
+const loginOrganizationSchema = object({
+  ...loginPayload,
+});
+
 module.exports = {
   createOrganizationSchema,
+  loginOrganizationSchema,
 };

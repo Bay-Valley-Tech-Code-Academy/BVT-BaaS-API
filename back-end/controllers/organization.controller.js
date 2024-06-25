@@ -47,6 +47,50 @@ async function createOrganizationHandler(req, res) {
   }
 }
 
+async function loginOrganizationHandler(req, res) {
+  try {
+    const organization = await getOrganization(req.body.email);
+    if (!organization) {
+      return res.status(400).json({
+        success: "false",
+        error: "Invalid email or password",
+      });
+    }
+
+    const organizationPayload = {
+      id: organization.organization_id,
+      email: organization.email,
+      name: organization.password,
+    };
+
+    const match = await bcrypt.compare(
+      req.body.password,
+      organization.password
+    );
+    if (!match) {
+      return res.status(400).json({
+        success: "false",
+        error: "Invalid email or password",
+      });
+    }
+    const accessToken = generateAccessToken(organizationPayload);
+    const refreshToken = generateRefreshToken(organizationPayload);
+    return res.status(200).json({
+      success: true,
+      data: {
+        accessToken,
+        refreshToken,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 module.exports = {
   createOrganizationHandler,
+  loginOrganizationHandler,
 };

@@ -16,7 +16,7 @@ async function createOrganization({ email, password, name }) {
 }
 
 async function getOrganization(email) {
-  const result = await db.query(
+  const [result] = await db.query(
     `
     SELECT * FROM organization 
     WHERE email=:email;
@@ -26,7 +26,7 @@ async function getOrganization(email) {
     }
   );
 
-  if (result[0].length === 0) return false;
+  if (result.length === 0) return false;
   return result[0];
 }
 
