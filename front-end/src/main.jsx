@@ -7,11 +7,12 @@ import APIKeys from "./pages/APIKeys";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import DashboardLayout from "./components/DashboardLayout";
+import LandingPage from "./components/LandingPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <h1>Landing Page placeholder</h1>,
+    element: <LandingPage />,
   },
   {
     path: "/dashboard",
