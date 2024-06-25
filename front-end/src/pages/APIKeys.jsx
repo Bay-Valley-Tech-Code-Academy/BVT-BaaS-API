@@ -1,7 +1,9 @@
+import PageHeaderNoSearch from "../components/PageHeaderNoSearch";
+
 export default function APIKeys() {
   return (
     <>
-      <h1>API Keys Page placeholder</h1>
+      <PageHeaderNoSearch path="Dashboard / API-Keys" header="API-Keys" />
     </>
   );
 }
