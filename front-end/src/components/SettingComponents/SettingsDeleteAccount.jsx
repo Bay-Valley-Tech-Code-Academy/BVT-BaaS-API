@@ -6,8 +6,8 @@ export default function SettingsDeleteAccount() {
         <div>
             <div id="user-storage" className="flex flex-col justify-between items-center bg-white rounded-2xl h-96 w-96 p-4 mr-6">
                 <div className="flex flex-col items-center">
-                    <div id="delete-account" className="flex justify-center items-center rounded-full bg-dashboard-gray-100 w-32 h-32">
-                        <TriangleAlert className="text-dashboard-purple-300" size={70}/>
+                <div id="cloud-check" className="relative flex justify-center items-center rounded-full bg-dashboard-gray-100 w-28 h-28">
+                        <TriangleAlert className="text-dashboard-purple-300" size={60}/>
                     </div>
                     <h1 className="font-bold text-xl">Delete Account</h1>
                     <p className="  text-dashboard-gray-50 text-center">
