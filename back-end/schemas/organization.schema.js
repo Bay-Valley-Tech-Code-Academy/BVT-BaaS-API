@@ -13,25 +13,7 @@ const payload = {
   }),
 };
 
-const params = {
-  params: object({
-    carId: number({
-      required_error: "productId is required",
-      coerce: true,
-    }),
-  }),
-};
-
-const getCarSchema = object({
-  ...params,
-});
-
 const createOrganizationSchema = object({
-  ...payload,
-});
-
-const updateCarSchema = object({
-  ...params,
   ...payload,
 });
 
