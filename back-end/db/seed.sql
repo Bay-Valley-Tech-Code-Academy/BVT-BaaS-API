@@ -1,7 +1,6 @@
--- Seed data for the organization table
-INSERT INTO organization (email, password, name)
+INSERT INTO organization (email, password, name, api_key, secret)
 VALUES
-('org1@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', 'Organization One');
+('org1@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', 'Organization One', 'a3b2c1d4e5f6a7b8c9d0e1f2a3b4c5d6', 'd4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9');
 
 -- Seed data for the users table
 INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, disable_login_flag, organization_id)

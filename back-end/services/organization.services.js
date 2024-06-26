@@ -21,13 +21,15 @@ async function getOrganization({ email, apiKey }) {
   const [result] = await db.query(
     `
     SELECT * FROM organization 
-    WHERE email=:email OR api_key:apiKey;
+    WHERE email=:email OR api_key=:apiKey;
   `,
     {
       email,
       apiKey,
     }
   );
+
+  console.log(result);
 
   if (result.length === 0) return false;
   return result[0];

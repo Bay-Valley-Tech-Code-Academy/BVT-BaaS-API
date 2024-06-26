@@ -17,10 +17,17 @@ const payload = {
   }),
 };
 
+const headers = {
+  headers: object({
+    api_key: string(),
+  }),
+};
+
 const loginPayload = { body: payload.body.omit({ name: true }) };
 
 const createUserSchema = object({
   ...payload,
+  ...headers,
 });
 
 const loginOrganizationSchema = object({
