@@ -1,7 +1,7 @@
 import PageHeader from "../components/PageHeader";
 import Inactive from "../components/Inactive";
 import Active from "../components/Active";
-import { ArrowBigDownDash } from "lucide-react";
+import { ArrowBigDownDash, Trash2 } from "lucide-react";
 import { useState, Fragment } from "react";
 
 export default function Users() {
@@ -72,13 +72,16 @@ export default function Users() {
                 Email Address
               </th>
               <th className="flex p-2 pl-5 pr-5 font-medium text-gray-700">
-                Status <ArrowBigDownDash className="ml-2" />
+                Status/Toggle <ArrowBigDownDash className="ml-2" />
               </th>
               <th className="p-2 pl-5 pr-5 font-medium text-gray-700">
                 Last Signed In
               </th>
-              <th className="rounded-tr-xl p-2 pl-5 pr-5 font-medium text-gray-700">
+              <th className="p-2 pl-5 pr-5 font-medium text-gray-700">
                 Joined
+              </th>
+              <th className="rounded-tr-xl p-2 pl-5 pr-5 font-medium text-gray-700">
+                Obliterate
               </th>
             </tr>
           </thead>
@@ -93,6 +96,11 @@ export default function Users() {
                     </td>
                     <td className="p-5 font-light">{obj.lastSignedIn}</td>
                     <td className="p-5 font-light">{obj.joined}</td>
+                    <td className="p-5 font-light">
+                      <button className="hover:text-red-500">
+                        <Trash2 />
+                      </button>
+                    </td>
                   </tr>
                 </Fragment>
               );
