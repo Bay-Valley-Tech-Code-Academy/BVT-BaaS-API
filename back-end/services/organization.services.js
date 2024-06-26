@@ -17,14 +17,15 @@ async function createOrganization({ email, password, name, apiKey, secret }) {
   return result[0];
 }
 
-async function getOrganization(email) {
+async function getOrganization({ email, apiKey }) {
   const [result] = await db.query(
     `
     SELECT * FROM organization 
-    WHERE email=:email;
+    WHERE email=:email OR api_key:apiKey;
   `,
     {
       email,
+      apiKey,
     }
   );
 

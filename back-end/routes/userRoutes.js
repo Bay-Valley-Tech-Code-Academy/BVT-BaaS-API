@@ -1,12 +1,15 @@
-// // src/routes/userRoutes.js
-// const express = require("express");
-// const router = express.Router();
-// const userController = require("../controllers/userController");
+const express = require("express");
+const router = express.Router();
+const validate = require("../middleware/validate");
+const { createUserHandler } = require("../controllers/user.controller");
 
-// router.get("/", userController.getAllUsers);
-// router.post("/", userController.createUser);
-// router.get("/:id", userController.getUserById);
-// router.put("/:id", userController.updateUser);
-// router.delete("/:id", userController.deleteUser);
+const { createUserSchema } = require("../schemas/user.schema");
+const requireApiKey = require("../middleware/requireApiKey");
 
-// module.exports = router;
+router.post(
+  "/signup",
+  [validate(createUserSchema), requireApiKey],
+  createUserHandler
+);
+
+module.exports = router;

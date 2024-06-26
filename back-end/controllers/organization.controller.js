@@ -8,7 +8,7 @@ const {
 
 async function createOrganizationHandler(req, res) {
   try {
-    const organization = await getOrganization(req.body.email);
+    const organization = await getOrganization({ email: req.body.email });
     //   If an organization already exist, we throw a bad response.
     if (organization) {
       return res.status(409).json({
