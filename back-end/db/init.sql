@@ -8,7 +8,7 @@
 );
 
 
-  CREATE TABLE users (
+ CREATE TABLE users (
   user_id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NOT NULL,
   password VARCHAR(255) NOT NULL,
@@ -19,7 +19,7 @@
   organization_id INT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (organization_id) REFERENCES organizations(organization_id)
+  FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
 
 
@@ -35,9 +35,10 @@ CREATE TABLE audit (
   ) NOT NULL,
   ip_address VARCHAR(45),
   user_id INT,
+  organization_id INT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (user_id) REFERENCES users(user_id)
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
-
 
