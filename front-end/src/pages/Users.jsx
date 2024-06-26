@@ -49,7 +49,7 @@ export default function Users() {
                 Email Address
               </th>
               <th className="flex p-2 pl-5 pr-5 font-medium text-gray-700">
-                Status/Toggle <ArrowBigDownDash className="ml-1" />
+                Status/Toggle
               </th>
               <th className="p-2 pl-5 pr-5 font-medium text-gray-700">
                 Last Signed In
@@ -57,9 +57,7 @@ export default function Users() {
               <th className="p-2 pl-5 pr-5 font-medium text-gray-700">
                 Joined
               </th>
-              <th className="rounded-tr-xl p-2 pl-5 pr-5 font-medium text-gray-700">
-                Delete
-              </th>
+              <th className="rounded-tr-xl p-2 pl-5 pr-5 font-medium text-gray-700"></th>
             </tr>
           </thead>
           <tbody>
