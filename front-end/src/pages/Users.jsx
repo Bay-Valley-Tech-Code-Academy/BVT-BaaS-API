@@ -72,7 +72,7 @@ export default function Users() {
                 Email Address
               </th>
               <th className="flex p-2 pl-5 pr-5 font-medium text-gray-700">
-                Status/Toggle <ArrowBigDownDash className="ml-2" />
+                Status/Toggle <ArrowBigDownDash className="ml-1" />
               </th>
               <th className="p-2 pl-5 pr-5 font-medium text-gray-700">
                 Last Signed In
