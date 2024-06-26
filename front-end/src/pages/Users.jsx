@@ -2,8 +2,10 @@ import PageHeader from "../components/PageHeader";
 import Inactive from "../components/Inactive";
 import Active from "../components/Active";
 import { ArrowBigDownDash } from "lucide-react";
+import { useState, Fragment } from "react";
 
 export default function Users() {
+  // Using dummy data for now, will replace once API is up and running.
   const dummyData = [
     {
       email: "johnDoe@gmail.com",
@@ -43,9 +45,25 @@ export default function Users() {
     },
   ];
 
+  const [input, setInput] = useState("");
+
+  const handleChange = (e) => {
+    const newInput = e.target.value;
+    setInput(newInput.toLowerCase());
+  };
+
+  // Filtering users if there is any input in the search bar.
+  const filteredUsers = dummyData.filter((user) =>
+    user.email.toLowerCase().includes(input),
+  );
+
   return (
     <>
-      <PageHeader path="Dashboard / Users" header="Users" />
+      <PageHeader
+        path="Dashboard / Users"
+        header="Users"
+        handleChange={handleChange}
+      />
       <div className="h-4/5 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
         <table className="w-full table-auto">
           <thead>
@@ -65,16 +83,18 @@ export default function Users() {
             </tr>
           </thead>
           <tbody>
-            {dummyData.map((obj) => {
+            {filteredUsers.map((obj, index) => {
               return (
-                <tr className="border-b border-gray-300 text-left">
-                  <td className="p-5">{obj.email}</td>
-                  <td className="flex p-5">
-                    {obj.status ? <Active /> : <Inactive />}
-                  </td>
-                  <td className="p-5 font-light">{obj.lastSignedIn}</td>
-                  <td className="p-5 font-light">{obj.joined}</td>
-                </tr>
+                <Fragment key={index}>
+                  <tr className="border-b border-gray-300 text-left">
+                    <td className="p-5">{obj.email}</td>
+                    <td className="flex p-5">
+                      <button>{obj.status ? <Active /> : <Inactive />}</button>
+                    </td>
+                    <td className="p-5 font-light">{obj.lastSignedIn}</td>
+                    <td className="p-5 font-light">{obj.joined}</td>
+                  </tr>
+                </Fragment>
               );
             })}
           </tbody>

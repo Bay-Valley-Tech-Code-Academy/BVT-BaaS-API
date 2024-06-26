@@ -19,11 +19,12 @@ export default function PageHeader(props) {
               </button>
             </span>
             <input
-              type="search"
+              type="text"
               name="q"
               className="w-[400px] rounded-xl py-2 pl-10 align-bottom text-sm focus:outline-none"
               placeholder="Search..."
               autoComplete="off"
+              onChange={props.handleChange}
             />
           </div>
         </form>
