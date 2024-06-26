@@ -5,7 +5,7 @@ export default function PageHeader(props) {
     <div className="mb-4 flex justify-between">
       <div className="flex-col">
         <p className="font-light">{props.path}</p>
-        <p className="text-2xl font-bold">{props.header}</p>
+        <p className="text-2xl font-bold text-slate-700">{props.header}</p>
       </div>
       <div className="items-center justify-center self-end">
         <form method="GET">
@@ -19,11 +19,12 @@ export default function PageHeader(props) {
               </button>
             </span>
             <input
-              type="search"
+              type="text"
               name="q"
               className="w-[400px] rounded-xl py-2 pl-10 align-bottom text-sm focus:outline-none"
               placeholder="Search..."
               autoComplete="off"
+              onChange={props.handleChange}
             />
           </div>
         </form>

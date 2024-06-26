@@ -9,6 +9,9 @@ export default {
             50: "#A3AED0",
             100: "#F4F7FE",
           },
+          purple: {
+            300: "#4318FF",
+          }
         },
         landing: {
           blue: {
