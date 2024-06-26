@@ -2,60 +2,37 @@ import PageHeader from "../components/PageHeader";
 import Inactive from "../components/Inactive";
 import Active from "../components/Active";
 import { ArrowBigDownDash, Trash2 } from "lucide-react";
-import { useState, Fragment } from "react";
+import { useState } from "react";
+import { usePagination } from "../hooks/usePagination";
+import dummyData from "../assets/dummyData";
 
 export default function Users() {
-  // Using dummy data for now, will replace once API is up and running.
-  const dummyData = [
-    {
-      email: "johnDoe@gmail.com",
-      status: 1,
-      lastSignedIn: "06/08/2024 6:00PM",
-      joined: "06/04/2024",
-    },
-    {
-      email: "janeDoe@gmail.com",
-      status: 0,
-      lastSignedIn: "06/07/2024 4:00PM",
-      joined: "06/03/2024",
-    },
-    {
-      email: "bobSmith@gmail.com",
-      status: 1,
-      lastSignedIn: "06/06/2024 2:00PM",
-      joined: "06/02/2024",
-    },
-    {
-      email: "aliceJohnson@gmail.com",
-      status: 0,
-      lastSignedIn: "06/05/2024 12:00PM",
-      joined: "06/01/2024",
-    },
-    {
-      email: "charlieBrown@gmail.com",
-      status: 1,
-      lastSignedIn: "06/04/2024 10:00AM",
-      joined: "05/31/2024",
-    },
-    {
-      email: "davidWilliams@gmail.com",
-      status: 0,
-      lastSignedIn: "06/03/2024 8:00AM",
-      joined: "05/30/2024",
-    },
-  ];
-
   const [input, setInput] = useState("");
+
+  // Filtering users if there is any input in the search bar.
+  const filteredUsers = dummyData.filter((user) =>
+    user.email.toLowerCase().includes(input),
+  );
 
   const handleChange = (e) => {
     const newInput = e.target.value;
     setInput(newInput.toLowerCase());
   };
 
-  // Filtering users if there is any input in the search bar.
-  const filteredUsers = dummyData.filter((user) =>
-    user.email.toLowerCase().includes(input),
-  );
+  // Setting up pagination with Alan's custom pagination hook.
+  const {
+    currPageItems,
+    nextPage,
+    prevPage,
+    currPage,
+    countPerPage,
+    hasNext,
+    hasPrev,
+    numPages,
+  } = usePagination({
+    data: filteredUsers,
+    itemsPerPage: 8,
+  });
 
   return (
     <>
@@ -81,30 +58,53 @@ export default function Users() {
                 Joined
               </th>
               <th className="rounded-tr-xl p-2 pl-5 pr-5 font-medium text-gray-700">
-                Obliterate
+                Delete
               </th>
             </tr>
           </thead>
           <tbody>
-            {filteredUsers.map((obj, index) => {
+            {currPageItems.map((obj, index) => {
               return (
-                <Fragment key={index}>
-                  <tr className="border-b border-gray-300 text-left">
-                    <td className="p-5">{obj.email}</td>
-                    <td className="flex p-5">
-                      <button>{obj.status ? <Active /> : <Inactive />}</button>
-                    </td>
-                    <td className="p-5 font-light">{obj.lastSignedIn}</td>
-                    <td className="p-5 font-light">{obj.joined}</td>
-                    <td className="p-5 font-light">
-                      <button className="hover:text-red-500">
-                        <Trash2 />
-                      </button>
-                    </td>
-                  </tr>
-                </Fragment>
+                <tr className="border-b border-gray-300 text-left" key={index}>
+                  <td className="p-5">{obj.email}</td>
+                  <td className="flex p-5">
+                    <button>{obj.status ? <Active /> : <Inactive />}</button>
+                  </td>
+                  <td className="p-5 font-light">{obj.lastSignedIn}</td>
+                  <td className="p-5 font-light">{obj.joined}</td>
+                  <td className="p-5 font-light">
+                    <button className="hover:text-red-500">
+                      <Trash2 />
+                    </button>
+                  </td>
+                </tr>
               );
             })}
+            <tr>
+              <td colSpan={5}>
+                <div className="flex justify-between p-5">
+                  <div>
+                    <p>
+                      Page {currPage} of {numPages}
+                    </p>
+                  </div>
+                  <div className="flex justify-around">
+                    <button
+                      onClick={prevPage}
+                      className={`flex w-[90px] justify-center rounded-lg bg-gray-100 p-1 align-middle font-medium ${!hasPrev ? "disabled cursor-default bg-white" : "hover:shadow active:bg-gray-100"}`}
+                    >
+                      Prev
+                    </button>
+                    <button
+                      onClick={nextPage}
+                      className={`ml-3 flex w-[90px] justify-center rounded-lg bg-gray-100 p-1 align-middle font-medium ${!hasNext ? "disabled cursor-default bg-white" : "hover:shadow active:bg-gray-100"}`}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
