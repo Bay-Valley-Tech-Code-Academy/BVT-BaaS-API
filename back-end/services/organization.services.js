@@ -1,15 +1,17 @@
 const db = require("../db");
 
-async function createOrganization({ email, password, name }) {
+async function createOrganization({ email, password, name, apiKey, secret }) {
   const result = await db.query(
     `
-    INSERT INTO organization (email, password, name)
-    VALUES (:email, :password, :name);
+    INSERT INTO organization (email, password, name, api_key, secret)
+    VALUES (:email, :password, :name, :apiKey, :secret);
   `,
     {
       email,
       password,
       name,
+      apiKey,
+      secret,
     }
   );
   return result[0];
