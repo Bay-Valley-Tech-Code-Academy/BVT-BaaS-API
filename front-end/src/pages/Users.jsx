@@ -42,7 +42,7 @@ export default function Users() {
         handleChange={handleChange}
       />
       <div className="h-4/5 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
-        <table className="w-full table-auto">
+        <table className="w-full table-fixed">
           <thead>
             <tr className="rounded-xl bg-gray-100 text-left">
               <th className="rounded-tl-xl p-2 pl-5 pr-5 font-medium text-gray-700">
