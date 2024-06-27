@@ -57,6 +57,64 @@ async function createUserHandler(req, res) {
   }
 }
 
+async function loginUserHandler(req, res) {
+  try {
+    const project = await getProject(req.headers.api_key);
+
+    // If we don't find an project with that apiKey we throw a bad response
+    if (!project) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access, api key is invalid",
+      });
+    }
+    // we check if the user exist
+    const user = await getUser(req.body.email);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password.",
+      });
+    }
+
+    // if the user exist make sure he belongs to the project
+    if (user.project_id !== project.project_id) {
+      return res.status(403).json({
+        success: false,
+        message:
+          "Access denied. You do not have permission to access this project.",
+      });
+    }
+
+    const match = await bcrypt.compare(req.body.password, user.password);
+
+    if (!match) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password.",
+      });
+    }
+    const userPayload = {
+      id: user.user_id,
+      email: user.email,
+    };
+
+    const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    return res.status(200).json({
+      success: true,
+      data: {
+        refreshToken,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 module.exports = {
   createUserHandler,
+  loginUserHandler,
 };

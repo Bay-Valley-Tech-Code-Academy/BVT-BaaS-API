@@ -23,18 +23,21 @@ const headers = {
   }),
 };
 
-const loginPayload = { body: payload.body.omit({ name: true }) };
+const loginPayload = {
+  body: payload.body.omit({ phoneNumber: true, mfaMethod: true }),
+};
 
 const createUserSchema = object({
   ...payload,
   ...headers,
 });
 
-const loginOrganizationSchema = object({
+const loginUserSchema = object({
   ...loginPayload,
+  ...headers,
 });
 
 module.exports = {
   createUserSchema,
-  loginOrganizationSchema,
+  loginUserSchema,
 };
