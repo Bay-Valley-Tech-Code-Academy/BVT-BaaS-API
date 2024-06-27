@@ -52,7 +52,6 @@ async function createOrganizationHandler(req, res) {
 async function loginOrganizationHandler(req, res) {
   try {
     const organization = await getOrganizationByEmail(req.body.email);
-    console.log(organization);
     if (!organization) {
       return res.status(400).json({
         success: "false",
