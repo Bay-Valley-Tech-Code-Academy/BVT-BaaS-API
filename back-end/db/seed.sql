@@ -2,20 +2,20 @@ INSERT INTO organizations (email, password, name)
 VALUES
 ('org1@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', 'Organization One');
 
-INSERT INTO applications (name, organization_id, api_key, secret)
+INSERT INTO projects (name, organization_id, api_key, secret)
 VALUES
-('Application One', 1, 'b4c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9', 'e7f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2'),
-('Application Two', 1, 'c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9d0', 'f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2a3'),
-('Application Three', 1, 'd7e8f9g0a1b2c3d4e5f6a7b8c9d0e1f2', 'g0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5'),
-('Application Four', 1, 'e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4', 'h1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'),
-('Application Five', 1, 'f1a2b3c4d5e6f7g8h9a0b1c2d3e4f5g6', 'i2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7'),
-('Application Six', 1, 'g2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7', 'j3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8'),
-('Application Seven', 1, 'h3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8', 'k4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9'),
-('Application Eight', 1, 'i4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9', 'l5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0'),
-('Application Nine', 1, 'j5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0', 'm6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1'),
-('Application Ten', 1, 'k6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1', 'n7g8h9a0b1c2d3e4f5g6h7i8j9k0l1m2');
+('Project One', 1, 'b4c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9', 'e7f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2'),
+('Project Two', 1, 'c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9d0', 'f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2a3'),
+('Project Three', 1, 'd7e8f9g0a1b2c3d4e5f6a7b8c9d0e1f2', 'g0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5'),
+('Project Four', 1, 'e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4', 'h1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'),
+('Project Five', 1, 'f1a2b3c4d5e6f7g8h9a0b1c2d3e4f5g6', 'i2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7'),
+('Project Six', 1, 'g2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7', 'j3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8'),
+('Project Seven', 1, 'h3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8', 'k4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9'),
+('Project Eight', 1, 'i4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9', 'l5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0'),
+('Project Nine', 1, 'j5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0', 'm6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1'),
+('Project Ten', 1, 'k6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1', 'n7g8h9a0b1c2d3e4f5g6h7i8j9k0l1m2');
 
-INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, disable_login_flag, application_id)
+INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, disable_login_flag, project_id)
 VALUES
 ('john.doe@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', '1234567890', 'sms', 0, 0, 1),
 ('jane.smith@example.com', '$2b$10$EIX/4iBvwlbcBBVQNTw3/OZOyYQomj1HK3a/ZQp5K1y0N/B9O0mT2', '0987654321', 'email', 1, 0, 3),
@@ -44,7 +44,7 @@ VALUES
 ('vader.darth@example.com', '$2b$10$Pqr789Xyz123Def456Mno123Abc456Ghi789', '0987654321', 'email', 1, 1, 1);
 
 
-INSERT INTO audits (audit_type, ip_address, user_id, application_id, created_at)
+INSERT INTO audits (audit_type, ip_address, user_id, project_id, created_at)
 VALUES
 ('login_successful', '192.168.1.1', 1, 1, '2024-03-25 08:00:00'),
 ('login_failed', '192.168.1.2', 2, 3, '2024-03-26 09:15:00'),
