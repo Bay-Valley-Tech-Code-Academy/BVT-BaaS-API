@@ -1,13 +1,39 @@
-import { RefreshCw, Pencil } from "lucide-react";
+import { RefreshCw, Pencil, Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 export default function ProjectCard(props) {
+  const [showAPI, setShowAPI] = useState(false);
+  const [showSecret, setShowSecret] = useState(false);
+
+  function toggleShowAPI() {
+    setShowAPI(!showAPI);
+  }
+
+  function toggleShowSecret() {
+    setShowSecret(!showSecret);
+  }
+
+  function generateStars(string) {
+    string = toString(string);
+    let stars = "";
+    for (let i = 0; i < string.length; i++) {
+      stars = stars.concat("*");
+    }
+    return stars;
+  }
+
   return (
     <div className="min-w-[280px] flex-col rounded-lg bg-white p-6 shadow">
       <div className="mb-4 flex justify-between">
-        <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
-        <div className="flex items-center">
+        <div className="flex">
+          <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
           <button className="ml-3">
             <Pencil className="size-6 hover:text-purple-700" />
+          </button>
+        </div>
+        <div className="flex items-center">
+          <button className="ml-6">
+            <RefreshCw className="hover:text-red-600" />
           </button>
         </div>
       </div>
@@ -16,21 +42,37 @@ export default function ProjectCard(props) {
       <div className="mb-8 flex justify-between">
         <div className="flex">
           <h1 className="w-20 text-slate-700">api-key:</h1>
-          <p className="ml-2 font-light">{props.apiKey}</p>
+          <p className="ml-2 font-light">
+            {showAPI ? props.apiKey : generateStars(props.apiKey.length)}
+          </p>
         </div>
-        <button>
-          <RefreshCw className="hover:text-red-500" />
-        </button>
+        {showAPI ? (
+          <button className="ml-3" onClick={toggleShowAPI}>
+            <EyeOff className="size-6 hover:text-purple-700" />
+          </button>
+        ) : (
+          <button className="ml-3" onClick={toggleShowAPI}>
+            <Eye className="size-6 hover:text-purple-700" />
+          </button>
+        )}
       </div>
 
       <div className="mb-2 flex justify-between">
         <div className="flex">
           <h1 className="w-20 text-slate-700">secret:</h1>
-          <p className="ml-2 font-light">{props.secret}</p>
+          <p className="ml-2 font-light">
+            {showSecret ? props.secret : generateStars(props.secret.length)}
+          </p>
         </div>
-        <button>
-          <RefreshCw className="hover:text-red-500" />
-        </button>
+        {showSecret ? (
+          <button className="ml-3" onClick={toggleShowSecret}>
+            <EyeOff className="size-6 hover:text-purple-700" />
+          </button>
+        ) : (
+          <button className="ml-3" onClick={toggleShowSecret}>
+            <Eye className="size-6 hover:text-purple-700" />
+          </button>
+        )}
       </div>
     </div>
   );

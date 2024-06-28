@@ -1,7 +1,7 @@
 import PageHeader from "../components/PageHeader";
 import Inactive from "../components/Inactive";
 import Active from "../components/Active";
-import { ArrowBigDownDash, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import { usePagination } from "../hooks/usePagination";
 import dummyData from "../assets/dummyData";
@@ -41,7 +41,7 @@ export default function Users() {
         handleChange={handleChange}
       />
 
-      <div className="w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
+      <div className="mt-10 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
         <table className="h-4/5 w-full table-auto">
           <thead>
             <tr className="rounded-xl bg-gray-100 text-left">
