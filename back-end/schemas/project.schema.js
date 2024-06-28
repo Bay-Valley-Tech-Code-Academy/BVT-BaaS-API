@@ -9,6 +9,7 @@ const params = {
   }),
 };
 const getUsersByProjectIdSchema = object({ ...params });
+
 module.exports = {
   getUsersByProjectIdSchema,
 };

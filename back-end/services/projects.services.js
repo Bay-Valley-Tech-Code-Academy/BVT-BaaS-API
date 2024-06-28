@@ -15,7 +15,6 @@ async function getProjectByApiKey(apiKey) {
 }
 
 async function getProjectById(projectId) {
-  console.log(projectId);
   const [result] = await db.query(
     `
     SELECT * FROM projects
@@ -44,4 +43,23 @@ async function getUsersByProjectId(projectId) {
   return result;
 }
 
-module.exports = { getProjectByApiKey, getProjectById, getUsersByProjectId };
+async function getAllProjects(organizationId) {
+  const [result] = await db.query(
+    `
+      SELECT *
+      FROM projects
+      WHERE organization_id=:organizationId
+    `,
+    {
+      organizationId,
+    }
+  );
+  return result;
+}
+
+module.exports = {
+  getProjectByApiKey,
+  getProjectById,
+  getUsersByProjectId,
+  getAllProjects,
+};

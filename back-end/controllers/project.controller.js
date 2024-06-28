@@ -1,6 +1,7 @@
 const {
   getUsersByProjectId,
   getProjectById,
+  getAllProjects,
 } = require("../services/projects.services");
 
 async function getUsersByProjectIdHandler(req, res) {
@@ -38,6 +39,23 @@ async function getUsersByProjectIdHandler(req, res) {
   }
 }
 
+async function getAllProjectsHandler(req, res) {
+  try {
+    const organizationId = req.user.id;
+    const projects = await getAllProjects(organizationId);
+    return res.status(200).json({
+      success: true,
+      data: projects,
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 module.exports = {
   getUsersByProjectIdHandler,
+  getAllProjectsHandler,
 };
