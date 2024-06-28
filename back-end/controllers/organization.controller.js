@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
 const { generateAccessToken, generateRefreshToken } = require("../lib/auth");
 const {
   createOrganization,
@@ -7,7 +8,7 @@ const {
 
 async function createOrganizationHandler(req, res) {
   try {
-    const organization = await getOrganization(req.body.email);
+    const organization = await getOrganization({ email: req.body.email });
     //   If an organization already exist, we throw a bad response.
     if (organization) {
       return res.status(409).json({
@@ -15,10 +16,16 @@ async function createOrganizationHandler(req, res) {
         error: "Organization already exists",
       });
     }
+
+    const apiKey = crypto.randomBytes(32).toString("hex");
+    const secret = crypto.randomBytes(32).toString("hex");
+
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const data = await createOrganization({
       ...req.body,
       password: hashedPassword,
+      apiKey,
+      secret,
     });
 
     //   if affectredRows is === 0, that means there was something wrong with the insertion of the record
