@@ -81,13 +81,13 @@ export default function Projects() {
           <div className="flex justify-around">
             <button
               onClick={prevPage}
-              className={`flex w-[90px] justify-center rounded-lg bg-white p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "hover:shadow active:bg-gray-200"}`}
+              className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
             >
               Prev
             </button>
             <button
               onClick={nextPage}
-              className={`ml-3 flex w-[90px] justify-center rounded-lg bg-white p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "hover:shadow active:bg-gray-200"}`}
+              className={`ml-3 flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
             >
               Next
             </button>
