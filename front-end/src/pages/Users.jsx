@@ -9,17 +9,16 @@ import dummyData from "../assets/dummyData";
 export default function Users() {
   const [input, setInput] = useState("");
 
-  // Filtering users if there is any input in the search bar.
+  // Filtering users
   const filteredUsers = dummyData.filter((user) =>
     user.email.toLowerCase().includes(input),
   );
-
   const handleChange = (e) => {
     const newInput = e.target.value;
     setInput(newInput.toLowerCase());
   };
 
-  // Setting up pagination with Alan's custom pagination hook.
+  // Setting up pagination with Alan's custom pagination hook
   const {
     currPageItems,
     nextPage,
@@ -35,14 +34,15 @@ export default function Users() {
   });
 
   return (
-    <>
+    <div className="flex-col">
       <PageHeader
         path="Dashboard / Users"
         header="Users"
         handleChange={handleChange}
       />
-      <div className="h-4/5 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
-        <table className="w-full table-auto">
+
+      <div className="w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
+        <table className="h-4/5 w-full table-auto">
           <thead>
             <tr className="rounded-xl bg-gray-100 text-left">
               <th className="rounded-tl-xl p-2 pl-5 pr-5 font-medium text-gray-700">
@@ -78,34 +78,31 @@ export default function Users() {
                 </tr>
               );
             })}
-            <tr>
-              <td colSpan={5}>
-                <div className="flex justify-between p-5">
-                  <div>
-                    <p>
-                      Page {currPage} of {numPages}
-                    </p>
-                  </div>
-                  <div className="flex justify-around">
-                    <button
-                      onClick={prevPage}
-                      className={`flex w-[90px] justify-center rounded-lg bg-gray-100 p-1 align-middle font-medium ${!hasPrev ? "disabled cursor-default bg-white" : "hover:shadow active:bg-gray-200"}`}
-                    >
-                      Prev
-                    </button>
-                    <button
-                      onClick={nextPage}
-                      className={`ml-3 flex w-[90px] justify-center rounded-lg bg-gray-100 p-1 align-middle font-medium ${!hasNext ? "disabled cursor-default bg-white" : "hover:shadow active:bg-gray-200"}`}
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
-    </>
+
+      <div className="flex justify-between justify-self-end p-5">
+        <div>
+          <p>
+            Page {currPage} of {numPages}
+          </p>
+        </div>
+        <div className="flex justify-around">
+          <button
+            onClick={prevPage}
+            className={`flex w-[90px] justify-center rounded-lg bg-white p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "hover:shadow active:bg-gray-200"}`}
+          >
+            Prev
+          </button>
+          <button
+            onClick={nextPage}
+            className={`ml-3 flex w-[90px] justify-center rounded-lg bg-white p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "hover:shadow active:bg-gray-200"}`}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
