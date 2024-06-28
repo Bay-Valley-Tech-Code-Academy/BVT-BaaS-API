@@ -27,13 +27,13 @@ export default function ProjectCard(props) {
       <div className="mb-4 flex justify-between">
         <div className="flex">
           <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
-          <button className="ml-3">
-            <Pencil className="size-6 hover:text-purple-700" />
-          </button>
         </div>
         <div className="flex items-center">
+          <button className="ml-3">
+            <Pencil className="size-5 hover:text-purple-700" />
+          </button>
           <button className="ml-6">
-            <RefreshCw className="hover:text-red-600" />
+            <RefreshCw className="size-5 hover:text-red-600" />
           </button>
         </div>
       </div>
@@ -46,15 +46,13 @@ export default function ProjectCard(props) {
             {showAPI ? props.apiKey : generateStars(props.apiKey.length)}
           </p>
         </div>
-        {showAPI ? (
-          <button className="ml-3" onClick={toggleShowAPI}>
-            <EyeOff className="size-6 hover:text-purple-700" />
-          </button>
-        ) : (
-          <button className="ml-3" onClick={toggleShowAPI}>
-            <Eye className="size-6 hover:text-purple-700" />
-          </button>
-        )}
+        <button className="ml-3" onClick={toggleShowAPI}>
+          {showAPI ? (
+            <EyeOff className="size-5 hover:text-purple-700" />
+          ) : (
+            <Eye className="size-5 hover:text-purple-700" />
+          )}
+        </button>
       </div>
 
       <div className="mb-2 flex justify-between">
@@ -64,15 +62,13 @@ export default function ProjectCard(props) {
             {showSecret ? props.secret : generateStars(props.secret.length)}
           </p>
         </div>
-        {showSecret ? (
-          <button className="ml-3" onClick={toggleShowSecret}>
-            <EyeOff className="size-6 hover:text-purple-700" />
-          </button>
-        ) : (
-          <button className="ml-3" onClick={toggleShowSecret}>
-            <Eye className="size-6 hover:text-purple-700" />
-          </button>
-        )}
+        <button className="ml-3" onClick={toggleShowSecret}>
+          {showSecret ? (
+            <EyeOff className="size-5 hover:text-purple-700" />
+          ) : (
+            <Eye className="size-5 hover:text-purple-700" />
+          )}
+        </button>
       </div>
     </div>
   );
