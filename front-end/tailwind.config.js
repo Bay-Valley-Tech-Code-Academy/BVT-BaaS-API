@@ -11,7 +11,7 @@ export default {
           },
           purple: {
             300: "#4318FF",
-          }
+          },
         },
         landing: {
           blue: {
