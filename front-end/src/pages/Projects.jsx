@@ -71,27 +71,27 @@ export default function Projects() {
           );
         })}
       </div>
-      <div className="justify-self-end">
-        <div className="flex w-full justify-between justify-self-end p-5">
-          <div className="flex items-center">
-            <p>
-              Page {currPage} of {numPages}
-            </p>
-          </div>
-          <div className="flex justify-around">
-            <button
-              onClick={prevPage}
-              className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
-            >
-              Prev
-            </button>
-            <button
-              onClick={nextPage}
-              className={`ml-3 flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
-            >
-              Next
-            </button>
-          </div>
+      <div className="flex justify-between p-5">
+        <div className="flex items-center">
+          <p>
+            Page {currPage} of {numPages}
+          </p>
+        </div>
+        <div className="flex gap-3">
+          <button
+            disabled={!hasPrev}
+            onClick={prevPage}
+            className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
+          >
+            Prev
+          </button>
+          <button
+            disabled={!hasNext}
+            onClick={nextPage}
+            className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
+          >
+            Next
+          </button>
         </div>
       </div>
     </>
