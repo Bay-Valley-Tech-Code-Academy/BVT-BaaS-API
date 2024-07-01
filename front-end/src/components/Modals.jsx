@@ -7,12 +7,17 @@ export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const [deleteCondition, setDeleteCondition] = useState("");
 
+  function handleOpen() {
+    setDeleteCondition("");
+    setOpenModal(true);
+  }
+
   return (
     <>
       <button
         title="Delete Project"
         className="ml-3 border-none bg-transparent p-0"
-        onClick={() => setOpenModal(true)}
+        onClick={handleOpen}
       >
         <Trash2 className="size-5 text-black hover:text-red-600" />
       </button>
