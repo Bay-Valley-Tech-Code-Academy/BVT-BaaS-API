@@ -1,19 +1,42 @@
 const db = require("../db");
 
-async function createOrganization({ email, password, name }) {
+async function createOrganization({ email, password, name, apiKey, secret }) {
   const result = await db.query(
     `
+<<<<<<< HEAD
+    INSERT INTO organization (email, password, name, api_key, secret)
+    VALUES (:email, :password, :name, :apiKey, :secret);
+=======
     INSERT INTO organizations (email, password, name) VALUES (:email, :password, :name);
+>>>>>>> main
   `,
     {
       email,
       password,
       name,
+<<<<<<< HEAD
+      apiKey,
+      secret,
+    }
+=======
     },
+>>>>>>> main
   );
   return result[0];
 }
 
+<<<<<<< HEAD
+async function getOrganization({ email, apiKey }) {
+  const [result] = await db.query(
+    `
+    SELECT * FROM organization 
+    WHERE email=:email OR api_key=:apiKey;
+  `,
+    {
+      email,
+      apiKey,
+    }
+=======
 async function getOrganizationByEmail(email) {
   const [result] = await db.query(
     `SELECT * FROM organizations WHERE email=:email;`,
@@ -35,7 +58,10 @@ async function getOrganizationById(organizationId) {
     {
       organizationId,
     },
+>>>>>>> main
   );
+
+  console.log(result);
 
   if (result.length === 0) return false;
   return result[0];
