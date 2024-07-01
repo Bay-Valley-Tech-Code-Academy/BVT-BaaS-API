@@ -15,7 +15,6 @@ async function getProjectByApiKey(apiKey) {
 }
 
 async function getProjectById(projectId) {
-  console.log(projectId);
   const [result] = await db.query(
     `
     SELECT * FROM projects
