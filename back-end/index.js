@@ -2,13 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { carRoutes, userRoutes, organizationRoutes } = require("./routes");
+const { carRoutes, userRoutes, organizationRoutes, auditRoutes } = require("./routes");
 const db = require("./db");
 
 // Allows us to access the .env
 
 const app = express();
-const port = process.env.PORT || 4000; // default port to listen
+const port = process.env.SERVER_PORT || 4000; // default port to listen
 
 const corsOptions = {
   origin: "*",
@@ -21,6 +21,7 @@ app.use(bodyParser.json());
 
 // app.use("/api/cars", carRoutes);
 app.use("/api/organizations", organizationRoutes);
+app.use("/api/audits", auditRoutes);
 
 app.listen(port, async () => {
   console.log(`server started at http://localhost:${port}`);
