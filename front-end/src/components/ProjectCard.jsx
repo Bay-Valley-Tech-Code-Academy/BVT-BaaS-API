@@ -1,5 +1,5 @@
-import { RefreshCw, Pencil, Eye, EyeOff } from "lucide-react";
-import { DeleteModal } from "./Modals";
+import { Eye, EyeOff } from "lucide-react";
+import { DeleteModal, RefreshModal, EditModal } from "./Modals";
 import { useState } from "react";
 
 export default function ProjectCard(props) {
@@ -30,12 +30,8 @@ export default function ProjectCard(props) {
           <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
         </div>
         <div className="flex items-center">
-          <button className="ml-4">
-            <Pencil className="size-5 hover:text-purple-700" />
-          </button>
-          <button className="ml-4">
-            <RefreshCw className="size-5 hover:text-red-600" />
-          </button>
+          <EditModal projectName={props.name} />
+          <RefreshModal projectName={props.name} />
           <DeleteModal projectName={props.name} />
         </div>
       </div>
@@ -48,7 +44,11 @@ export default function ProjectCard(props) {
             {showAPI ? props.apiKey : generateStars(props.apiKey.length)}
           </p>
         </div>
-        <button className="ml-3" onClick={toggleShowAPI}>
+        <button
+          className="ml-3"
+          title={showAPI ? "Hide" : "Show"}
+          onClick={toggleShowAPI}
+        >
           {showAPI ? (
             <EyeOff className="size-5 hover:text-purple-700" />
           ) : (
@@ -64,7 +64,11 @@ export default function ProjectCard(props) {
             {showSecret ? props.secret : generateStars(props.secret.length)}
           </p>
         </div>
-        <button className="ml-3" onClick={toggleShowSecret}>
+        <button
+          className="ml-3"
+          title={showSecret ? "Hide" : "Show"}
+          onClick={toggleShowSecret}
+        >
           {showSecret ? (
             <EyeOff className="size-5 hover:text-purple-700" />
           ) : (
