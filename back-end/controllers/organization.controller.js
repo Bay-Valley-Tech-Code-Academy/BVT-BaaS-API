@@ -10,11 +10,7 @@ const {
 
 async function createOrganizationHandler(req, res) {
   try {
-<<<<<<< HEAD
-    const organization = await getOrganization({ email: req.body.email });
-=======
     const organization = await getOrganizationByEmail(req.body.email);
->>>>>>> main
     //   If an organization already exist, we throw a bad response.
     if (organization) {
       return res.status(409).json({
@@ -78,7 +74,7 @@ async function loginOrganizationHandler(req, res) {
 
     const match = await bcrypt.compare(
       req.body.password,
-      organization.password,
+      organization.password
     );
     if (!match) {
       return res.status(400).json({
