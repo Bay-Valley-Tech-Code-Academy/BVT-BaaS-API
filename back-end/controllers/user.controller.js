@@ -2,6 +2,9 @@ const bcrypt = require("bcrypt");
 const { generateUserRefreshToken } = require("../lib/auth");
 const { createUser, getUser } = require("../services/user.services");
 const { getProject } = require("../services/projects.services");
+const {
+  updateOrCreateRefreshToken,
+} = require("../services/refreshToken.services");
 
 async function createUserHandler(req, res) {
   try {
@@ -43,6 +46,15 @@ async function createUserHandler(req, res) {
     };
 
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      refreshToken,
+      newExpirationDate
+    );
+
     return res.status(201).json({
       success: true,
       data: {
@@ -100,6 +112,14 @@ async function loginUserHandler(req, res) {
     };
 
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      refreshToken,
+      newExpirationDate
+    );
     return res.status(200).json({
       success: true,
       data: {
