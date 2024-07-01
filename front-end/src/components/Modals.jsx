@@ -75,7 +75,7 @@ export function RefreshModal(props) {
   return (
     <>
       <button
-        title="Delete Project"
+        title="Rotate API/Secret"
         className="ml-3 border-none bg-transparent p-0"
         onClick={() => setOpenModal(true)}
       >
