@@ -2,12 +2,14 @@ const bcrypt = require("bcrypt");
 const { generateAccessToken, generateRefreshToken } = require("../lib/auth");
 const {
   createOrganization,
-  getOrganization,
+  getOrganizationByEmail,
+  getOrganizationById,
+  deleteOrganization,
 } = require("../services/organization.services");
 
 async function createOrganizationHandler(req, res) {
   try {
-    const organization = await getOrganization(req.body.email);
+    const organization = await getOrganizationByEmail(req.body.email);
     //   If an organization already exist, we throw a bad response.
     if (organization) {
       return res.status(409).json({
@@ -49,7 +51,7 @@ async function createOrganizationHandler(req, res) {
 
 async function loginOrganizationHandler(req, res) {
   try {
-    const organization = await getOrganization(req.body.email);
+    const organization = await getOrganizationByEmail(req.body.email);
     if (!organization) {
       return res.status(400).json({
         success: "false",
@@ -65,7 +67,7 @@ async function loginOrganizationHandler(req, res) {
 
     const match = await bcrypt.compare(
       req.body.password,
-      organization.password
+      organization.password,
     );
     if (!match) {
       return res.status(400).json({
@@ -90,7 +92,49 @@ async function loginOrganizationHandler(req, res) {
   }
 }
 
+async function deleteOrganizationHandler(req, res) {
+  try {
+    const organizationId = req.params.organizationId;
+    const organization = await getOrganizationById(organizationId);
+    if (!organization) {
+      return res.status(400).json({
+        success: "false",
+        error: "Organization does not exist.",
+      });
+    }
+
+    // Authentication check
+    if (req.user.id !== organization.organization_id) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized access",
+      });
+    }
+
+    const result = await deleteOrganization(organizationId);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to delete organization",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Organization deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 module.exports = {
   createOrganizationHandler,
   loginOrganizationHandler,
+  deleteOrganizationHandler,
 };
