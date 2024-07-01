@@ -176,9 +176,3 @@ export function EditModal(props) {
     </>
   );
 }
-
-export default {
-  DeleteModal,
-  RefreshModal,
-  EditModal,
-};
