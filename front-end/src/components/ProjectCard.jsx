@@ -1,4 +1,5 @@
 import { RefreshCw, Pencil, Eye, EyeOff } from "lucide-react";
+import { DeleteModal } from "./Modals";
 import { useState } from "react";
 
 export default function ProjectCard(props) {
@@ -29,12 +30,13 @@ export default function ProjectCard(props) {
           <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
         </div>
         <div className="flex items-center">
-          <button className="ml-3">
+          <button className="ml-4">
             <Pencil className="size-5 hover:text-purple-700" />
           </button>
-          <button className="ml-6">
+          <button className="ml-4">
             <RefreshCw className="size-5 hover:text-red-600" />
           </button>
+          <DeleteModal projectName={props.name} />
         </div>
       </div>
       <hr className="mb-6"></hr>

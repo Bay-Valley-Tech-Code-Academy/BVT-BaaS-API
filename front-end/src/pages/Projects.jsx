@@ -60,9 +60,10 @@ export default function Projects() {
         handleChange={handleChange}
       />
       <div className="mt-10 grid grid-cols-3 gap-6">
-        {currPageItems.map((project) => {
+        {currPageItems.map((project, index) => {
           return (
             <ProjectCard
+              key={index}
               name={project.name}
               apiKey={project.apiKey}
               secret={project.secret}
