@@ -5,11 +5,13 @@ const requireAuth = require("../middleware/requireAuth");
 const {
   createOrganizationHandler,
   loginOrganizationHandler,
+  deleteOrganizationHandler
 } = require("../controllers/organization.controller");
 
 const {
   createOrganizationSchema,
   loginOrganizationSchema,
+  deleteOrganizationSchema,
 } = require("../schemas/organization.schema");
 
 router.post(
@@ -22,6 +24,13 @@ router.post(
   "/login",
   validate(loginOrganizationSchema),
   loginOrganizationHandler
+);
+
+router.delete(
+  "/:organizationId",
+  requireAuth,
+  validate(deleteOrganizationSchema),
+  deleteOrganizationHandler
 );
 
 // router.get("/", getCarsHandler);
