@@ -3,18 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import DashboardHome from "./pages/DashboardHome";
-import APIKeys from "./pages/APIKeys";
+import Projects from "./pages/Projects";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import DashboardLayout from "./components/DashboardLayout";
 import LandingPage from "./components/LandingPage";
 
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
-
   },
   {
     path: "/dashboard",
@@ -23,7 +21,7 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardHome /> },
       { path: "/dashboard/users", element: <Users /> },
       { path: "/dashboard/settings", element: <Settings /> },
-      { path: "/dashboard/api-keys", element: <APIKeys /> },
+      { path: "/dashboard/projects", element: <Projects /> },
     ],
   },
 ]);

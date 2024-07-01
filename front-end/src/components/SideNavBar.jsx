@@ -48,7 +48,7 @@ export default function SideNavBar() {
           </div>
         )}
       </NavLink>
-      <NavLink to="/dashboard/api-keys" end>
+      <NavLink to="/dashboard/projects" end>
         {({ isActive }) => (
           <div className="mt-3 flex cursor-pointer items-center rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-slate-700">
             <span>
@@ -64,7 +64,7 @@ export default function SideNavBar() {
                   : "ml-4 text-base font-bold"
               }
             >
-              API Keys
+              Projects
             </span>
           </div>
         )}
