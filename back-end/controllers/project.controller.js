@@ -41,7 +41,8 @@ async function getUsersByProjectIdHandler(req, res) {
 
 async function getAllProjectsHandler(req, res) {
   try {
-    const organizationId = req.user.id;
+    // hardcode the id for development
+    const organizationId = 1 || req.user.id;
     const projects = await getAllProjects(organizationId);
     return res.status(200).json({
       success: true,
