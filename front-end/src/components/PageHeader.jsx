@@ -21,7 +21,7 @@ export default function PageHeader(props) {
             <input
               type="text"
               name="q"
-              className="w-[400px] rounded-xl py-2 pl-10 align-bottom text-sm focus:outline-none"
+              className="w-[400px] rounded-xl py-2 pl-10 align-bottom text-sm focus:border-purple-700"
               placeholder="Search..."
               autoComplete="off"
               onChange={props.handleChange}
