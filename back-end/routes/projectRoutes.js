@@ -5,6 +5,7 @@ const validate = require("../middleware/validate");
 const { getUsersByProjectIdSchema } = require("../schemas/project.schema");
 const {
   getUsersByProjectIdHandler,
+  getAllProjectsHandler,
 } = require("../controllers/project.controller");
 
 router.get(
@@ -12,4 +13,6 @@ router.get(
   validate(getUsersByProjectIdSchema),
   getUsersByProjectIdHandler
 );
+
+router.get("/", getAllProjectsHandler);
 module.exports = router;

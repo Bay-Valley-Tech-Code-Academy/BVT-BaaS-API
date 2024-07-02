@@ -37,8 +37,6 @@ async function getOrganizationById(organizationId) {
     }
   );
 
-  console.log(result);
-
   if (result.length === 0) return false;
   return result[0];
 }
