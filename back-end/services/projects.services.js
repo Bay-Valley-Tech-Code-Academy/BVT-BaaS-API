@@ -4,10 +4,10 @@ async function getProjectByApiKey(apiKey) {
   const [result] = await db.query(
     `
     SELECT * FROM projects
-    WHERE project_id = :projectId;
+    WHERE api_key = :apiKey;
   `,
     {
-      projectId,
+      apiKey,
     },
   );
 
