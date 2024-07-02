@@ -1,11 +1,14 @@
 const bcrypt = require("bcrypt");
 const { generateUserRefreshToken } = require("../lib/auth");
 const { createUser, getUser } = require("../services/user.services");
-const { getProject } = require("../services/projects.services");
+const { getProjectByApiKey } = require("../services/projects.services");
+const {
+  updateOrCreateRefreshToken,
+} = require("../services/refreshToken.services");
 
 async function createUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.api_key);
+    const project = await getProjectByApiKey(req.headers.api_key);
 
     // If we don't find an project with that apiKey we throw a bad response
     if (!project) {
@@ -43,6 +46,16 @@ async function createUserHandler(req, res) {
     };
 
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate
+    );
+
     return res.status(201).json({
       success: true,
       data: {
@@ -59,7 +72,7 @@ async function createUserHandler(req, res) {
 
 async function loginUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.api_key);
+    const project = await getProjectByApiKey(req.headers.api_key);
 
     // If we don't find an project with that apiKey we throw a bad response
     if (!project) {
@@ -100,6 +113,15 @@ async function loginUserHandler(req, res) {
     };
 
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate
+    );
     return res.status(200).json({
       success: true,
       data: {
@@ -107,6 +129,7 @@ async function loginUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",

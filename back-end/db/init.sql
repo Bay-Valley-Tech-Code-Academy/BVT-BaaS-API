@@ -11,7 +11,7 @@ CREATE TABLE projects (
   project_id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   api_key VARCHAR(64) UNIQUE,
-  secret VARCHAR(64) UNIQUE,
+  secret VARCHAR(128) UNIQUE,
   organization_id INT,
   FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );
@@ -50,4 +50,18 @@ CREATE TABLE audits (
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE refresh_tokens (
+  token_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
+  user_id INT NOT NULL,
+  project_id INT NOT NULL,
+  token VARCHAR(255) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
+  UNIQUE(user_id, project_id)
 );
