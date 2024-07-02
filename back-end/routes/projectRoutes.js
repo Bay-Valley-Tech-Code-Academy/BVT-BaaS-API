@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
-const { getUsersByProjectIdSchema } = require("../schemas/project.schema");
+const {
+  getUsersByProjectIdSchema,
+  regenerateProjectKeysSchema,
+} = require("../schemas/project.schema");
 const {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
+  regenerateProjectKeysHandler,
 } = require("../controllers/project.controller");
 
 router.get(
@@ -14,4 +18,10 @@ router.get(
 );
 
 router.get("/", getAllProjectsHandler);
+
+router.get(
+  "/:projectId/keys/regenerate",
+  validate(regenerateProjectKeysSchema),
+  regenerateProjectKeysHandler
+);
 module.exports = router;

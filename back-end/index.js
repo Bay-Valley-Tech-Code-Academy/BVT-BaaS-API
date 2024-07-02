@@ -2,9 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { authRoutes, organizationRoutes, userRoutes } = require("./routes");
 const {
-  carRoutes,
+  authRoutes,
   organizationRoutes,
   userRoutes,
   projectRoutes,
