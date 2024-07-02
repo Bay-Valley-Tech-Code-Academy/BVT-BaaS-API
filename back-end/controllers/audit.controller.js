@@ -14,7 +14,7 @@ const {
       }
       return res.status(200).json({
         message: "Audit retrieved successfully",
-        data: audit,
+        data: audits,
       });
     } catch (e) {
       console.error('Error retrieving audits:', e); // Log the error details
