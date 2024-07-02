@@ -4,10 +4,10 @@ const payload = {
   body: object({
     email: string({
       required_error: "Email is required!",
-    }),
+    }).email("Invalid email format!"),
     password: string({
       required_error: "Password is required!",
-    }),
+    }).min(8, "Password must be at least 8 characters!"),
     phoneNumber: string({
       required_error: "Phone number is required!",
     }),

@@ -9,11 +9,11 @@ const {
   deleteUser,
   getUserById,
 } = require("../services/user.services");
-const { getProject } = require("../services/projects.services");
+const { getProjectById } = require("../services/projects.services");
 
 async function createUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.project_id);
+    const project = await getProjectById(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,
@@ -108,7 +108,7 @@ async function deleteUserHandler(req, res) {
 
 async function loginUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.project_id);
+    const project = await getProjectById(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,

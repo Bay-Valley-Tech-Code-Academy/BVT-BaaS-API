@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { getProject } = require("../services/projects.services");
+const { getProjectById } = require("../services/projects.services");
 
 async function requireAuth(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
@@ -34,7 +34,7 @@ async function requireAuthUser(req, res, next) {
   }
 
   try {
-    const project = await getProject(projectId);
+    const project = await getProjectById(projectId);
     if (!project) {
       return res.status(401).json({ error: "Invalid Project ID" });
     }
