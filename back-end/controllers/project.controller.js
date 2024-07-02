@@ -22,15 +22,14 @@ async function getUsersByProjectIdHandler(req, res) {
       });
     }
 
-    //   verify that the organization is the owner of this project
-    /*
-     if(req.user.id !== project.organization_id ){
-     return res.status(403).json({
-     success: false, 
-     message: "Unauthorized access",
-     })
-     }
-    */
+    // Verify the organization is the owner of this project
+    // if (req.user.id !== projectId.organization_id) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     error: "Unauthorized access",
+    //   });
+    // }
+
     const users = await getUsersByProjectId(projectId);
     return res.status(200).json({
       success: true,
