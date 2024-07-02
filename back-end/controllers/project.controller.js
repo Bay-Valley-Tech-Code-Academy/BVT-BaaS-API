@@ -5,6 +5,9 @@ const {
   getAllProjects,
   updateApiKeyAndSecret,
 } = require("../services/projects.services");
+const {
+  deleteRefreshTokensByProjectId,
+} = require("../services/refreshToken.services");
 
 async function getUsersByProjectIdHandler(req, res) {
   try {
@@ -91,6 +94,8 @@ async function regenerateProjectKeysHandler(req, res) {
       error: "Failed to regenerate keys",
     });
   }
+  // Delete all refresh tokens associated with this project, essentially invalidating them.
+  await deleteRefreshTokensByProjectId(project.project_id);
 
   return res.status(200).json({
     success: true,

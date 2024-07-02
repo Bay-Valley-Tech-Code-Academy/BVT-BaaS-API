@@ -35,21 +35,16 @@ async function getRefreshToken(token) {
   return result[0];
 }
 
-async function getProject(apiKey) {
+async function deleteRefreshTokensByProjectId(projectId) {
   const [result] = await db.query(
-    `
-    SELECT * FROM projects
-    WHERE api_key=:apiKey;
-  `,
-    {
-      apiKey,
-    }
+    "DELETE  FROM refresh_tokens WHERE project_id = :projectId",
+    { projectId }
   );
-
-  if (result.length === 0) return false;
-  return result[0];
+  return result;
 }
+
 module.exports = {
   updateOrCreateRefreshToken,
   getRefreshToken,
+  deleteRefreshTokensByProjectId,
 };

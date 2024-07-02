@@ -9,7 +9,7 @@ function generateRefreshToken(user) {
 }
 
 function generateUserRefreshToken(user, secret) {
-  return jwt.sign(user, secret, { expiresIn: 1 });
+  return jwt.sign(user, secret, { expiresIn: "7d" });
 }
 
 function decodeToken(token, secret) {
