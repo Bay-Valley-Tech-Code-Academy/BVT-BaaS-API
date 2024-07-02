@@ -2,6 +2,7 @@ import { Button, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Trash2, RefreshCw, Pencil } from "lucide-react";
+import { useRegenerateApiKeyAndSecret } from "../api/mutations";
 
 export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);
@@ -71,6 +72,8 @@ export function DeleteModal(props) {
 
 export function RefreshModal(props) {
   const [openModal, setOpenModal] = useState(false);
+  const { mutate, isPending } = useRegenerateApiKeyAndSecret();
+  console.log(isPending);
 
   return (
     <>
@@ -88,7 +91,7 @@ export function RefreshModal(props) {
         popup
         position="top-center"
         className="backdrop-blur-[2px]"
-        dismissible
+        dismissible={!isPending}
       >
         <Modal.Header />
         <Modal.Body>
@@ -103,10 +106,24 @@ export function RefreshModal(props) {
               </span>
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={() => setOpenModal(false)}>
+              <Button
+                disabled={isPending}
+                color="failure"
+                onClick={() => {
+                  mutate(props.projectId, {
+                    onSettled: () => {
+                      setOpenModal(false);
+                    },
+                  });
+                }}
+              >
                 Rotate
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button
+                disabled={isPending}
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </Button>
             </div>

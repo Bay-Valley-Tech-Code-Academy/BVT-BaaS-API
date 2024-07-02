@@ -2,10 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import client from "../client";
 
 const getProjects = async () => {
-  const result = await client.get("/projects");
-  const projects = result.data;
+  const { data: result } = await client.get("/projects");
 
-  return projects.data;
+  return result.data;
 };
 
 export const useProjects = () => {

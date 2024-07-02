@@ -3,7 +3,6 @@ import { DeleteModal, RefreshModal, EditModal } from "./Modals";
 import { useState } from "react";
 
 export default function ProjectCard(props) {
-  console.log(props);
   const [showAPI, setShowAPI] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
 
@@ -31,9 +30,9 @@ export default function ProjectCard(props) {
           <h1 className="text-xl font-bold text-slate-700">{props.name}</h1>
         </div>
         <div className="flex items-center">
-          <EditModal projectName={props.name} />
-          <RefreshModal projectName={props.name} />
-          <DeleteModal projectName={props.name} />
+          <EditModal projectId={props.id} projectName={props.name} />
+          <RefreshModal projectId={props.id} projectName={props.name} />
+          <DeleteModal projectId={props.id} projectName={props.name} />
         </div>
       </div>
       <hr className="mb-6"></hr>

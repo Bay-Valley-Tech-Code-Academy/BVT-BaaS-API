@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.49.2",
+    "@tanstack/react-query-devtools": "^5.49.2",
     "axios": "^1.7.2",
     "flowbite-react": "^0.10.1",
     "lucide-react": "^0.395.0",

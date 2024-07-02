@@ -35,10 +35,6 @@ export default function Projects() {
     return <p>Loading</p>;
   }
 
-  console.log(currPageItems);
-
-  // Setting up pagination with Alan's custom pagination hook
-
   return (
     <>
       <PageHeader
@@ -50,7 +46,8 @@ export default function Projects() {
         {currPageItems.map((project, index) => {
           return (
             <ProjectCard
-              key={index}
+              key={project.project_id}
+              id={project.project_id}
               name={project.name}
               apiKey={project.api_key}
               secret={project.secret}
