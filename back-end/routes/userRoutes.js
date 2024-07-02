@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
 const requireProjectId = require("../middleware/requireProjectId");
-const { requireAuthUser } = require("../middleware/requireAuth");
+const { requireAuth } = require("../middleware/requireAuth");
 const {
   createUserHandler,
   loginUserHandler,
@@ -30,7 +30,7 @@ router.post(
 
 router.delete(
   "/:userId",
-  requireAuthUser,
+  requireAuth,
   validate(deleteUserSchema),
   deleteUserHandler,
 );

@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const { getProjectById } = require("../services/projects.services");
 
 async function requireAuth(req, res, next) {
   const token = req.headers.authorization?.split(" ")[1];
@@ -16,37 +15,4 @@ async function requireAuth(req, res, next) {
   }
 }
 
-async function requireAuthUser(req, res, next) {
-  const authHeader = req.headers.authorization;
-  const projectId = req.headers["project_id"];
-
-  if (!authHeader) {
-    return res.status(401).json({ error: "Access denied, token missing!" });
-  }
-
-  if (!projectId) {
-    return res.status(401).json({ error: "Project ID missing!" });
-  }
-
-  const token = authHeader.split(" ")[1]; // Bearer <token>
-  if (!token) {
-    return res.status(401).json({ error: "Access denied, token missing!" });
-  }
-
-  try {
-    const project = await getProjectById(projectId);
-    if (!project) {
-      return res.status(401).json({ error: "Invalid Project ID" });
-    }
-
-    const decoded = jwt.verify(token, project.secret);
-    req.user = decoded; // Attach the full user object to the request
-
-    next();
-  } catch (error) {
-    console.error("Token verification error:", error);
-    return res.status(401).json({ error: "Invalid token" });
-  }
-}
-
-module.exports = { requireAuth, requireAuthUser };
+module.exports = { requireAuth };

@@ -10,6 +10,7 @@ const {
   getUserById,
 } = require("../services/user.services");
 const { getProjectById } = require("../services/projects.services");
+const { getOrganizationById } = require("../services/organization.services");
 
 async function createUserHandler(req, res) {
   try {
@@ -70,18 +71,38 @@ async function deleteUserHandler(req, res) {
     const { userId } = req.params;
     const requestingUser = req.user;
 
-    if (requestingUser.id !== parseInt(userId, 10)) {
-      return res.status(403).json({
-        success: false,
-        error: "Unauthorized access",
-      });
-    }
-
-    const user = await getUserById(userId);
+    // Fetch the user to be deleted
+    const [user] = await getUserById(userId);
     if (!user) {
       return res.status(404).json({
         success: false,
         error: "User not found",
+      });
+    }
+
+    // Fetch the project of the user to be deleted
+    const project = await getProjectById(user.project_id);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        error: "Project not found",
+      });
+    }
+
+    // Fetch the organization of the project
+    const organization = await getOrganizationById(project.organization_id);
+    if (!organization) {
+      return res.status(404).json({
+        success: false,
+        error: "Organization not found",
+      });
+    }
+
+    // Check if the requesting user is the owner of the organization
+    if (requestingUser.id !== organization.organization_id) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized access",
       });
     }
 
