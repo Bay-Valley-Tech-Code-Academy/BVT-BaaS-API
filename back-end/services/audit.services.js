@@ -1,15 +1,21 @@
 const db = require("../db");
 
 async function getAudit({ projectId }) {
-    const result = await db.query(
+  try {
+    const [results] = await db.query(
       `
-      SELECT * from audits where project_id=:projectId
+      SELECT * from audits where project_id = ?
       `,
-      { projectId }
+      [ projectId ]
     );
   
-    return result[0];
+    return results;
+
+  } catch (err) {
+    console.error('Error executing query:', err);
+    throw err;
   }
+  } 
 
   module.exports = {
     getAudit,

@@ -4,10 +4,11 @@ const {
 
   async function getAuditHandler(req, res) {
     try {
-      const [audit] = await getAudit(req.params);
+      const projectId = req.params.projectId;
+      const audits = await getAudit({projectId});
   
-      if (!audit) {
-        return res.status(400).json({
+      if (!audits ||  audits.length === 0) {
+        return res.status(404).json({
           message: "There was an error with the request",
         });
       }
@@ -16,6 +17,7 @@ const {
         data: audit,
       });
     } catch (e) {
+      console.error('Error retrieving audits:', e); // Log the error details
       return res.status(500).json({
         message: "An unexpected error occured please try again later.",
       });
