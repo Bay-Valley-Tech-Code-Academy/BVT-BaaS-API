@@ -3,6 +3,7 @@ import { DeleteModal, RefreshModal, EditModal } from "./Modals";
 import { useState } from "react";
 
 export default function ProjectCard(props) {
+  console.log(props);
   const [showAPI, setShowAPI] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
 
