@@ -1,13 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
-const requireAuth = require("../middleware/requireAuth");
+const { requireAuth } = require("../middleware/requireAuth");
 const {
   createOrganizationHandler,
   loginOrganizationHandler,
-  deleteOrganizationHandler
+  deleteOrganizationHandler,
 } = require("../controllers/organization.controller");
-
 const {
   createOrganizationSchema,
   loginOrganizationSchema,
@@ -17,25 +16,20 @@ const {
 router.post(
   "/signup",
   validate(createOrganizationSchema),
-  createOrganizationHandler
+  createOrganizationHandler,
 );
 
 router.post(
   "/login",
   validate(loginOrganizationSchema),
-  loginOrganizationHandler
+  loginOrganizationHandler,
 );
 
 router.delete(
   "/:organizationId",
   requireAuth,
   validate(deleteOrganizationSchema),
-  deleteOrganizationHandler
+  deleteOrganizationHandler,
 );
-
-// router.get("/", getCarsHandler);
-// router.get("/:carId", [requireAuth, validate(getCarSchema)], getCarHandler);
-
-// router.put("/:carId", validate(updateCarSchema), updateCarHandler);
 
 module.exports = router;

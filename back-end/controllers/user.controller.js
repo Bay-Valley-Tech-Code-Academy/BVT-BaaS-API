@@ -1,17 +1,23 @@
 const bcrypt = require("bcrypt");
-const { generateUserRefreshToken } = require("../lib/auth");
-const { createUser, getUser } = require("../services/user.services");
+const {
+  generateUserRefreshToken,
+  generateUserAccessToken,
+} = require("../lib/auth");
+const {
+  createUser,
+  getUser,
+  deleteUser,
+  getUserById,
+} = require("../services/user.services");
 const { getProject } = require("../services/projects.services");
 
 async function createUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.api_key);
-
-    // If we don't find an project with that apiKey we throw a bad response
+    const project = await getProject(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized access, api key is invalid",
+        message: "Unauthorized access, project_id is invalid",
       });
     }
 
@@ -41,11 +47,13 @@ async function createUserHandler(req, res) {
       id: data.insertId,
       email: req.body.email,
     };
-
+    const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+
     return res.status(201).json({
       success: true,
       data: {
+        accessToken,
         refreshToken,
       },
     });
@@ -57,17 +65,57 @@ async function createUserHandler(req, res) {
   }
 }
 
+async function deleteUserHandler(req, res) {
+  try {
+    const { userId } = req.params;
+    const requestingUser = req.user;
+
+    if (requestingUser.id !== parseInt(userId, 10)) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized access",
+      });
+    }
+
+    const user = await getUserById(userId);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+
+    const result = await deleteUser(userId);
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to delete user",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 async function loginUserHandler(req, res) {
   try {
-    const project = await getProject(req.headers.api_key);
-
-    // If we don't find an project with that apiKey we throw a bad response
+    const project = await getProject(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,
         message: "Unauthorized access, api key is invalid",
       });
     }
+
     // we check if the user exist
     const user = await getUser(req.body.email);
     if (!user) {
@@ -87,22 +135,25 @@ async function loginUserHandler(req, res) {
     }
 
     const match = await bcrypt.compare(req.body.password, user.password);
-
     if (!match) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
       });
     }
+
     const userPayload = {
       id: user.user_id,
       email: user.email,
+      project_id: user.project_id,
     };
-
+    const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+
     return res.status(200).json({
       success: true,
       data: {
+        accessToken,
         refreshToken,
       },
     });
@@ -116,5 +167,6 @@ async function loginUserHandler(req, res) {
 
 module.exports = {
   createUserHandler,
+  deleteUserHandler,
   loginUserHandler,
 };

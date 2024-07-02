@@ -2,11 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const { carRoutes, organizationRoutes, userRoutes } = require("./routes");
-const db = require("./db");
-
-// Allows us to access the .env
-
+const { organizationRoutes, userRoutes } = require("./routes");
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen
 

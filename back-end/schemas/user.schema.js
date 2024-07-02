@@ -17,19 +17,29 @@ const payload = {
   }),
 };
 
-const headers = {
-  headers: object({
-    api_key: string(),
-  }),
-};
-
 const loginPayload = {
   body: payload.body.omit({ phoneNumber: true, mfaMethod: true }),
+};
+
+
+const headers = {
+  headers: object({
+    project_id: string(),
+  }),
 };
 
 const createUserSchema = object({
   ...payload,
   ...headers,
+});
+
+const deleteUserSchema = object({
+  params: object({
+    userId: number({
+      required_error: "userId is requried",
+      coerce: true,
+    }),
+  }),
 });
 
 const loginUserSchema = object({
@@ -39,5 +49,6 @@ const loginUserSchema = object({
 
 module.exports = {
   createUserSchema,
+  deleteUserSchema,
   loginUserSchema,
 };

@@ -1,16 +1,19 @@
 const db = require("../db");
-async function getProject(apiKey) {
+
+async function getProject(projectId) {
   const [result] = await db.query(
     `
     SELECT * FROM projects
-    WHERE api_key=:apiKey;
+    WHERE project_id = :projectId;
   `,
     {
-      apiKey,
-    }
+      projectId,
+    },
   );
 
-  if (result.length === 0) return false;
+  if (result.length === 0) {
+    return null;
+  }
   return result[0];
 }
 
