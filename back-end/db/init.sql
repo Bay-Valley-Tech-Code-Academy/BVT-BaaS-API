@@ -56,10 +56,12 @@ CREATE TABLE audits (
 CREATE TABLE refresh_tokens (
   token_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),
   user_id INT NOT NULL,
-  token VARCHAR(255) NOT NULL, 
+  project_id INT NOT NULL,
+  token VARCHAR(255) NOT NULL,
   expires_at DATETIME NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-  UNIQUE (user_id)
+  FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
+  UNIQUE(user_id, project_id)
 );

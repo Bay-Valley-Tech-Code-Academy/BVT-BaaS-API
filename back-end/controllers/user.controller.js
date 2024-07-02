@@ -51,6 +51,7 @@ async function createUserHandler(req, res) {
 
     await updateOrCreateRefreshToken(
       userPayload.id,
+      project.project_id,
       refreshToken,
       newExpirationDate
     );
@@ -117,6 +118,7 @@ async function loginUserHandler(req, res) {
 
     await updateOrCreateRefreshToken(
       userPayload.id,
+      project.project_id,
       refreshToken,
       newExpirationDate
     );
