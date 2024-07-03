@@ -2,6 +2,9 @@ import { Button, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Trash2, RefreshCw, Pencil } from "lucide-react";
+import { useRegenerateApiKeyAndSecret } from "../api/mutations";
+import toast from "react-hot-toast";
+import ToastMessage from "./ToastMessage";
 
 export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);
@@ -71,6 +74,8 @@ export function DeleteModal(props) {
 
 export function RefreshModal(props) {
   const [openModal, setOpenModal] = useState(false);
+  const { mutate, isPending } = useRegenerateApiKeyAndSecret();
+  console.log(isPending);
 
   return (
     <>
@@ -88,7 +93,7 @@ export function RefreshModal(props) {
         popup
         position="top-center"
         className="backdrop-blur-[2px]"
-        dismissible
+        dismissible={!isPending}
       >
         <Modal.Header />
         <Modal.Body>
@@ -103,10 +108,31 @@ export function RefreshModal(props) {
               </span>
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={() => setOpenModal(false)}>
+              <Button
+                disabled={isPending}
+                color="failure"
+                onClick={() => {
+                  mutate(props.projectId, {
+                    onSettled: () => {
+                      setOpenModal(false);
+                      // Tailwind Example
+                      toast.custom((t) => (
+                        <ToastMessage
+                          message="API key rotated successfully. Please update your applications with the new key."
+                          t={t}
+                        />
+                      ));
+                    },
+                  });
+                }}
+              >
                 Rotate
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button
+                disabled={isPending}
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </Button>
             </div>
@@ -114,6 +140,14 @@ export function RefreshModal(props) {
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+
+function CustomToast() {
+  return (
+    <div className={`rounded-full bg-white px-6 py-4 shadow-md`}>
+      Hello TailwindCSS! 👋
+    </div>
   );
 }
 

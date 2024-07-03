@@ -10,11 +10,15 @@ const {
   getUserById,
 } = require("../services/user.services");
 const { getProjectByApiKey } = require("../services/projects.services");
-const { getOrganizationById } = require("../services/organization.services");
+const {
+  updateOrCreateRefreshToken,
+} = require("../services/refreshToken.services");
 
 async function createUserHandler(req, res) {
   try {
-    const project = await getProjectByApiKey(req.headers.project_id);
+    const project = await getProjectByApiKey(req.headers.api_key);
+
+    // If we don't find an project with that apiKey we throw a bad response
     if (!project) {
       return res.status(401).json({
         success: false,
@@ -50,6 +54,15 @@ async function createUserHandler(req, res) {
     };
     const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate,
+    );
 
     return res.status(201).json({
       success: true,
@@ -129,7 +142,9 @@ async function deleteUserHandler(req, res) {
 
 async function loginUserHandler(req, res) {
   try {
-    const project = await getProjectByApiKey(req.headers.project_id);
+    const project = await getProjectByApiKey(req.headers.api_key);
+
+    // If we don't find an project with that apiKey we throw a bad response
     if (!project) {
       return res.status(401).json({
         success: false,
@@ -170,7 +185,15 @@ async function loginUserHandler(req, res) {
     };
     const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate,
+    );
     return res.status(200).json({
       success: true,
       data: {
@@ -179,6 +202,7 @@ async function loginUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",

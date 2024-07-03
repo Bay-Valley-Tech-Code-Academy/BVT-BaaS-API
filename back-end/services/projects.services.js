@@ -60,9 +60,26 @@ async function getAllProjects(organizationId) {
   return result;
 }
 
+async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
+  const [result] = await db.query(
+    `
+        UPDATE projects
+        SET api_key = :apiKey, secret = :projectSecret
+        WHERE project_id = :projectId
+    `,
+    {
+      apiKey,
+      projectSecret,
+      projectId,
+    }
+  );
+  return result;
+}
+
 module.exports = {
   getProjectByApiKey,
   getProjectById,
   getUsersByProjectId,
   getAllProjects,
+  updateApiKeyAndSecret,
 };
