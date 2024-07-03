@@ -12,8 +12,13 @@ function generateUserRefreshToken(user, secret) {
   return jwt.sign(user, secret, { expiresIn: "7d" });
 }
 
+function decodeToken(token, secret) {
+  return jwt.verify(token, secret);
+}
+
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
   generateUserRefreshToken,
+  decodeToken,
 };

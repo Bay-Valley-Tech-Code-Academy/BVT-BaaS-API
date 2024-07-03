@@ -9,7 +9,9 @@ const params = {
   }),
 };
 const getUsersByProjectIdSchema = object({ ...params });
+const regenerateProjectKeysSchema = object({ ...params });
 
 module.exports = {
+  regenerateProjectKeysSchema,
   getUsersByProjectIdSchema,
 };
