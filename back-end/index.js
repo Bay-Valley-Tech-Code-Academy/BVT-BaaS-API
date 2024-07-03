@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const { organizationRoutes, userRoutes, projectRoutes } = require("./routes");
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen
+const db = require("./db")
 
 const corsOptions = {
   origin: "*",

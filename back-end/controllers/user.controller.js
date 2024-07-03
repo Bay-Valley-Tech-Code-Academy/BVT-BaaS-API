@@ -9,12 +9,12 @@ const {
   deleteUser,
   getUserById,
 } = require("../services/user.services");
-const { getProjectById } = require("../services/projects.services");
+const { getProjectByApiKey } = require("../services/projects.services");
 const { getOrganizationById } = require("../services/organization.services");
 
 async function createUserHandler(req, res) {
   try {
-    const project = await getProjectById(req.headers.project_id);
+    const project = await getProjectByApiKey(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,
@@ -71,17 +71,17 @@ async function deleteUserHandler(req, res) {
     const { userId } = req.params;
     const requestingUser = req.user;
 
-    // Fetch the user to be deleted
-    const [user] = await getUserById(userId);
+    // Fetch the user and project
+    const [[user], project] = await Promise.all([
+      getUserById(userId),
+      getProjectByApiKey(req.headers.api_key),
+    ]);
     if (!user) {
       return res.status(404).json({
         success: false,
         error: "User not found",
       });
     }
-
-    // Fetch the project of the user to be deleted
-    const project = await getProjectById(user.project_id);
     if (!project) {
       return res.status(404).json({
         success: false,
@@ -89,23 +89,23 @@ async function deleteUserHandler(req, res) {
       });
     }
 
-    // Fetch the organization of the project
-    const organization = await getOrganizationById(project.organization_id);
-    if (!organization) {
-      return res.status(404).json({
-        success: false,
-        error: "Organization not found",
-      });
-    }
-
-    // Check if the requesting user is the owner of the organization
-    if (requestingUser.id !== organization.organization_id) {
+    // Validate the organization ownership
+    if (requestingUser.id !== project.organization_id) {
       return res.status(403).json({
         success: false,
-        error: "Unauthorized access",
+        error: "Organization does not have access to this project.",
       });
     }
 
+    // Validate the user belongs to the project
+    if (project.project_id !== user.project_id) {
+      return res.status(403).json({
+        success: false,
+        error: "User does not exist in this project.",
+      });
+    }
+
+    // Delete the user
     const result = await deleteUser(userId);
     if (result.affectedRows === 0) {
       return res.status(400).json({
@@ -129,7 +129,7 @@ async function deleteUserHandler(req, res) {
 
 async function loginUserHandler(req, res) {
   try {
-    const project = await getProjectById(req.headers.project_id);
+    const project = await getProjectByApiKey(req.headers.project_id);
     if (!project) {
       return res.status(401).json({
         success: false,

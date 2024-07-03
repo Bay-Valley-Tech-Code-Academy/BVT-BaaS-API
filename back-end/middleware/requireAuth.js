@@ -1,9 +1,9 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-async function requireAuth(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
+function requireAuth(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
-    return res.status(401).json({ error: "Access denied, token missing!" });
+    return res.status(401).json({ error: 'Access denied, token missing!' });
   }
 
   try {
@@ -11,8 +11,9 @@ async function requireAuth(req, res, next) {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token" });
+    return res.status(401).json({ error: 'Invalid token' });
   }
 }
 
-module.exports = { requireAuth };
+module.exports = requireAuth;
+
