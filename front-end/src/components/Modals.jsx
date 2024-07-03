@@ -3,6 +3,8 @@ import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Trash2, RefreshCw, Pencil } from "lucide-react";
 import { useRegenerateApiKeyAndSecret } from "../api/mutations";
+import toast from "react-hot-toast";
+import ToastMessage from "./ToastMessage";
 
 export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);
@@ -113,6 +115,13 @@ export function RefreshModal(props) {
                   mutate(props.projectId, {
                     onSettled: () => {
                       setOpenModal(false);
+                      // Tailwind Example
+                      toast.custom((t) => (
+                        <ToastMessage
+                          message="API key rotated successfully. Please update your applications with the new key."
+                          t={t}
+                        />
+                      ));
                     },
                   });
                 }}
@@ -131,6 +140,14 @@ export function RefreshModal(props) {
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+
+function CustomToast() {
+  return (
+    <div className={`rounded-full bg-white px-6 py-4 shadow-md`}>
+      Hello TailwindCSS! 👋
+    </div>
   );
 }
 

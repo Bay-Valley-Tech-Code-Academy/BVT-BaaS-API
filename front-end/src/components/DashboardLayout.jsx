@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import SideNavBar from "./SideNavBar";
+import { Toaster } from "react-hot-toast";
 
 export default function DashboardLayout() {
   return (
@@ -10,6 +11,7 @@ export default function DashboardLayout() {
       <div className="h-full flex-1 bg-dashboard-gray-100 p-6">
         <Outlet />
       </div>
+      <Toaster position="top-center" />
     </div>
   );
 }
