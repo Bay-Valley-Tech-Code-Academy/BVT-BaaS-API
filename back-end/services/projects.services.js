@@ -32,9 +32,16 @@ async function getProjectById(projectId) {
 async function getUsersByProjectId(projectId) {
   const [result] = await db.query(
     `
-      SELECT user_id, email, phone_number, mfa_method, staff_flag, disable_login_flag, created_at, updated_at
-      FROM users
-      WHERE project_id=:projectId
+      SELECT u.user_id, u.email, u.phone_number, u.mfa_method, u.staff_flag, u.disable_login_flag, u.created_at, last_signin.last_signed_in
+      FROM users u LEFT JOIN (
+        SELECT user_id, MAX(created_at) AS last_signed_in
+        FROM audits
+        WHERE project_id = :projectId
+        GROUP BY user_id
+      ) last_signin
+      ON u.user_id = last_signin.user_id
+      WHERE u.project_id=:projectId
+      ORDER BY last_signed_in DESC
     `,
     {
       projectId,
