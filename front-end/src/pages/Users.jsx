@@ -7,14 +7,10 @@ import { usePagination } from "../hooks/usePagination";
 
 import { useUsers } from "../api/queries";
 import moment from "moment/moment";
-import { usetoggleDisableLoginFlag } from "../api/mutations";
-import toast from "react-hot-toast";
-import ToastMessage from "../components/ToastMessage";
 
 export default function Users() {
   const [input, setInput] = useState("");
   const { data: users, isLoading } = useUsers();
-  const { mutate, isPending } = usetoggleDisableLoginFlag();
 
   // Filtering users
   const filteredUsers = users
@@ -39,6 +35,8 @@ export default function Users() {
     data: filteredUsers,
     itemsPerPage: 9,
   });
+
+  console.log(currPageItems);
 
   return (
     <div className="relative h-full flex-col">
@@ -82,34 +80,12 @@ export default function Users() {
                     >
                       <td className="p-4 text-base">{obj.email}</td>
                       <td className="p-4">
-                        <button
-                          onClick={() => {
-                            mutate(
-                              { projectId: 1, userId: obj.user_id },
-                              {
-                                onSuccess: () => {
-                                  toast.custom((t) => (
-                                    <ToastMessage
-                                      t={t}
-                                      message={`User has been successfully ${obj.disable_login_flag ? "enabled" : "disabled"}`}
-                                      variant="success"
-                                    />
-                                  ));
-                                },
-                                onError: () => {
-                                  toast((t) => (
-                                    <ToastMessage
-                                      t={t}
-                                      message="Failed to disable user account. Please try again."
-                                      variant="error"
-                                    />
-                                  ));
-                                },
-                              },
-                            );
-                          }}
-                        >
-                          {obj.disable_login_flag ? <Inactive /> : <Active />}
+                        <button>
+                          {obj.disable_login_flag === 0 ? (
+                            <Active />
+                          ) : (
+                            <Inactive />
+                          )}
                         </button>
                       </td>
                       <td className="p-4 font-light">

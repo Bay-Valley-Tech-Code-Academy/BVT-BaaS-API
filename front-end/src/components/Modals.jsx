@@ -75,6 +75,7 @@ export function DeleteModal(props) {
 export function RefreshModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useRegenerateApiKeyAndSecret();
+  console.log(isPending);
 
   return (
     <>
@@ -117,7 +118,6 @@ export function RefreshModal(props) {
                       // Tailwind Example
                       toast.custom((t) => (
                         <ToastMessage
-                          variant="success"
                           message="API key rotated successfully. Please update your applications with the new key."
                           t={t}
                         />
@@ -140,6 +140,14 @@ export function RefreshModal(props) {
         </Modal.Body>
       </Modal>
     </>
+  );
+}
+
+function CustomToast() {
+  return (
+    <div className={`rounded-full bg-white px-6 py-4 shadow-md`}>
+      Hello TailwindCSS! 👋
+    </div>
   );
 }
 
