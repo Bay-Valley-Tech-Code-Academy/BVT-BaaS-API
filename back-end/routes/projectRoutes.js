@@ -4,12 +4,14 @@ const validate = require("../middleware/validate");
 const {
   getUsersByProjectIdSchema,
   regenerateProjectKeysSchema,
+  toggleDisableLoginSchema,
 } = require("../schemas/project.schema");
 
 const {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
+  toggleDisableLoginFlagHandler,
 } = require("../controllers/project.controller");
 
 router.get(
@@ -24,5 +26,11 @@ router.get(
   "/:projectId/keys/regenerate",
   validate(regenerateProjectKeysSchema),
   regenerateProjectKeysHandler
+);
+
+router.patch(
+  "/:projectId/users/:userId/toggle-disable-login",
+  validate(toggleDisableLoginSchema),
+  toggleDisableLoginFlagHandler
 );
 module.exports = router;
