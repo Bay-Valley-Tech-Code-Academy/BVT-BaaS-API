@@ -70,7 +70,6 @@ async function getCarHandler(req, res) {
       data: car,
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       message: "An unexpected error occured please try again later.",
     });

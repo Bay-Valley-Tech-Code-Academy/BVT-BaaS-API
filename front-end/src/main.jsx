@@ -1,22 +1,28 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
 import { createBrowserRouter, Navigate, RouterProvider } from "react-router-dom";
 import DashboardHome from "./pages/DashboardHome";
-import APIKeys from "./pages/APIKeys";
+import Projects from "./pages/Projects";
 import Settings from "./pages/Settings";
 import Users from "./pages/Users";
 import DashboardLayout from "./components/DashboardLayout";
 import LandingPage from "./components/LandingPage";
+<<<<<<< HEAD
 import AuthLayout from "./components/AuthLayout";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+=======
+
+const queryClient = new QueryClient();
+>>>>>>> main
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <LandingPage />,
-
   },
   {
     path: '/auth',
@@ -34,13 +40,16 @@ const router = createBrowserRouter([
       { index: true, element: <DashboardHome /> },
       { path: "/dashboard/users", element: <Users /> },
       { path: "/dashboard/settings", element: <Settings /> },
-      { path: "/dashboard/api-keys", element: <APIKeys /> },
+      { path: "/dashboard/projects", element: <Projects /> },
     ],
   },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   </React.StrictMode>,
 );
