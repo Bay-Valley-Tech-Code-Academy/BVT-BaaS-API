@@ -1,8 +1,11 @@
 import { Button, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { Trash2, RefreshCw, Pencil } from "lucide-react";
-import { useRegenerateApiKeyAndSecret } from "../api/mutations";
+import { Trash2, RefreshCw, Pencil, Loader } from "lucide-react";
+import {
+  useRegenerateApiKeyAndSecret,
+  useUpdateProjectName,
+} from "../api/mutations";
 import toast from "react-hot-toast";
 import ToastMessage from "./ToastMessage";
 
@@ -75,7 +78,6 @@ export function DeleteModal(props) {
 export function RefreshModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useRegenerateApiKeyAndSecret();
-  console.log(isPending);
 
   return (
     <>
@@ -143,22 +145,44 @@ export function RefreshModal(props) {
   );
 }
 
-function CustomToast() {
-  return (
-    <div className={`rounded-full bg-white px-6 py-4 shadow-md`}>
-      Hello TailwindCSS! 👋
-    </div>
-  );
-}
-
 export function EditModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const [newName, setNewName] = useState(props.projectName);
+  const { mutate, isPending } = useUpdateProjectName();
 
-  function onCloseModal() {
-    setOpenModal(false);
-    setNewName(props.projectName);
+  function handleMutation() {
+    mutate(
+      {
+        projectId: props.projectId,
+        projectName: newName,
+      },
+      {
+        onSuccess: () => {
+          toast.custom((t) => (
+            <ToastMessage
+              t={t}
+              message={`Project has successfully been renamed`}
+              variant="success"
+            />
+          ));
+        },
+        onError: () => {
+          toast((t) => (
+            <ToastMessage
+              t={t}
+              message="Failed to update project name. Please try again."
+              variant="error"
+            />
+          ));
+          setNewName(props.projectName);
+        },
+        onSettled: () => {
+          setOpenModal(false);
+        },
+      },
+    );
   }
+
   return (
     <>
       <button
@@ -171,11 +195,11 @@ export function EditModal(props) {
       <Modal
         show={openModal}
         size="md"
-        onClose={onCloseModal}
+        onClose={() => setOpenModal(false)}
         popup
         position="top-center"
         className="backdrop-blur-[2px]"
-        dismissible
+        dismissible={!isPending}
       >
         <Modal.Header />
         <Modal.Body>
@@ -194,13 +218,31 @@ export function EditModal(props) {
                 value={newName}
                 onChange={(event) => setNewName(event.target.value)}
                 required
+                disabled={isPending}
               />
             </div>
             <div className="flex justify-center gap-4">
-              <Button color="purple" onClick={onCloseModal}>
-                Edit
+              <Button
+                disabled={newName.trim().length === 0 || isPending}
+                color="purple"
+                className="relative"
+                onClick={handleMutation}
+              >
+                {isPending && (
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <Loader className="animate-spin" size={16} />
+                  </span>
+                )}
+                <span className={isPending ? "invisible" : ""}>Edit</span>
               </Button>
-              <Button color="gray" onClick={onCloseModal}>
+              <Button
+                disabled={isPending}
+                color="gray"
+                onClick={() => {
+                  setOpenModal(false);
+                  setNewName(props.projectName);
+                }}
+              >
                 Cancel
               </Button>
             </div>
