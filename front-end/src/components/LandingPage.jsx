@@ -13,13 +13,14 @@ import {
   Waypoints,
 } from "lucide-react";
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function LandingPage() {
   return (
     <div className="h-dvh">
       <div className="relative h-full bg-landing-blue-100">
         <LandingNav />
-        <div className="mx-auto max-w-md space-y-6 px-4 pb-8 pt-44 text-center text-white">
+        <div className="mx-auto max-w-md space-y-6 px-4 pb-8 pt-16 text-center text-white xl:pt-24">
           <h1 className="text-[calc(2.5rem+1vw)] font-bold">
             <span className="text-landing-turquoise">Authentication</span> Made
             Simple
@@ -444,6 +445,8 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="bg-neutral-100">
         <Footer />
       </div>
     </div>
@@ -456,18 +459,18 @@ const LandingNav = () => {
       <div className="flex items-center justify-between">
         <span className="font-bold text-white">BVTAuth</span>
         <div>
-          <button
-            type="button"
-            className="hover: mr-2 rounded-md border px-4 py-2 text-white outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
+          <Link
+            to="/login"
+            className="mr-2 inline-flex items-center justify-center rounded-md border px-4 py-2 text-white outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
           >
             Login
-          </button>
-          <button
-            type="button"
-            className="rounded-md bg-white px-4 py-2 text-landing-purple-200 outline-none hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
+          </Link>
+          <Link
+            to="/signup"
+            className="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-landing-purple-200 outline-none hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
           >
-            Login
-          </button>
+            Sign up
+          </Link>
         </div>
       </div>
     </div>
@@ -486,7 +489,7 @@ const DashboardSnippet = () => {
 
 const Footer = () => {
   return (
-    <footer className="flex h-full gap-2 flex-col items-center justify-between bg-neutral-100 px-6 py-6 sm:h-24 md:flex-row">
+    <footer className="mx-auto flex h-full max-w-screen-xl flex-col items-center justify-between gap-2 px-6 py-6 sm:h-24 md:flex-row">
       <div className="flex flex-col items-center gap-2 px-2 sm:flex-row">
         <div className="flex items-center">
           <LogoIcon />
