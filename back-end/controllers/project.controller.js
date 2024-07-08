@@ -4,6 +4,7 @@ const {
   getProjectById,
   getAllProjects,
   updateApiKeyAndSecret,
+  updateProjectName,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -124,9 +125,6 @@ async function toggleDisableLoginFlagHandler(req, res) {
       getUserById(userId),
     ]);
 
-    console.log(project);
-    console.log(user);
-
     if (!project) {
       return res.status(404).json({
         success: false,
@@ -172,9 +170,52 @@ async function toggleDisableLoginFlagHandler(req, res) {
         error: "Failed to toggle the disable login flag",
       });
     }
+
     return res.status(200).json({
       success: true,
       message: "User login flag updated",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
+async function updateProjectNameHandler(req, res) {
+  try {
+    const projectId = req.params.projectId;
+    const projectName = req.body.name;
+
+    const project = await getProjectById(projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    //   verify that the organization is the owner of this project
+    /*
+     if(req.user.id !== project.organization_id ){
+     return res.status(403).json({
+     success: false, 
+     message: "Unauthorized access",
+     })
+     }
+    */
+    const result = await updateProjectName(project.project_id, projectName);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to update project title",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Project updated successfully",
     });
   } catch (e) {
     return res.status(500).json({
@@ -189,4 +230,5 @@ module.exports = {
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   toggleDisableLoginFlagHandler,
+  updateProjectNameHandler,
 };

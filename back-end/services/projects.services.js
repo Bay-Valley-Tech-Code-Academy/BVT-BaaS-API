@@ -95,6 +95,20 @@ async function getUserByIdAndProject(userId, projectId) {
   if (result.length === 0) return false;
   return result[0];
 }
+async function updateProjectName(projectId, projectName) {
+  const [result] = await db.query(
+    `
+        UPDATE projects
+        SET name = :projectName
+        WHERE project_id = :projectId
+    `,
+    {
+      projectId,
+      projectName,
+    }
+  );
+  return result;
+}
 
 module.exports = {
   getProjectByApiKey,
@@ -103,4 +117,5 @@ module.exports = {
   getAllProjects,
   updateApiKeyAndSecret,
   getUserByIdAndProject,
+  updateProjectName,
 };

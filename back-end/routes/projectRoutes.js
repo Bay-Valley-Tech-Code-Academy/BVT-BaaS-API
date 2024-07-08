@@ -5,6 +5,7 @@ const {
   getUsersByProjectIdSchema,
   regenerateProjectKeysSchema,
   toggleDisableLoginSchema,
+  updateProjectNameSchema,
 } = require("../schemas/project.schema");
 
 const {
@@ -12,15 +13,8 @@ const {
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   toggleDisableLoginFlagHandler,
+  updateProjectNameHandler,
 } = require("../controllers/project.controller");
-
-router.get(
-  "/:projectId/users",
-  validate(getUsersByProjectIdSchema),
-  getUsersByProjectIdHandler
-);
-
-router.get("/", getAllProjectsHandler);
 
 router.get(
   "/:projectId/keys/regenerate",
@@ -33,4 +27,15 @@ router.patch(
   validate(toggleDisableLoginSchema),
   toggleDisableLoginFlagHandler
 );
+router.get(
+  "/:projectId/users",
+  validate(getUsersByProjectIdSchema),
+  getUsersByProjectIdHandler
+);
+router.patch(
+  "/:projectId/name",
+  validate(updateProjectNameSchema),
+  updateProjectNameHandler
+);
+router.get("/", getAllProjectsHandler);
 module.exports = router;
