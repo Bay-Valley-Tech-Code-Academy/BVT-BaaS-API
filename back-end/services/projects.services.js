@@ -3,14 +3,16 @@ async function getProjectByApiKey(apiKey) {
   const [result] = await db.query(
     `
     SELECT * FROM projects
-    WHERE api_key=:apiKey;
+    WHERE api_key = :apiKey;
   `,
     {
       apiKey,
     }
   );
 
-  if (result.length === 0) return false;
+  if (result.length === 0) {
+    return null;
+  }
   return result[0];
 }
 
@@ -80,10 +82,42 @@ async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
   return result;
 }
 
+async function getUserByIdAndProject(userId, projectId) {
+  const [result] = await db.query(
+    `
+    SELECT * FROM users
+    WHERE user_id=:userId AND project_id:projectId
+  `,
+    {
+      userId,
+      projectId,
+    }
+  );
+
+  if (result.length === 0) return false;
+  return result[0];
+}
+async function updateProjectName(projectId, projectName) {
+  const [result] = await db.query(
+    `
+        UPDATE projects
+        SET name = :projectName
+        WHERE project_id = :projectId
+    `,
+    {
+      projectId,
+      projectName,
+    }
+  );
+  return result;
+}
+
 module.exports = {
   getProjectByApiKey,
   getProjectById,
   getUsersByProjectId,
   getAllProjects,
   updateApiKeyAndSecret,
+  getUserByIdAndProject,
+  updateProjectName,
 };

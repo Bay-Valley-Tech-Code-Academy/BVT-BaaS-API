@@ -1,7 +1,15 @@
 const bcrypt = require("bcrypt");
-const { generateUserRefreshToken } = require("../lib/auth");
-const { createUser, getUser } = require("../services/user.services");
-const { getProjectByApiKey } = require("../services/projects.services");
+const {
+  generateUserRefreshToken,
+  generateUserAccessToken,
+} = require("../lib/auth");
+const {
+  createUser,
+  getUser,
+  deleteUser,
+  getUserById,
+} = require("../services/user.services");
+const { getProjectByApiKey, getProjectById } = require("../services/projects.services");
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
@@ -14,7 +22,7 @@ async function createUserHandler(req, res) {
     if (!project) {
       return res.status(401).json({
         success: false,
-        message: "Unauthorized access, api key is invalid",
+        message: "Unauthorized access, project_id is invalid",
       });
     }
 
@@ -44,7 +52,7 @@ async function createUserHandler(req, res) {
       id: data.insertId,
       email: req.body.email,
     };
-
+    const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
@@ -53,16 +61,78 @@ async function createUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate
+      newExpirationDate,
     );
 
     return res.status(201).json({
       success: true,
       data: {
+        accessToken,
         refreshToken,
       },
     });
   } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
+async function deleteUserHandler(req, res) {
+  try {
+    const { userId, projectId } = req.params;
+    const requestingUser = req.user;
+
+    // Fetch the user and project
+    const [[user], project] = await Promise.all([
+      getUserById(userId),
+      getProjectById(projectId),
+    ]);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found",
+      });
+    }
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        error: "Project not found",
+      });
+    }
+
+    // Validate the organization ownership
+    if (requestingUser.id !== project.organization_id) {
+      return res.status(403).json({
+        success: false,
+        error: "Organization does not have access to this project.",
+      });
+    }
+
+    // Validate the user belongs to the project
+    if (project.project_id !== user.project_id) {
+      return res.status(403).json({
+        success: false,
+        error: "User does not exist in this project.",
+      });
+    }
+
+    // Delete the user
+    const result = await deleteUser(userId);
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to delete user",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting user:", error);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -81,6 +151,7 @@ async function loginUserHandler(req, res) {
         message: "Unauthorized access, api key is invalid",
       });
     }
+
     // we check if the user exist
     const user = await getUser(req.body.email);
     if (!user) {
@@ -100,18 +171,19 @@ async function loginUserHandler(req, res) {
     }
 
     const match = await bcrypt.compare(req.body.password, user.password);
-
     if (!match) {
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
       });
     }
+
     const userPayload = {
       id: user.user_id,
       email: user.email,
+      project_id: user.project_id,
     };
-
+    const accessToken = generateUserAccessToken(userPayload, project.secret);
     const refreshToken = generateUserRefreshToken(userPayload, project.secret);
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
@@ -120,11 +192,12 @@ async function loginUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate
+      newExpirationDate,
     );
     return res.status(200).json({
       success: true,
       data: {
+        accessToken,
         refreshToken,
       },
     });
@@ -139,5 +212,6 @@ async function loginUserHandler(req, res) {
 
 module.exports = {
   createUserHandler,
+  deleteUserHandler,
   loginUserHandler,
 };
