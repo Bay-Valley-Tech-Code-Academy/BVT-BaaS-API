@@ -23,7 +23,7 @@ const loginPayload = {
 
 const headers = {
   headers: object({
-    project_id: string(),
+    api_key: string(),
   }),
 };
 
