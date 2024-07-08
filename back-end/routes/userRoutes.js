@@ -11,6 +11,7 @@ const {
   loginUserSchema,
   deleteUserSchema,
 } = require("../schemas/user.schema");
+const requireAuth = require("../middleware/requireAuth");
 
 router.post(
   "/signup",
@@ -25,7 +26,8 @@ router.post(
 );
 
 router.delete(
-  "/:userId",
+  "/:userId/projects/:projectId",
+  requireAuth,
   validate(deleteUserSchema),
   deleteUserHandler,
 );

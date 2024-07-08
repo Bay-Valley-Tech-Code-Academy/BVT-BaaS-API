@@ -9,7 +9,7 @@ const {
   deleteUser,
   getUserById,
 } = require("../services/user.services");
-const { getProjectByApiKey } = require("../services/projects.services");
+const { getProjectByApiKey, getProjectById } = require("../services/projects.services");
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
@@ -81,13 +81,13 @@ async function createUserHandler(req, res) {
 
 async function deleteUserHandler(req, res) {
   try {
-    const { userId } = req.params;
+    const { userId, projectId } = req.params;
     const requestingUser = req.user;
 
     // Fetch the user and project
     const [[user], project] = await Promise.all([
       getUserById(userId),
-      getProjectByApiKey(req.headers.api_key),
+      getProjectById(projectId),
     ]);
     if (!user) {
       return res.status(404).json({
