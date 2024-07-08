@@ -92,6 +92,21 @@ async function deleteProject(projectId) {
   return result;
 }
 
+async function updateProjectName(projectId, projectName) {
+  const [result] = await db.query(
+    `
+        UPDATE projects
+        SET name = :projectName
+        WHERE project_id = :projectId
+    `,
+    {
+      projectId,
+      projectName,
+    }
+  );
+  return result;
+}
+
 module.exports = {
   getProjectByApiKey,
   getProjectById,
@@ -99,4 +114,5 @@ module.exports = {
   getAllProjects,
   updateApiKeyAndSecret,
   deleteProject,
+  updateProjectName,
 };

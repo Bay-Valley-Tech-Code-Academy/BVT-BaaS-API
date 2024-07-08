@@ -5,6 +5,7 @@ const {
   getUsersByProjectIdSchema,
   regenerateProjectKeysSchema,
   deleteProjectSchema,
+  updateProjectNameSchema,
 } = require("../schemas/project.schema");
 
 const {
@@ -12,6 +13,7 @@ const {
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   deleteProjectHandler,
+  updateProjectNameHandler,
 } = require("../controllers/project.controller");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -35,4 +37,15 @@ router.delete(
   validate(deleteProjectSchema),
   deleteProjectHandler,
 );
+router.get(
+  "/:projectId/users",
+  validate(getUsersByProjectIdSchema),
+  getUsersByProjectIdHandler
+);
+router.patch(
+  "/:projectId/name",
+  validate(updateProjectNameSchema),
+  updateProjectNameHandler
+);
+router.get("/", getAllProjectsHandler);
 module.exports = router;

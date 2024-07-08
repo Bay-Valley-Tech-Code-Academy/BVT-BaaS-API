@@ -1,4 +1,4 @@
-const { object, number } = require("zod");
+const { object, string, number } = require("zod");
 
 const params = {
   params: object({
@@ -12,8 +12,16 @@ const getUsersByProjectIdSchema = object({ ...params });
 const regenerateProjectKeysSchema = object({ ...params });
 const deleteProjectSchema = object({ ...params });
 
+const updateProjectNameSchema = object({
+  ...params,
+  body: object({
+    name: string({ required_error: "Project title is requred" }),
+  }),
+});
+
 module.exports = {
   regenerateProjectKeysSchema,
   getUsersByProjectIdSchema,
   deleteProjectSchema,
+  updateProjectNameSchema,
 };
