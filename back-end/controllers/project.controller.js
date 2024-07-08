@@ -4,6 +4,7 @@ const {
   getProjectById,
   getAllProjects,
   updateApiKeyAndSecret,
+  deleteProject,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -84,7 +85,7 @@ async function regenerateProjectKeysHandler(req, res) {
   const result = await updateApiKeyAndSecret(
     project.project_id,
     apiKey,
-    projectSecret
+    projectSecret,
   );
 
   if (result.affectedRows === 0) {
@@ -105,8 +106,50 @@ async function regenerateProjectKeysHandler(req, res) {
   });
 }
 
+async function deleteProjectHandler(req, res) {
+  try {
+    const projectId = req.params.projectId;
+    const project = await getProjectById(projectId);
+    if (!project) {
+      return res.status(400).json({
+        success: "false",
+        error: "Project does not exist.",
+      });
+    }
+
+    // Authentication check
+    if (req.user.id !== project.organization_id) {
+      return res.status(403).json({
+        success: false,
+        error: "Unauthorized access",
+      });
+    }
+
+    const result = await deleteProject(projectId);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to delete project.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Project deleted successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later.",
+    });
+  }
+}
+
 module.exports = {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
+  deleteProjectHandler,
 };

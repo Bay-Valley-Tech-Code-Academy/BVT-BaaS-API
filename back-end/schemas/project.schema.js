@@ -10,8 +10,10 @@ const params = {
 };
 const getUsersByProjectIdSchema = object({ ...params });
 const regenerateProjectKeysSchema = object({ ...params });
+const deleteProjectSchema = object({ ...params });
 
 module.exports = {
   regenerateProjectKeysSchema,
   getUsersByProjectIdSchema,
+  deleteProjectSchema,
 };
