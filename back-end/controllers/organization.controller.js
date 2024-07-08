@@ -77,8 +77,8 @@ async function loginOrganizationHandler(req, res) {
       organization.password
     );
     if (!match) {
-      return res.status(400).json({
-        success: "false",
+      return res.status(401).json({
+        success: false,
         error: "Invalid email or password",
       });
     }

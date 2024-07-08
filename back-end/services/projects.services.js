@@ -1,5 +1,4 @@
-const db = require("../db");
-
+const { db } = require("../db");
 async function getProjectByApiKey(apiKey) {
   const [result] = await db.query(
     `
@@ -8,7 +7,7 @@ async function getProjectByApiKey(apiKey) {
   `,
     {
       apiKey,
-    },
+    }
   );
 
   if (result.length === 0) {

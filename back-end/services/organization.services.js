@@ -1,6 +1,6 @@
-const db = require("../db");
+const { db } = require("../db");
 
-async function createOrganization({ email, password, name, apiKey, secret }) {
+async function createOrganization({ email, password, name }) {
   const result = await db.query(
     `
     INSERT INTO organizations (email, password, name) VALUES (:email, :password, :name);

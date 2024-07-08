@@ -8,6 +8,17 @@ const db = mysql.createPool({
   port: process.env.port,
   database: process.env.database,
   namedPlaceholders: true,
+  multipleStatements: true,
 });
 
-module.exports = db;
+const closePool = async () => {
+  if (db) {
+    await db.end();
+    console.log("Database connection pool closed");
+  }
+};
+
+module.exports = {
+  db,
+  closePool,
+};
