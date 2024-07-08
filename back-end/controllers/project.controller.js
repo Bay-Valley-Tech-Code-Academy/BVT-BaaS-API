@@ -4,6 +4,7 @@ const {
   getProjectById,
   getAllProjects,
   updateApiKeyAndSecret,
+  updateProjectName,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -61,18 +62,19 @@ async function getAllProjectsHandler(req, res) {
 }
 
 async function regenerateProjectKeysHandler(req, res) {
-  const projectId = req.params.projectId;
+  try {
+    const projectId = req.params.projectId;
 
-  // check if project exist
-  const project = await getProjectById(projectId);
-  if (!project) {
-    return res.status(404).json({
-      success: false,
-      message: "Project not found",
-    });
-  }
-  //   verify that the organization is the owner of this project
-  /*
+    // check if project exist
+    const project = await getProjectById(projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+    //   verify that the organization is the owner of this project
+    /*
      if(req.user.id !== project.organization_id ){
      return res.status(403).json({
      success: false, 
@@ -80,33 +82,82 @@ async function regenerateProjectKeysHandler(req, res) {
      })
      }
     */
-  const { apiKey, projectSecret } = generateApiKeyAndSecret();
-  const result = await updateApiKeyAndSecret(
-    project.project_id,
-    apiKey,
-    projectSecret
-  );
+    const { apiKey, projectSecret } = generateApiKeyAndSecret();
+    const result = await updateApiKeyAndSecret(
+      project.project_id,
+      apiKey,
+      projectSecret
+    );
 
-  if (result.affectedRows === 0) {
-    return res.status(400).json({
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to regenerate keys",
+      });
+    }
+    // Delete all refresh tokens associated with this project, essentially invalidating them.
+    await deleteRefreshTokensByProjectId(project.project_id);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        apiKey,
+        projectSecret,
+      },
+    });
+  } catch (e) {
+    return res.status(500).json({
       success: false,
-      error: "Failed to regenerate keys",
+      error: "Server error, please try again later",
     });
   }
-  // Delete all refresh tokens associated with this project, essentially invalidating them.
-  await deleteRefreshTokensByProjectId(project.project_id);
+}
 
-  return res.status(200).json({
-    success: true,
-    data: {
-      apiKey,
-      projectSecret,
-    },
-  });
+async function updateProjectNameHandler(req, res) {
+  try {
+    const projectId = req.params.projectId;
+    const projectName = req.body.name;
+
+    const project = await getProjectById(projectId);
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    //   verify that the organization is the owner of this project
+    /*
+     if(req.user.id !== project.organization_id ){
+     return res.status(403).json({
+     success: false, 
+     message: "Unauthorized access",
+     })
+     }
+    */
+    const result = await updateProjectName(project.project_id, projectName);
+
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to update project title",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Project updated successfully",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
 }
 
 module.exports = {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
+  updateProjectNameHandler,
 };
