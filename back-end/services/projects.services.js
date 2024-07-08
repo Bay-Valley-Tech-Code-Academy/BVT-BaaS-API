@@ -1,16 +1,19 @@
 const db = require("../db");
+
 async function getProjectByApiKey(apiKey) {
   const [result] = await db.query(
     `
     SELECT * FROM projects
-    WHERE api_key=:apiKey;
+    WHERE api_key = :apiKey;
   `,
     {
       apiKey,
-    }
+    },
   );
 
-  if (result.length === 0) return false;
+  if (result.length === 0) {
+    return null;
+  }
   return result[0];
 }
 

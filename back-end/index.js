@@ -13,6 +13,7 @@ const {
 
 const app = express();
 const port = process.env.PORT || 4000; // default port to listen
+const db = require("./db")
 
 const corsOptions = {
   origin: "*",
@@ -20,6 +21,7 @@ const corsOptions = {
   "access-control-allow-credentials": true,
   optionSuccessStatus: 200,
 };
+
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 

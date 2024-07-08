@@ -4,11 +4,32 @@ const validate = require("../middleware/validate");
 const {
   createUserHandler,
   loginUserHandler,
+  deleteUserHandler,
 } = require("../controllers/user.controller");
+const {
+  createUserSchema,
+  loginUserSchema,
+  deleteUserSchema,
+} = require("../schemas/user.schema");
+const requireAuth = require("../middleware/requireAuth");
 
-const { createUserSchema, loginUserSchema } = require("../schemas/user.schema");
+router.post(
+  "/signup",
+  validate(createUserSchema),
+  createUserHandler,
+);
 
-router.post("/signup", validate(createUserSchema), createUserHandler);
-router.post("/login", validate(loginUserSchema), loginUserHandler);
+router.post(
+  "/login",
+  validate(loginUserSchema),
+  loginUserHandler,
+);
+
+router.delete(
+  "/:userId/projects/:projectId",
+  requireAuth,
+  validate(deleteUserSchema),
+  deleteUserHandler,
+);
 
 module.exports = router;
