@@ -80,6 +80,21 @@ async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
   return result;
 }
 
+async function getUserByIdAndProject(userId, projectId) {
+  const [result] = await db.query(
+    `
+    SELECT * FROM users
+    WHERE user_id=:userId AND project_id:projectId
+  `,
+    {
+      userId,
+      projectId,
+    }
+  );
+
+  if (result.length === 0) return false;
+  return result[0];
+}
 async function updateProjectName(projectId, projectName) {
   const [result] = await db.query(
     `
@@ -101,5 +116,6 @@ module.exports = {
   getUsersByProjectId,
   getAllProjects,
   updateApiKeyAndSecret,
+  getUserByIdAndProject,
   updateProjectName,
 };

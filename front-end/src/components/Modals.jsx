@@ -78,6 +78,8 @@ export function DeleteModal(props) {
 export function RefreshModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const { mutate, isPending } = useRegenerateApiKeyAndSecret();
+<<<<<<< HEAD
+=======
 
   function handleMutation() {
     mutate(props.projectId, {
@@ -102,6 +104,7 @@ export function RefreshModal(props) {
       },
     });
   }
+>>>>>>> main
 
   return (
     <>
@@ -137,7 +140,25 @@ export function RefreshModal(props) {
               <Button
                 disabled={isPending}
                 color="failure"
+<<<<<<< HEAD
+                onClick={() => {
+                  mutate(props.projectId, {
+                    onSettled: () => {
+                      setOpenModal(false);
+                      // Tailwind Example
+                      toast.custom((t) => (
+                        <ToastMessage
+                          variant="success"
+                          message="API key rotated successfully. Please update your applications with the new key."
+                          t={t}
+                        />
+                      ));
+                    },
+                  });
+                }}
+=======
                 onClick={handleMutation}
+>>>>>>> main
               >
                 Rotate
               </Button>

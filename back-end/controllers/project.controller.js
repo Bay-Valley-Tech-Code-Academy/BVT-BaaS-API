@@ -9,6 +9,10 @@ const {
 const {
   deleteRefreshTokensByProjectId,
 } = require("../services/refreshToken.services");
+const {
+  getUserById,
+  toggleLoginDisabledFlag,
+} = require("../services/user.services");
 
 async function getUsersByProjectIdHandler(req, res) {
   try {
@@ -113,6 +117,72 @@ async function regenerateProjectKeysHandler(req, res) {
   }
 }
 
+async function toggleDisableLoginFlagHandler(req, res) {
+  try {
+    const { projectId, userId } = req.params;
+    const [project, user] = await Promise.all([
+      getProjectById(projectId),
+      getUserById(userId),
+    ]);
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "No project found",
+      });
+    }
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "No user found",
+      });
+    }
+
+    // verify that the organization is the owner of the user.
+    /*
+    if(req.user.id !== project.organizatoin_id){
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized"
+      })
+    }
+  */
+
+    // You want to make sure that this user belongs to the project
+    if (project.project_id !== user.project_id) {
+      return res.status(403).json({
+        success: false,
+        message: "Not authorized",
+      });
+    }
+
+    const newDisableLoginFlag = !user.disable_login_flag;
+
+    const result = await toggleLoginDisabledFlag(
+      userId,
+      projectId,
+      newDisableLoginFlag
+    );
+    if (result.affectedRows === 0) {
+      return res.status(400).json({
+        success: false,
+        error: "Failed to toggle the disable login flag",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User login flag updated",
+    });
+  } catch (e) {
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later",
+    });
+  }
+}
+
 async function updateProjectNameHandler(req, res) {
   try {
     const projectId = req.params.projectId;
@@ -159,5 +229,6 @@ module.exports = {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
+  toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
 };
