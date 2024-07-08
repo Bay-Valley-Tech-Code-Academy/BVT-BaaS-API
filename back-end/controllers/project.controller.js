@@ -117,7 +117,7 @@ async function deleteProjectHandler(req, res) {
       });
     }
 
-    // Authentication check
+    // Checks if organization own the project
     if (req.user.id !== project.organization_id) {
       return res.status(403).json({
         success: false,
