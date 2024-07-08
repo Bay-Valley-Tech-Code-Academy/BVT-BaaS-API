@@ -21,7 +21,6 @@ const loginPayload = {
   body: payload.body.omit({ phoneNumber: true, mfaMethod: true }),
 };
 
-
 const headers = {
   headers: object({
     project_id: string(),
@@ -37,6 +36,10 @@ const deleteUserSchema = object({
   params: object({
     userId: number({
       required_error: "userId is requried",
+      coerce: true,
+    }),
+    projectId: number({
+      required_error: "projectId is required",
       coerce: true,
     }),
   }),

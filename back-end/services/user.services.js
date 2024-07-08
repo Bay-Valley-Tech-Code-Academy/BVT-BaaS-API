@@ -33,6 +33,7 @@ async function deleteUser(userId) {
       userId,
     },
   );
+  if (result.length === 0) return false;
   return result;
 }
 
@@ -59,12 +60,30 @@ async function getUserById(userId) {
       userId,
     },
   );
-  return result;
+  if (result.length === 0) return false;
+  return result[0];
+}
+
+async function toggleLoginDisabledFlag(userId, projectId, loginFlag) {
+  const result = await db.query(
+    `
+    UPDATE users
+    SET disable_login_flag=:loginFlag
+    WHERE user_id=:userId AND project_id=:projectId
+  `,
+    {
+      userId,
+      projectId,
+      loginFlag,
+    },
+  );
+  return result[0];
 }
 
 module.exports = {
   createUser,
   deleteUser,
   getUser,
+  toggleLoginDisabledFlag,
   getUserById,
 };
