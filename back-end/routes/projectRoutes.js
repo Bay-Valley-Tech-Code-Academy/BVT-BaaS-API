@@ -5,6 +5,7 @@ const {
   getUsersByProjectIdSchema,
   regenerateProjectKeysSchema,
   deleteProjectSchema,
+  toggleDisableLoginSchema,
   updateProjectNameSchema,
 } = require("../schemas/project.schema");
 
@@ -13,6 +14,7 @@ const {
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   deleteProjectHandler,
+  toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
 } = require("../controllers/project.controller");
 const requireAuth = require("../middleware/requireAuth");
@@ -36,6 +38,12 @@ router.delete(
   requireAuth,
   validate(deleteProjectSchema),
   deleteProjectHandler,
+);
+
+router.patch(
+  "/:projectId/users/:userId/toggle-disable-login",
+  validate(toggleDisableLoginSchema),
+  toggleDisableLoginFlagHandler
 );
 router.get(
   "/:projectId/users",
