@@ -1,3 +1,15 @@
+-- Disable foreign key checks
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Drop all tables if they exist
+DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS audits;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS organizations;
+
+-- Enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE organizations (
   organization_id INT AUTO_INCREMENT PRIMARY KEY,
