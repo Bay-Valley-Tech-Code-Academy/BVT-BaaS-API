@@ -5,11 +5,14 @@ const {
 } = require("../lib/auth");
 const {
   createUser,
-  getUser,
+  getUserByEmail,
   deleteUser,
   getUserById,
 } = require("../services/user.services");
-const { getProjectByApiKey, getProjectById } = require("../services/projects.services");
+const {
+  getProjectByApiKey,
+  getProjectById,
+} = require("../services/projects.services");
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
@@ -17,24 +20,6 @@ const {
 async function createUserHandler(req, res) {
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
-
-    // If we don't find an project with that apiKey we throw a bad response
-    if (!project) {
-      return res.status(401).json({
-        success: false,
-        message: "Unauthorized access, project_id is invalid",
-      });
-    }
-
-    // We want to ensure that the project doesn't already have this user
-    const user = await getUser(req.body.email);
-    if (user && user.project_id === project.project_id) {
-      return res.status(409).json({
-        success: false,
-        message:
-          "A user with this email already exists for the specified project.",
-      });
-    }
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -61,7 +46,7 @@ async function createUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate,
+      newExpirationDate
     );
 
     return res.status(201).json({
@@ -153,7 +138,7 @@ async function loginUserHandler(req, res) {
     }
 
     // we check if the user exist
-    const user = await getUser(req.body.email);
+    const user = await getUserByEmail(req.body.email);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -192,7 +177,7 @@ async function loginUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate,
+      newExpirationDate
     );
     return res.status(200).json({
       success: true,

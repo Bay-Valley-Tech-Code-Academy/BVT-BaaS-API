@@ -2,9 +2,10 @@ const { generateApiKeyAndSecret } = require("../lib/keys");
 const {
   getUsersByProjectId,
   getProjectById,
-  getAllProjects,
+
   updateApiKeyAndSecret,
   updateProjectName,
+  getProjectsByOrganizationId,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -52,7 +53,7 @@ async function getAllProjectsHandler(req, res) {
   try {
     // hardcode the id for development
     const organizationId = 1 || req.user.id;
-    const projects = await getAllProjects(organizationId);
+    const projects = await getProjectsByOrganizationId(organizationId);
     return res.status(200).json({
       success: true,
       data: projects,

@@ -1,5 +1,4 @@
--- Disable foreign key checks
-SET FOREIGN_KEY_CHECKS = 0;
+
 
 -- Drop all tables if they exist
 DROP TABLE IF EXISTS refresh_tokens;
@@ -7,15 +6,16 @@ DROP TABLE IF EXISTS audits;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS organizations;
+DROP TABLE IF EXISTS account_limits;
 
--- Enable foreign key checks
-SET FOREIGN_KEY_CHECKS = 1;
+
 
 CREATE TABLE organizations (
   organization_id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
   password VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL
+  name VARCHAR(255) NOT NULL,
+  account_type ENUM('free', 'basic', 'pro') DEFAULT 'free'
 );
 
 
@@ -34,7 +34,7 @@ CREATE TABLE projects (
   email VARCHAR(100) NOT NULL,
   password VARCHAR(255) NOT NULL,
   phone_number VARCHAR(15),
-  mfa_method ENUM('sms', 'email'),
+  mfa_method ENUM('sms', 'email'), 
   staff_flag TINYINT DEFAULT 0,
   disable_login_flag TINYINT DEFAULT 0,
   project_id INT,
@@ -77,3 +77,11 @@ CREATE TABLE refresh_tokens (
   FOREIGN KEY (project_id) REFERENCES projects(project_id) ON DELETE CASCADE,
   UNIQUE(user_id, project_id)
 );
+
+
+CREATE TABLE account_limits (
+  account_type ENUM('free', 'basic', 'pro') PRIMARY KEY,
+  max_projects INT,
+  max_users INT
+);
+

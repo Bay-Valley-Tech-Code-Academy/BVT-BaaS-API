@@ -12,24 +12,21 @@ const {
   deleteUserSchema,
 } = require("../schemas/user.schema");
 const requireAuth = require("../middleware/requireAuth");
+const checkProjectUserLimits = require("../middleware/checkProjectUserLimits");
 
 router.post(
   "/signup",
-  validate(createUserSchema),
-  createUserHandler,
+  [validate(createUserSchema), checkProjectUserLimits],
+  createUserHandler
 );
 
-router.post(
-  "/login",
-  validate(loginUserSchema),
-  loginUserHandler,
-);
+router.post("/login", validate(loginUserSchema), loginUserHandler);
 
 router.delete(
   "/:userId/projects/:projectId",
   requireAuth,
   validate(deleteUserSchema),
-  deleteUserHandler,
+  deleteUserHandler
 );
 
 module.exports = router;
