@@ -19,15 +19,10 @@ async function createOrganizationHandler(req, res) {
       });
     }
 
-    const apiKey = crypto.randomBytes(32).toString("hex");
-    const secret = crypto.randomBytes(32).toString("hex");
-
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const data = await createOrganization({
       ...req.body,
       password: hashedPassword,
-      apiKey,
-      secret,
     });
 
     //   if affectredRows is === 0, that means there was something wrong with the insertion of the record
@@ -40,7 +35,13 @@ async function createOrganizationHandler(req, res) {
       name: req.body.name,
     };
     const accessToken = generateAccessToken(organizationPayload);
+
     const refreshToken = generateRefreshToken(organizationPayload);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // use secure cookies in production
+      sameSite: "Strict", // helps prevent CSRF attacks
+    });
     return res.status(200).json({
       success: true,
       data: {
@@ -60,6 +61,7 @@ async function createOrganizationHandler(req, res) {
 async function loginOrganizationHandler(req, res) {
   try {
     const organization = await getOrganizationByEmail(req.body.email);
+
     if (!organization) {
       return res.status(400).json({
         success: "false",
@@ -70,12 +72,12 @@ async function loginOrganizationHandler(req, res) {
     const organizationPayload = {
       id: organization.organization_id,
       email: organization.email,
-      name: organization.password,
+      name: organization.name,
     };
 
     const match = await bcrypt.compare(
       req.body.password,
-      organization.password
+      organization.password,
     );
     if (!match) {
       return res.status(401).json({
@@ -85,11 +87,15 @@ async function loginOrganizationHandler(req, res) {
     }
     const accessToken = generateAccessToken(organizationPayload);
     const refreshToken = generateRefreshToken(organizationPayload);
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // use secure cookies in production
+    });
+
     return res.status(200).json({
       success: true,
       data: {
         accessToken,
-        refreshToken,
       },
     });
   } catch (e) {
@@ -133,7 +139,6 @@ async function deleteOrganizationHandler(req, res) {
       message: "Organization deleted successfully",
     });
   } catch (error) {
-    console.error(error);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -141,8 +146,25 @@ async function deleteOrganizationHandler(req, res) {
   }
 }
 
+async function organizationAuthHandler(req, res) {
+  return res.status(200).json({ success: true, data: req.user });
+}
+
+async function organizationLogoutHandler(req, res) {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out successfully" });
+}
+
 module.exports = {
   createOrganizationHandler,
   loginOrganizationHandler,
   deleteOrganizationHandler,
+  organizationAuthHandler,
+  organizationLogoutHandler,
 };

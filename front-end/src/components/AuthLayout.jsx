@@ -1,5 +1,16 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
+import { useAuth } from "../api/queries";
+import React from "react";
 export default function AuthLayout() {
+  const { data, isLoading, isError } = useAuth();
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (!isLoading && !isError && data) {
+      return navigate("/dashboard");
+    }
+  }, [data, isError, isLoading]);
+
   return (
     <div className="flex h-screen w-full flex-col lg:flex-row">
       <Outlet />

@@ -18,7 +18,7 @@ async function createUser({
       phoneNumber,
       mfaMethod,
       projectId,
-    },
+    }
   );
   return result[0];
 }
@@ -31,20 +31,20 @@ async function deleteUser(userId) {
     `,
     {
       userId,
-    },
+    }
   );
   if (result.length === 0) return false;
   return result;
 }
 
-async function getUser(email) {
+async function getUserByEmail(email) {
   const [result] = await db.query(
     `
     SELECT * FROM users WHERE email=:email;
   `,
     {
       email,
-    },
+    }
   );
   if (result.length === 0) return false;
   return result[0];
@@ -58,7 +58,7 @@ async function getUserById(userId) {
     `,
     {
       userId,
-    },
+    }
   );
   if (result.length === 0) return false;
   return result[0];
@@ -75,7 +75,7 @@ async function toggleLoginDisabledFlag(userId, projectId, loginFlag) {
       userId,
       projectId,
       loginFlag,
-    },
+    }
   );
   return result[0];
 }
@@ -83,7 +83,7 @@ async function toggleLoginDisabledFlag(userId, projectId, loginFlag) {
 module.exports = {
   createUser,
   deleteUser,
-  getUser,
+  getUserByEmail,
   toggleLoginDisabledFlag,
   getUserById,
 };

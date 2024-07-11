@@ -7,7 +7,7 @@ async function getProjectByApiKey(apiKey) {
   `,
     {
       apiKey,
-    }
+    },
   );
 
   if (result.length === 0) {
@@ -24,7 +24,7 @@ async function getProjectById(projectId) {
   `,
     {
       projectId,
-    }
+    },
   );
 
   if (result.length === 0) return false;
@@ -47,12 +47,12 @@ async function getUsersByProjectId(projectId) {
     `,
     {
       projectId,
-    }
+    },
   );
   return result;
 }
 
-async function getAllProjects(organizationId) {
+async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
       SELECT *
@@ -61,7 +61,7 @@ async function getAllProjects(organizationId) {
     `,
     {
       organizationId,
-    }
+    },
   );
   return result;
 }
@@ -77,7 +77,19 @@ async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
       apiKey,
       projectSecret,
       projectId,
-    }
+    },
+  );
+  return result;
+}
+
+async function deleteProject(projectId) {
+  const [result] = await db.query(
+    `
+    DELETE FROM projects WHERE project_id = :projectId;
+    `,
+    {
+      projectId,
+    },
   );
   return result;
 }
@@ -116,8 +128,9 @@ module.exports = {
   getProjectByApiKey,
   getProjectById,
   getUsersByProjectId,
-  getAllProjects,
+  getProjectsByOrganizationId,
   updateApiKeyAndSecret,
+  deleteProject,
   getUserByIdAndProject,
   updateProjectName,
 };
