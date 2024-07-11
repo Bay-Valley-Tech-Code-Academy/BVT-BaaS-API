@@ -2,10 +2,12 @@ import { Link } from "react-router-dom";
 import { Mail, LockKeyhole, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useSignupOrganization } from "../api/mutations";
+import FormButton from "./FormButton";
 
 export default function SignUp() {
   const { mutate, isPending, isError } = useSignupOrganization();
   const navigate = useNavigate();
+
   function handleSubmit(e) {
     e.preventDefault();
     const { name, email, password } = e.target.elements;
@@ -92,12 +94,7 @@ export default function SignUp() {
               <LockKeyhole className="size-5 text-white" />
             </div>
           </div>
-          <button
-            type="submit"
-            className="mt-4 inline-flex w-full items-center justify-center rounded bg-landing-turquoise py-1.5 outline-none hover:bg-landing-turquoise/90 focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
-          >
-            Sign Up
-          </button>
+          <FormButton isPending={isPending}>Sign up</FormButton>
           <div className="relative h-4">
             <div className="text-muted absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-landing-blue-100 px-2 text-xs text-landing-gray-50">
               OR
