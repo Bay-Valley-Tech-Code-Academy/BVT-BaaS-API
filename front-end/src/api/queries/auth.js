@@ -10,5 +10,6 @@ export const useAuth = () => {
   return useQuery({
     queryKey: ["auth"],
     queryFn: checkAuth,
+    retry: false,
   });
 };

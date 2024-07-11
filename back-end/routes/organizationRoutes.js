@@ -7,6 +7,7 @@ const {
   loginOrganizationHandler,
   deleteOrganizationHandler,
   organizationAuthHandler,
+  organizationLogoutHandler,
 } = require("../controllers/organization.controller");
 const {
   createOrganizationSchema,
@@ -15,6 +16,7 @@ const {
 } = require("../schemas/organization.schema");
 
 router.get("/auth/self", requireAuth, organizationAuthHandler);
+router.post("/logout", requireAuth, organizationLogoutHandler);
 
 router.post(
   "/signup",

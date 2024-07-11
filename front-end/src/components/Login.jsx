@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Mail, LockKeyhole } from "lucide-react";
 import { useLoginOrganization } from "../api/mutations";
+import FormButton from "./FormButton";
 
 export default function Login() {
   const { mutate, isPending, isError } = useLoginOrganization();
@@ -59,12 +60,7 @@ export default function Login() {
               <LockKeyhole className="size-5 text-white" />
             </div>
           </div>
-          <button
-            type="submit"
-            className="mt-4 inline-flex w-full items-center justify-center rounded bg-landing-turquoise py-1.5 outline-none hover:bg-landing-turquoise/90 focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
-          >
-            Login
-          </button>
+          <FormButton isPending={isPending}>Login</FormButton>
           <div className="relative h-4">
             <div className="text-muted absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-landing-blue-100 px-2 text-xs text-landing-gray-50">
               OR
