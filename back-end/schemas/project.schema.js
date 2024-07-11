@@ -21,6 +21,7 @@ const toggleDisableLoginParams = {
 };
 const getUsersByProjectIdSchema = object({ ...params });
 const regenerateProjectKeysSchema = object({ ...params });
+const deleteProjectSchema = object({ ...params });
 const toggleDisableLoginSchema = object({ ...toggleDisableLoginParams });
 
 const updateProjectNameSchema = object({
@@ -33,6 +34,7 @@ const updateProjectNameSchema = object({
 module.exports = {
   regenerateProjectKeysSchema,
   getUsersByProjectIdSchema,
+  deleteProjectSchema,
   toggleDisableLoginSchema,
   updateProjectNameSchema,
 };

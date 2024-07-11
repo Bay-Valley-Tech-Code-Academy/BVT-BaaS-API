@@ -187,7 +187,6 @@ async function loginUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",

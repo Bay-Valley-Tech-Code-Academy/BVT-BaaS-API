@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const {
   authRoutes,
@@ -7,19 +8,19 @@ const {
   userRoutes,
   projectRoutes,
 } = require("./routes");
+
 function createServer() {
   // Allows us to access the .env
 
   const app = express();
 
   const corsOptions = {
-    origin: "*",
-    credentials: true,
-    "access-control-allow-credentials": true,
-    optionSuccessStatus: 200,
+    origin: "http://localhost:5173", // Replace with your frontend URL
+    credentials: true, // Enable sending cookies from the frontend
   };
   app.use(cors(corsOptions));
   app.use(bodyParser.json());
+  app.use(cookieParser());
 
   app.use("/api/organizations", organizationRoutes);
   app.use("/api/users", userRoutes);
