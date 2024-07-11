@@ -3,6 +3,7 @@ const {
   testCreateOrganization,
   testLoginOrganization,
   organizationPayload,
+  testDeleteOrganization,
 } = require("../lib/test/helpers");
 
 describe("Organization API", () => {
@@ -13,6 +14,28 @@ describe("Organization API", () => {
   afterEach(async () => {
     await db.query("ROLLBACK");
   });
+
+  describe("delete organization endpoint", () => {
+    let organizationId;
+    let accessToken;
+
+    beforeEach(async () => {
+      const createResponse = await testCreateOrganization(organizationPayload);
+      expect(createResponse.status).toBe(200);
+      organizationId = createResponse.body.data.id
+
+      const loginResponse = await testLoginOrganization(organizationPayload);
+      expect(loginResponse.status).toBe(200);
+      accessToken = loginResponse.body.data.accessToken;
+    })
+
+    it("should delete an organization if the user is authorized and return 200", async () => {
+      const { status, body } = await testDeleteOrganization(organizationId, accessToken);
+      expect(status).toBe(200);
+      expect(body).toHaveProperty("success", true);
+      expect(body).toHaveProperty("message", "Organization deleted succesfully");
+    });
+  })
 
   describe("signup endpoint", () => {
     it("should create an organization if it does not exist and return 200", async () => {
