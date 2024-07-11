@@ -6,6 +6,7 @@ const {
   createOrganizationHandler,
   loginOrganizationHandler,
   deleteOrganizationHandler,
+  organizationAuthHandler,
 } = require("../controllers/organization.controller");
 const {
   createOrganizationSchema,
@@ -13,23 +14,25 @@ const {
   deleteOrganizationSchema,
 } = require("../schemas/organization.schema");
 
+router.get("/auth/self", requireAuth, organizationAuthHandler);
+
 router.post(
   "/signup",
   validate(createOrganizationSchema),
-  createOrganizationHandler,
+  createOrganizationHandler
 );
 
 router.post(
   "/login",
   validate(loginOrganizationSchema),
-  loginOrganizationHandler,
+  loginOrganizationHandler
 );
 
 router.delete(
   "/:organizationId",
   requireAuth,
   validate(deleteOrganizationSchema),
-  deleteOrganizationHandler,
+  deleteOrganizationHandler
 );
 
 module.exports = router;

@@ -1,7 +1,22 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, LockKeyhole } from "lucide-react";
+import { useLoginOrganization } from "../api/mutations";
 
 export default function Login() {
+  const { mutate, isPending, isError } = useLoginOrganization();
+  const navigate = useNavigate();
+  function handleSubmit(e) {
+    e.preventDefault();
+    const { email, password } = e.target.elements;
+    mutate(
+      { email: email.value, password: password.value },
+      {
+        onSuccess: () => {
+          navigate("/dashboard");
+        },
+      },
+    );
+  }
   return (
     <div className="flex h-full items-center justify-center bg-landing-blue-100 px-6 py-12 xl:px-10">
       <div className="mx-auto grid w-[320px] gap-4 text-white md:w-[340px] xl:w-[360px]">
@@ -11,7 +26,7 @@ export default function Login() {
             Login to your account
           </p>
         </div>
-        <div className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-4">
           <div className="relative grid gap-2">
             <label htmlFor="email" className="font-light">
               Email Address
@@ -19,6 +34,7 @@ export default function Login() {
             <input
               id="email"
               type="email"
+              name="email"
               placeholder="m@example.com"
               className="rounded px-3 py-1.5 text-black outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
               required
@@ -34,6 +50,7 @@ export default function Login() {
             <input
               className="rounded px-3 py-1.5 text-black outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
               id="password"
+              name="password"
               type="password"
               placeholder="Enter your password"
               required
@@ -54,7 +71,7 @@ export default function Login() {
             </div>
             <div className="absolute top-[60%] h-[1px] w-full bg-landing-gray-50"></div>
           </div>
-        </div>
+        </form>
         <Link
           to="/auth/signup"
           className="inline-flex w-full items-center justify-center rounded border border-landing-turquoise bg-transparent py-1.5 text-landing-turquoise outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"

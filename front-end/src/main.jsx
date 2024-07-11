@@ -17,6 +17,7 @@ import LandingPage from "./components/LandingPage";
 import AuthLayout from "./components/AuthLayout";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -38,10 +39,22 @@ const router = createBrowserRouter([
     path: "/dashboard",
     element: <DashboardLayout />,
     children: [
-      { index: true, element: <DashboardHome /> },
-      { path: "/dashboard/users", element: <Users /> },
-      { path: "/dashboard/settings", element: <Settings /> },
-      { path: "/dashboard/projects", element: <Projects /> },
+      {
+        index: true,
+        element: <DashboardHome />,
+      },
+      {
+        path: "/dashboard/users",
+        element: <Users />,
+      },
+      {
+        path: "/dashboard/settings",
+        element: <Settings />,
+      },
+      {
+        path: "/dashboard/projects",
+        element: <Projects />,
+      },
     ],
   },
 ]);

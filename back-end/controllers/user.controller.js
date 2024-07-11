@@ -9,7 +9,10 @@ const {
   deleteUser,
   getUserById,
 } = require("../services/user.services");
-const { getProjectByApiKey, getProjectById } = require("../services/projects.services");
+const {
+  getProjectByApiKey,
+  getProjectById,
+} = require("../services/projects.services");
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
@@ -61,7 +64,7 @@ async function createUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate,
+      newExpirationDate
     );
 
     return res.status(201).json({
@@ -192,7 +195,7 @@ async function loginUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate,
+      newExpirationDate
     );
     return res.status(200).json({
       success: true,
@@ -202,7 +205,6 @@ async function loginUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
