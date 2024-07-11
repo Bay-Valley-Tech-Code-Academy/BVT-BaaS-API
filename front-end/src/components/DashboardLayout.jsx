@@ -16,11 +16,14 @@ export default function DashboardLayout() {
       queryKey: ["auth"],
     });
   }, [location, queryClient]);
+  React.useEffect(() => {
+    if (isError) {
+      navigate("/auth/login");
+    }
+  }, [isError]);
+
   if (isLoading) {
     return <DashboardLoading />;
-  }
-  if (isError) {
-    return navigate("/auth/login");
   }
 
   return (

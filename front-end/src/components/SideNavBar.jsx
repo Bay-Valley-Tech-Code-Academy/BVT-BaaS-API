@@ -1,7 +1,25 @@
-import { NavLink } from "react-router-dom";
-import { Home, Users, Settings, LogOut, KeyRound } from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Home, Users, Settings, LogOut, KeyRound, Loader } from "lucide-react";
+import { useLogoutOrganization } from "../api/mutations";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function SideNavBar() {
+  const { mutate, isPending } = useLogoutOrganization();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  function handleLogout() {
+    mutate(null, {
+      onError: (err) => {
+        console.log(err);
+      },
+      onSuccess: () => {
+        console.log("hello world");
+        console.log("test");
+        queryClient.clear();
+        navigate("/auth/login");
+      },
+    });
+  }
   return (
     <div className="h-dvh w-full flex-col p-2 text-center">
       <NavLink to="/dashboard">
@@ -13,15 +31,23 @@ export default function SideNavBar() {
         </div>
       </NavLink>
       <Nav />
-
       <div className="my-4 h-[1px] bg-gray-300"></div>
-
-      <div className="mt-1 flex cursor-pointer items-center justify-self-end rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-red-400">
+      <button
+        onClick={handleLogout}
+        disabled={isPending}
+        className="mt-1 flex w-full cursor-pointer items-center justify-self-end rounded-md p-2.5 px-4 text-dashboard-gray-50 transition-colors duration-300 hover:bg-blue-50 hover:text-red-400"
+      >
         <span>
           <LogOut size={24} />
         </span>
         <span className="ml-4 text-base font-bold">Logout</span>
-      </div>
+        {isPending && (
+          <Loader
+            size={20}
+            className="ml-auto animate-spin text-dashboard-gray-50"
+          />
+        )}
+      </button>
     </div>
   );
 }

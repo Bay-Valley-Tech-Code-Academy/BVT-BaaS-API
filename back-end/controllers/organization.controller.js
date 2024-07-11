@@ -148,9 +148,21 @@ async function organizationAuthHandler(req, res) {
   return res.status(200).json({ success: true, data: req.user });
 }
 
+async function organizationLogoutHandler(req, res) {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+  });
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out successfully" });
+}
+
 module.exports = {
   createOrganizationHandler,
   loginOrganizationHandler,
   deleteOrganizationHandler,
   organizationAuthHandler,
+  organizationLogoutHandler,
 };
