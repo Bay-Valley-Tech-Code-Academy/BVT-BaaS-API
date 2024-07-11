@@ -46,6 +46,7 @@ async function createOrganizationHandler(req, res) {
       data: {
         accessToken,
         refreshToken,
+        id: data.insertId,
       },
     });
   } catch (e) {
@@ -105,7 +106,7 @@ async function deleteOrganizationHandler(req, res) {
     const organization = await getOrganizationById(organizationId);
     if (!organization) {
       return res.status(400).json({
-        success: "false",
+        success: false,
         error: "Organization does not exist.",
       });
     }

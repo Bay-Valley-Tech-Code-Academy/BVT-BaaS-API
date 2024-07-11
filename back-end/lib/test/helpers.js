@@ -3,14 +3,23 @@ const { createServer } = require("../../server.js");
 
 const app = createServer();
 
-const organizationPayload = {
-  email: "neworg@example.com",
-  password: "password123",
-  name: "New Organization",
-};
+const organizationPayloads = [
+  {
+    email: "neworg1@example.com",
+    password: "password123",
+    name: "New Organization 1",
+  },
+  {
+    email: "neworg2@example.com",
+    password: "password123",
+    name: "New Organization 2",
+  },
+];
+
 const SIGNUP_URL = "/api/organizations/signup";
 const LOGIN_URL = "/api/organizations/login";
-const DELETE_ORG_URL = (organizationId) => `api/organizations/${organizationId}`;
+const DELETE_ORG_URL = (organizationId) =>
+  `/api/organizations/${organizationId}`;
 
 const testCreateOrganization = async (payload) => {
   return await request(app).post(SIGNUP_URL).send(payload);
@@ -21,11 +30,12 @@ const testLoginOrganization = async (payload) => {
 };
 
 const testDeleteOrganization = async (organizationId, token) => {
-  return await request(app).delete(DELETE_ORG_URL(organizationId)).set("Authorization", `Bearer ${token}`)
-}
+  const url = DELETE_ORG_URL(organizationId);
+  return await request(app).delete(url).set("Authorization", `Bearer ${token}`);
+};
 
 module.exports = {
-  organizationPayload,
+  organizationPayloads,
   testCreateOrganization,
   testLoginOrganization,
   testDeleteOrganization,
