@@ -52,7 +52,7 @@ async function getUsersByProjectId(projectId) {
   return result;
 }
 
-async function getAllProjects(organizationId) {
+async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
       SELECT *
@@ -128,7 +128,7 @@ module.exports = {
   getProjectByApiKey,
   getProjectById,
   getUsersByProjectId,
-  getAllProjects,
+  getProjectsByOrganizationId,
   updateApiKeyAndSecret,
   deleteProject,
   getUserByIdAndProject,
