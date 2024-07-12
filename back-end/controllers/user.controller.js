@@ -168,8 +168,14 @@ async function loginUserHandler(req, res) {
       email: user.email,
       project_id: user.project_id,
     };
-    const accessToken = generateUserAccessToken(userPayload, project.secret);
-    const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const accessToken = generateUserAccessToken(
+      userPayload,
+      process.env.PROJECT_ACCESS_TOKEN
+    );
+    const refreshToken = generateUserRefreshToken(
+      userPayload,
+      process.env.PROJECT_REFRESH_TOKEN
+    );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 

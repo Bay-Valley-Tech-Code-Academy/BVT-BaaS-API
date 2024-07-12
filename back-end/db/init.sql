@@ -23,7 +23,6 @@ CREATE TABLE projects (
   project_id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   api_key VARCHAR(64) UNIQUE,
-  secret VARCHAR(128) UNIQUE,
   organization_id INT,
   FOREIGN KEY (organization_id) REFERENCES organizations(organization_id) ON DELETE CASCADE
 );

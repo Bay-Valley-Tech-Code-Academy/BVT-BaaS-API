@@ -7,7 +7,7 @@ async function getProjectByApiKey(apiKey) {
   `,
     {
       apiKey,
-    },
+    }
   );
 
   if (result.length === 0) {
@@ -24,7 +24,7 @@ async function getProjectById(projectId) {
   `,
     {
       projectId,
-    },
+    }
   );
 
   if (result.length === 0) return false;
@@ -47,7 +47,7 @@ async function getUsersByProjectId(projectId) {
     `,
     {
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -55,29 +55,32 @@ async function getUsersByProjectId(projectId) {
 async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
-      SELECT *
-      FROM projects
-      WHERE organization_id=:organizationId
+      SELECT p.project_id, p.name, p.api_key, COUNT(*) as users,  a.max_users
+      FROM organizations o
+      JOIN projects p  ON p.organization_id = o.organization_id
+      JOIN account_limits a on o.account_type = a.account_type
+      JOIN users u on p.project_id = u.project_id
+      WHERE o.organization_id=1
+      GROUP BY p.project_id, p.name, p.api_key,a.max_users
     `,
     {
       organizationId,
-    },
+    }
   );
   return result;
 }
 
-async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
+async function updateApiKey(projectId, apiKey) {
   const [result] = await db.query(
     `
         UPDATE projects
-        SET api_key = :apiKey, secret = :projectSecret
+        SET api_key = :apiKey
         WHERE project_id = :projectId
     `,
     {
       apiKey,
-      projectSecret,
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -89,7 +92,7 @@ async function deleteProject(projectId) {
     `,
     {
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -129,7 +132,7 @@ module.exports = {
   getProjectById,
   getUsersByProjectId,
   getProjectsByOrganizationId,
-  updateApiKeyAndSecret,
+  updateApiKey,
   deleteProject,
   getUserByIdAndProject,
   updateProjectName,

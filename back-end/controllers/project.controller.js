@@ -1,9 +1,8 @@
-const { generateApiKeyAndSecret } = require("../lib/keys");
+const { generateApiKey } = require("../lib/keys");
 const {
   getUsersByProjectId,
   getProjectById,
-
-  updateApiKeyAndSecret,
+  updateApiKey,
   deleteProject,
   updateProjectName,
   getProjectsByOrganizationId,
@@ -88,12 +87,8 @@ async function regenerateProjectKeysHandler(req, res) {
      })
      }
     */
-    const { apiKey, projectSecret } = generateApiKeyAndSecret();
-    const result = await updateApiKeyAndSecret(
-      project.project_id,
-      apiKey,
-      projectSecret,
-    );
+    const { apiKey } = generateApiKey();
+    const result = await updateApiKey(project.project_id, apiKey);
 
     if (result.affectedRows === 0) {
       return res.status(400).json({
@@ -108,7 +103,6 @@ async function regenerateProjectKeysHandler(req, res) {
       success: true,
       data: {
         apiKey,
-        projectSecret,
       },
     });
   } catch (e) {

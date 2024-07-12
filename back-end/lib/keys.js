@@ -1,11 +1,10 @@
 const crypto = require("crypto");
 
-function generateApiKeyAndSecret() {
+function generateApiKey() {
   const apiKey = crypto.randomBytes(16).toString("hex");
-  const projectSecret = crypto.randomBytes(16).toString("hex");
-  return { apiKey, projectSecret };
+  return { apiKey };
 }
 
 module.exports = {
-  generateApiKeyAndSecret,
+  generateApiKey,
 };
