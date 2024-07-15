@@ -7,6 +7,7 @@ const {
   organizationRoutes,
   userRoutes,
   projectRoutes,
+  accountRoutes,
 } = require("./routes");
 
 function createServer() {
@@ -23,6 +24,7 @@ function createServer() {
   app.use(cookieParser());
 
   app.use("/api/organizations", organizationRoutes);
+  app.use("/api/account", accountRoutes);
   app.use("/api/users", userRoutes);
   app.use("/api/auth", authRoutes);
   app.use("/api/projects", projectRoutes);

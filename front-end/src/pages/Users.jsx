@@ -5,7 +5,7 @@ import { Loader, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { usePagination } from "../hooks/usePagination";
 
-import { useUsers } from "../api/queries";
+import { useProjectUsers } from "../api/queries";
 import moment from "moment/moment";
 import { usetoggleDisableLoginFlag } from "../api/mutations";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ import ToastMessage from "../components/ToastMessage";
 
 export default function Users() {
   const [input, setInput] = useState("");
-  const { data: users, isLoading } = useUsers();
+  const { data: users, isLoading } = useProjectUsers();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
   const currentSelectedProject = users ? users[0] : null;
 
