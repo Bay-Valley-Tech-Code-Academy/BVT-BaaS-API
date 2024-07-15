@@ -1,9 +1,5 @@
-const { getAccountType } = require("../services/accountType.services");
 const { getOrganizationById } = require("../services/organization.services");
-const {
-  getProjectByApiKey,
-  getUsersByProjectId,
-} = require("../services/projects.services");
+const { getProjectByApiKey } = require("../services/projects.services");
 const { getUserByEmail } = require("../services/user.services");
 
 const checkProjectUserLimits = async (req, res, next) => {
@@ -26,17 +22,10 @@ const checkProjectUserLimits = async (req, res, next) => {
     });
   }
 
-  const organizationPromise = getOrganizationById(project.organization_id);
+  const organization = await getOrganizationById(project.organization_id);
 
-  const projectUsersPromise = getUsersByProjectId(project.project_id);
-
-  const [organization, projectUsers] = await Promise.all([
-    organizationPromise,
-    projectUsersPromise,
-  ]);
-  const accountType = await getAccountType(organization.account_type);
   // check to see if the number of project users is less than the limit
-  if (accountType.max_users > projectUsers.length) {
+  if (organization.users > organization.max_users) {
     return next();
   }
 

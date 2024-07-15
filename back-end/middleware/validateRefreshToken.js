@@ -33,7 +33,10 @@ const validateRefreshToken = async (req, res, next) => {
       1. The refreshToken is expired
       2. The token was not signed with the project secret, this can happen when we regenerate the apiKeys
     */
-    const decoded = decodeToken(refreshToken.token, project.secret);
+    const decoded = decodeToken(
+      refreshToken.token,
+      process.env.PROJECT_REFRESH_TOKEN
+    );
 
     req.user = decoded;
     req.token = refreshToken.token;
