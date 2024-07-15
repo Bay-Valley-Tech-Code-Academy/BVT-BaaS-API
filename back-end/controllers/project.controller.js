@@ -164,7 +164,7 @@ async function toggleDisableLoginFlagHandler(req, res) {
     const result = await toggleLoginDisabledFlag(
       userId,
       projectId,
-      newDisableLoginFlag
+      newDisableLoginFlag,
     );
     if (result.affectedRows === 0) {
       return res.status(400).json({
@@ -268,6 +268,24 @@ async function deleteProjectHandler(req, res) {
   }
 }
 
+function createProjectHandler(req, res) {
+  try {
+    const projectName = req.body.name;
+    if (!projectName) {
+      return res.status(400).json({
+        success: false,
+        error: "Project name is required.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later.",
+    });
+  }
+}
+
 module.exports = {
   getUsersByProjectIdHandler,
   getAllProjectsHandler,
@@ -275,4 +293,5 @@ module.exports = {
   deleteProjectHandler,
   toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
+  createProjectHandler,
 };
