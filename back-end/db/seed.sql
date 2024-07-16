@@ -1,19 +1,25 @@
-INSERT INTO organizations (email, password, name)
-VALUES
-('org1@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', 'Organization One');
 
-INSERT INTO projects (name, organization_id, api_key, secret)
+INSERT INTO account_limits (account_type, max_projects, max_users) VALUES
+('free', 1, 1),
+('basic', 5, 10),
+('pro', NULL, NULL);
+
+
+INSERT INTO organizations (email, password, name, account_type)
+VALUES ('org1@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', 'Organization One', "basic");
+
+INSERT INTO projects (name, organization_id, api_key)
 VALUES
-('Project One', 1, 'b4c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9', 'e7f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2'),
-('Project Two', 1, 'c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9d0', 'f8g9h0a1b2c3d4e5f6a7b8c9d0e1f2a3'),
-('Project Three', 1, 'd7e8f9g0a1b2c3d4e5f6a7b8c9d0e1f2', 'g0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5'),
-('Project Four', 1, 'e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4', 'h1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6'),
-('Project Five', 1, 'f1a2b3c4d5e6f7g8h9a0b1c2d3e4f5g6', 'i2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7'),
-('Project Six', 1, 'g2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7', 'j3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8'),
-('Project Seven', 1, 'h3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8', 'k4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9'),
-('Project Eight', 1, 'i4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9', 'l5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0'),
-('Project Nine', 1, 'j5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0', 'm6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1'),
-('Project Ten', 1, 'k6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1', 'n7g8h9a0b1c2d3e4f5g6h7i8j9k0l1m2');
+('Project One', 1, 'b4c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9'),
+('Project Two', 1, 'c5d6e7f8g9h0a1b2c3d4e5f6a7b8c9d0'),
+('Project Three', 1, 'd7e8f9g0a1b2c3d4e5f6a7b8c9d0e1f2'),
+('Project Four', 1, 'e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4'),
+('Project Five', 1, 'f1a2b3c4d5e6f7g8h9a0b1c2d3e4f5g6'),
+('Project Six', 1, 'g2b3c4d5e6f7g8h9a0b1c2d3e4f5g6h7'),
+('Project Seven', 1, 'h3c4d5e6f7g8h9a0b1c2d3e4f5g6h7i8'),
+('Project Eight', 1, 'i4d5e6f7g8h9a0b1c2d3e4f5g6h7i8j9'),
+('Project Nine', 1, 'j5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0'),
+('Project Ten', 1, 'k6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1');
 
 INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, disable_login_flag, project_id)
 VALUES

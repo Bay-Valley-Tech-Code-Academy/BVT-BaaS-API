@@ -1,10 +1,9 @@
-const db = require("../db");
+const { db } = require("../db");
 
 async function createOrganization({ email, password, name }) {
   const result = await db.query(
     `
-    INSERT INTO organization (email, password, name)
-    VALUES (:email, :password, :name);
+    INSERT INTO organizations (email, password, name) VALUES (:email, :password, :name);
   `,
     {
       email,
@@ -15,14 +14,26 @@ async function createOrganization({ email, password, name }) {
   return result[0];
 }
 
-async function getOrganization(email) {
+async function getOrganizationByEmail(email) {
+  const [result] = await db.query(
+    `SELECT * FROM organizations WHERE email=:email;`,
+    { email }
+  );
+
+  if (result.length === 0) {
+    return false;
+  }
+
+  return result[0];
+}
+
+async function getOrganizationById(organizationId) {
   const [result] = await db.query(
     `
-    SELECT * FROM organization 
-    WHERE email=:email;
+    SELECT * FROM organizations WHERE organization_id=:organizationId;
   `,
     {
-      email,
+      organizationId,
     }
   );
 
@@ -30,7 +41,21 @@ async function getOrganization(email) {
   return result[0];
 }
 
+async function deleteOrganization(organizationId) {
+  const [result] = await db.query(
+    `
+    DELETE FROM organizations WHERE organization_id=:organizationId;
+`,
+    {
+      organizationId,
+    }
+  );
+  return result;
+}
+
 module.exports = {
   createOrganization,
-  getOrganization,
+  getOrganizationByEmail,
+  getOrganizationById,
+  deleteOrganization,
 };

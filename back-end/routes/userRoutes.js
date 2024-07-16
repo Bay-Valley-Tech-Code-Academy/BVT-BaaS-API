@@ -1,12 +1,32 @@
-// // src/routes/userRoutes.js
-// const express = require("express");
-// const router = express.Router();
-// const userController = require("../controllers/userController");
+const express = require("express");
+const router = express.Router();
+const validate = require("../middleware/validate");
+const {
+  createUserHandler,
+  loginUserHandler,
+  deleteUserHandler,
+} = require("../controllers/user.controller");
+const {
+  createUserSchema,
+  loginUserSchema,
+  deleteUserSchema,
+} = require("../schemas/user.schema");
+const requireAuth = require("../middleware/requireAuth");
+const checkProjectUserLimits = require("../middleware/checkProjectUserLimits");
 
-// router.get("/", userController.getAllUsers);
-// router.post("/", userController.createUser);
-// router.get("/:id", userController.getUserById);
-// router.put("/:id", userController.updateUser);
-// router.delete("/:id", userController.deleteUser);
+router.post(
+  "/signup",
+  [validate(createUserSchema), checkProjectUserLimits],
+  createUserHandler
+);
 
-// module.exports = router;
+router.post("/login", validate(loginUserSchema), loginUserHandler);
+
+router.delete(
+  "/:userId/projects/:projectId",
+  requireAuth,
+  validate(deleteUserSchema),
+  deleteUserHandler
+);
+
+module.exports = router;
