@@ -1,26 +1,13 @@
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User } from "lucide-react";
 import { DeleteModal, RefreshModal, EditModal } from "./Modals";
+import { Asterisk } from "lucide-react";
 import { useState } from "react";
 
 export default function ProjectCard(props) {
   const [showAPI, setShowAPI] = useState(false);
-  const [showSecret, setShowSecret] = useState(false);
 
   function toggleShowAPI() {
     setShowAPI(!showAPI);
-  }
-
-  function toggleShowSecret() {
-    setShowSecret(!showSecret);
-  }
-
-  function generateStars(string) {
-    string = toString(string);
-    let stars = "";
-    for (let i = 0; i < string.length; i++) {
-      stars = stars.concat("*");
-    }
-    return stars;
   }
 
   return (
@@ -35,14 +22,13 @@ export default function ProjectCard(props) {
           <DeleteModal projectId={props.id} projectName={props.name} />
         </div>
       </div>
-      <hr className="mb-6"></hr>
-
-      <div className="mb-8 flex justify-between">
-        <div className="flex">
+      <hr className="mb-4"></hr>
+      <div className="mb-4 flex justify-between">
+        <div className="flex items-center">
           <h1 className="w-20 text-slate-700">api-key:</h1>
-          <p className="ml-2 font-light">
-            {showAPI ? props.apiKey : generateStars(props.apiKey.length)}
-          </p>
+          <div className="ml-2 font-light">
+            {showAPI ? props.apiKey : <Asteriks count={props.apiKey.length} />}
+          </div>
         </div>
         <button
           className="ml-3"
@@ -56,25 +42,40 @@ export default function ProjectCard(props) {
           )}
         </button>
       </div>
+      <UserProgress users={props.users} maxUsers={props.maxUsers} />
+    </div>
+  );
+}
 
-      <div className="mb-2 flex justify-between">
-        <div className="flex">
-          <h1 className="w-20 text-slate-700">secret:</h1>
-          <p className="ml-2 font-light">
-            {showSecret ? props.secret : generateStars(props.secret.length)}
-          </p>
-        </div>
-        <button
-          className="ml-3"
-          title={showSecret ? "Hide" : "Show"}
-          onClick={toggleShowSecret}
+function Asteriks({ count }) {
+  return (
+    <div className="flex translate-y-[2px]">
+      {new Array(count).fill().map((_, idx) => (
+        <Asterisk key={idx} className="size-2 text-gray-400" />
+      ))}
+    </div>
+  );
+}
+
+function UserProgress({ users, maxUsers }) {
+  const progress = Math.round((users / maxUsers) * 100);
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center justify-between">
+        <span className="text-sm font-medium text-purple-700">
+          <User className="size-4 text-gray-700" />
+        </span>
+        <span className="text-sm font-medium text-gray-700">
+          {users} out of {maxUsers}
+        </span>
+      </div>
+      <div className="w-full rounded-full bg-gray-200">
+        <div
+          className="rounded-full bg-purple-600 p-0.5 text-center text-xs font-medium leading-none text-purple-100"
+          style={{ width: `${progress}%` }}
         >
-          {showSecret ? (
-            <EyeOff className="size-5 hover:text-purple-700" />
-          ) : (
-            <Eye className="size-5 hover:text-purple-700" />
-          )}
-        </button>
+          {progress}%
+        </div>
       </div>
     </div>
   );

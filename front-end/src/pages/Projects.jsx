@@ -55,7 +55,8 @@ export default function Projects() {
                   id={project.project_id}
                   name={project.name}
                   apiKey={project.api_key}
-                  secret={project.secret}
+                  users={project.users}
+                  maxUsers={project.max_users}
                 />
               );
             })}

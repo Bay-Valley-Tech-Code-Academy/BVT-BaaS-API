@@ -11,7 +11,7 @@ const {
 } = require("../schemas/project.schema");
 
 const {
-  getUsersByProjectIdHandler,
+  getUsersPerProjectHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   deleteProjectHandler,
@@ -21,13 +21,14 @@ const {
 } = require("../controllers/project.controller");
 const requireAuth = require("../middleware/requireAuth");
 
-router.post("/", validate(createProjectSchema), createProjectHandler);
-
-router.get(
-  "/:projectId/users",
-  validate(getUsersByProjectIdSchema),
-  getUsersByProjectIdHandler,
+router.post(
+  "/",
+  requireAuth,
+  validate(createProjectSchema),
+  createProjectHandler,
 );
+
+router.get("/users", getUsersPerProjectHandler);
 
 router.get("/", getAllProjectsHandler);
 
@@ -49,11 +50,7 @@ router.patch(
   validate(toggleDisableLoginSchema),
   toggleDisableLoginFlagHandler,
 );
-router.get(
-  "/:projectId/users",
-  validate(getUsersByProjectIdSchema),
-  getUsersByProjectIdHandler,
-);
+
 router.patch(
   "/:projectId/name",
   validate(updateProjectNameSchema),

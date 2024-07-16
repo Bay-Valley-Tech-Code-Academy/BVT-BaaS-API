@@ -15,10 +15,13 @@ export default function Users() {
   const [input, setInput] = useState("");
   const { data: users, isLoading } = useUsers();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
+  const currentSelectedProject = users ? users[0] : null;
 
   // Filtering users
-  const filteredUsers = users
-    ? users.filter((user) => user.email.toLowerCase().includes(input))
+  const filteredUsers = currentSelectedProject
+    ? currentSelectedProject.users.filter((user) =>
+        user.email.toLowerCase().includes(input),
+      )
     : [];
   const handleChange = (e) => {
     const newInput = e.target.value;

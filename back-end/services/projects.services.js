@@ -55,9 +55,13 @@ async function getUsersByProjectId(projectId) {
 async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
-      SELECT *
-      FROM projects
-      WHERE organization_id=:organizationId
+      SELECT p.project_id, p.name, p.api_key, COUNT(*) as users,  a.max_users
+      FROM organizations o
+      JOIN projects p  ON p.organization_id = o.organization_id
+      JOIN account_limits a on o.account_type = a.account_type
+      JOIN users u on p.project_id = u.project_id
+      WHERE o.organization_id=1
+      GROUP BY p.project_id, p.name, p.api_key,a.max_users
     `,
     {
       organizationId,
@@ -66,16 +70,15 @@ async function getProjectsByOrganizationId(organizationId) {
   return result;
 }
 
-async function updateApiKeyAndSecret(projectId, apiKey, projectSecret) {
+async function updateApiKey(projectId, apiKey) {
   const [result] = await db.query(
     `
         UPDATE projects
-        SET api_key = :apiKey, secret = :projectSecret
+        SET api_key = :apiKey
         WHERE project_id = :projectId
     `,
     {
       apiKey,
-      projectSecret,
       projectId,
     },
   );
@@ -103,7 +106,7 @@ async function getUserByIdAndProject(userId, projectId) {
     {
       userId,
       projectId,
-    }
+    },
   );
 
   if (result.length === 0) return false;
@@ -119,18 +122,26 @@ async function updateProjectName(projectId, projectName) {
     {
       projectId,
       projectName,
-    }
+    },
   );
   return result;
 }
 
+async function createProject(projectName, apiKey, organizationId) {
+  const [result] = await db.query(
+    `INSERT INTO projects (name, api_key, organization_id) VALUES (?, ?, ?);`,
+    [projectName, apiKey, organizationId],
+  );
+  return result;
+}
 module.exports = {
   getProjectByApiKey,
   getProjectById,
   getUsersByProjectId,
   getProjectsByOrganizationId,
-  updateApiKeyAndSecret,
+  updateApiKey,
   deleteProject,
   getUserByIdAndProject,
   updateProjectName,
+  createProject,
 };

@@ -1,12 +1,12 @@
-const { generateApiKeyAndSecret } = require("../lib/keys");
+const { generateApiKey } = require("../lib/keys");
 const {
   getUsersByProjectId,
   getProjectById,
-
-  updateApiKeyAndSecret,
+  updateApiKey,
   deleteProject,
   updateProjectName,
   getProjectsByOrganizationId,
+  createProject,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -16,31 +16,20 @@ const {
   toggleLoginDisabledFlag,
 } = require("../services/user.services");
 
-async function getUsersByProjectIdHandler(req, res) {
+async function getUsersPerProjectHandler(req, res) {
   try {
-    const projectId = req.params.projectId;
-
-    // check if project exist
-    const project = await getProjectById(projectId);
-    if (!project) {
-      return res.status(404).json({
-        success: false,
-        message: "Project not found",
-      });
-    }
-
-    // Verify the organization is the owner of this project
-    // if (req.user.id !== projectId.organization_id) {
-    //   return res.status(403).json({
-    //     success: false,
-    //     error: "Unauthorized access",
-    //   });
-    // }
-
-    const users = await getUsersByProjectId(projectId);
+    const organization = { id: 1 } | req.user;
+    const projects = await getProjectsByOrganizationId(organization.id);
+    const projectUsers = await Promise.all(
+      projects.map(async (project) => {
+        const { project_id, name } = project;
+        const users = await getUsersByProjectId(project_id);
+        return { project_id, name, users };
+      }),
+    );
     return res.status(200).json({
       success: true,
-      data: users,
+      data: projectUsers,
     });
   } catch (e) {
     return res.status(500).json({
@@ -88,12 +77,8 @@ async function regenerateProjectKeysHandler(req, res) {
      })
      }
     */
-    const { apiKey, projectSecret } = generateApiKeyAndSecret();
-    const result = await updateApiKeyAndSecret(
-      project.project_id,
-      apiKey,
-      projectSecret,
-    );
+    const { apiKey } = generateApiKey();
+    const result = await updateApiKey(project.project_id, apiKey);
 
     if (result.affectedRows === 0) {
       return res.status(400).json({
@@ -108,7 +93,6 @@ async function regenerateProjectKeysHandler(req, res) {
       success: true,
       data: {
         apiKey,
-        projectSecret,
       },
     });
   } catch (e) {
@@ -268,8 +252,10 @@ async function deleteProjectHandler(req, res) {
   }
 }
 
-function createProjectHandler(req, res) {
+async function createProjectHandler(req, res) {
   try {
+    const organizationId = req.user.id;
+
     const projectName = req.body.name;
     if (!projectName) {
       return res.status(400).json({
@@ -277,6 +263,15 @@ function createProjectHandler(req, res) {
         error: "Project name is required.",
       });
     }
+
+    const { apiKey } = generateApiKey();
+
+    await createProject(projectName, apiKey, organizationId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Project created successfully.",
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -287,7 +282,7 @@ function createProjectHandler(req, res) {
 }
 
 module.exports = {
-  getUsersByProjectIdHandler,
+  getUsersPerProjectHandler,
   getAllProjectsHandler,
   regenerateProjectKeysHandler,
   deleteProjectHandler,
