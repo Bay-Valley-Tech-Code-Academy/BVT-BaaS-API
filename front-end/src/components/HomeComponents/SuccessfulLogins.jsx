@@ -3,12 +3,10 @@ import {Cloud, Check} from "lucide-react";
 
 export default function SettingsUserStorage() {
     return (
-        <div>
-            <div id="user-storage" className="flex flex-col justify-between items-center bg-white rounded-2xl h-96 w-96 p-4 mr-6">
-                <div className="flex flex-col items-center">
-                    <div id="cloud-check" className="relative flex justify-center items-center rounded-full bg-dashboard-gray-100 w-28 h-28">
-                        <Cloud className="text-dashboard-purple-300" size={70}/>
-                        <Check className="absolute top-12 text-dashboard-purple-300" size={31}/>
+            <div id="user-storage" className="flex flex-col justify-between bg-white rounded-2xl h-96 w-full p-4 mr-6">
+                <div className="flex flex-col">
+                    <div id="cloud-check" className="relative flex justify-center items-center rounded-1 text- bg-dashboard-gray-100 h-8 w-28 text-">
+                        This month
                     </div>
                     <h1 className="font-bold text-xl">User Storage</h1>
                     <p className="text-dashboard-gray-50">
@@ -28,6 +26,5 @@ export default function SettingsUserStorage() {
             </div>
 
             
-        </div>
     )
 }
