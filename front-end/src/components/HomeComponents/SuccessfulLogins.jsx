@@ -1,4 +1,6 @@
 import React from 'react';
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 import { Calendar } from 'lucide-react';
 import { LineChart } from '@mui/x-charts/LineChart';
 
@@ -15,15 +17,17 @@ const xLabels = [
 ];
 
 export default function SettingsUserStorage() {
-    const [logins, setLogins] = React.useState(200);
+    const [selected, setSelected] = React.useState();
+    const [loginsPeriod, setLoginsPeriod] = React.useState();
+    
 
-    const [loginsPeriod, setLoginsPeriod] = React.useState('This month');
+    const [logins, setLogins] = React.useState(200);
 
     return (
             <div id="user-storage" className="flex flex-col justify-between bg-white rounded-2xl h-96 w-full p-4 mr-6">
                 <div className="flex flex-col">
                     <div id="logins-period" className="relative flex justify-center items-center rounded-md font-medium text-gray-400 bg-dashboard-gray-100 h-10 w-32 text-">
-                        <Calendar className='mr-1' size={20}/>This month
+                        <DayPicker className='absolute drop-shadow-md bg-dashboard-gray-100 mr-1' size={2}/>This month
                     </div>
                     <div id='login-analytics' className='flex'>
                         <div id='login-analytics-left' className='mr-8'>
