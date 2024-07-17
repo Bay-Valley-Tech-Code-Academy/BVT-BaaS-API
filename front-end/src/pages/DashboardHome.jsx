@@ -7,6 +7,7 @@ import UserSignupsLineChart from "../components/Charts/UserSignupsBarChart";
 import moment from "moment";
 import { Card } from "flowbite-react";
 import { CardBody, CardHeader, Typography } from "@material-tailwind/react";
+import RecentLoginsTable from "../components/RecentLoginsTable";
 
 const sortLogins = (data) => {
   return data.sort((a, b) => {
@@ -29,6 +30,8 @@ export default function DashboardHome() {
     return <p>error...</p>;
   }
 
+  console.log(projectAudits);
+
   const attempts = selectedProjectId
     ? projectAudits
         .filter((project) => project.project_id === selectedProjectId)
@@ -48,10 +51,12 @@ export default function DashboardHome() {
   )
     .slice(0, 10)
     .map((login) => {
-      console.log(login);
-      console.log(users);
+      const { name } = projectAudits.find(
+        (project) => project.project_id === login.project_id,
+      );
+
       const { email } = users.find((user) => user.user_id === login.user_id);
-      return { ...login, email };
+      return { ...login, email, projectName: name };
     });
 
   return (
@@ -66,82 +71,12 @@ export default function DashboardHome() {
           }))}
         />
       </div>
-      <div className="grid grid-cols-2 grid-rows-2 gap-8">
+      <div className="grid grid-cols-2 grid-rows-2 items-start gap-8">
         <LoginAttemptsBarChart attempts={attempts} />
         <UserSignupsLineChart users={users} />
         <RecentLoginsTable recentLogins={recentLogins} />
       </div>
     </div>
-  );
-}
-
-function RecentLoginsTable({ recentLogins }) {
-  return (
-    <Card className="col-start-2 row-span-2">
-      <CardHeader
-        floated={false}
-        shadow={false}
-        color="transparent"
-        className="flex flex-col gap-4 rounded-none md:flex-row md:items-center"
-      >
-        <div className="w-max rounded-lg bg-gray-900 p-5 text-white">
-          {/* <User className="size-6" /> */}
-        </div>
-        <div>
-          <Typography variant="h6" color="blue-gray">
-            Recent Logins
-          </Typography>
-          <Typography
-            variant="small"
-            color="gray"
-            className="max-w-sm font-normal"
-          >
-            Insights into Monthly User Signup Activity
-          </Typography>
-        </div>
-      </CardHeader>
-      <CardBody className="px-2 pb-0">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-          <table class="w-full text-left text-sm text-gray-500 dark:text-gray-400 rtl:text-right">
-            <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
-              <tr>
-                <th scope="col" class="px-6 py-3">
-                  Email
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  IP Address
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  Date
-                </th>
-                <th scope="col" class="px-6 py-3">
-                  Time
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {recentLogins.map((login) => {
-                const date = moment(login.created_at).format("MM/DD/YYYY");
-                const time = moment(login.created_at).format("h:mma");
-                return (
-                  <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
-                    <th
-                      scope="row"
-                      class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
-                    >
-                      {login.email}
-                    </th>
-                    <td class="px-6 py-4">{login.ip_address}</td>
-                    <td class="px-6 py-4">{date}</td>
-                    <td class="px-6 py-4">{time}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </CardBody>
-    </Card>
   );
 }
 
