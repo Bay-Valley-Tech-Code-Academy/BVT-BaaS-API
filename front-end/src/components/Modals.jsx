@@ -1,13 +1,62 @@
 import { Button, Modal, TextInput } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { Trash2, RefreshCw, Pencil, Loader } from "lucide-react";
+import { Trash2, RefreshCw, Pencil, Loader, Plus } from "lucide-react";
 import {
   useRegenerateApiKeyAndSecret,
   useUpdateProjectName,
 } from "../api/mutations";
 import toast from "react-hot-toast";
 import ToastMessage from "./ToastMessage";
+
+export function CreateProjectModal({
+  open,
+  onOpenChange,
+  onCreateProject,
+  isPending,
+}) {
+  const [projectName, setProjectName] = useState("");
+  return (
+    <Modal
+      show={open}
+      size="md"
+      onClose={onOpenChange}
+      popup
+      position="top-center"
+      className="backdrop-blur-[2px]"
+      dismissible={!isPending}
+    >
+      <Modal.Body className="p-4">
+        <div className="">
+          <h3 className="text-lg font-semibold text-gray-700">
+            Create Project
+          </h3>
+          <div className="mb-4 space-y-1">
+            <label className="text-sm text-gray-600">Project Name</label>
+            <TextInput
+              disabled={isPending}
+              className="mb-5 text-center text-lg font-normal text-gray-500"
+              onChange={(e) => setProjectName(e.target.value.trim())}
+            />
+          </div>
+          <div className="flex justify-center gap-4">
+            <Button disabled={isPending} color="gray" onClick={onOpenChange}>
+              Cancel
+            </Button>
+            <Button
+              disabled={projectName === "" || isPending}
+              className="flex items-center justify-center bg-purple-500 text-white"
+              onClick={() => onCreateProject(projectName)}
+            >
+              <span className={`${isPending ? "invisible" : ""}`}>Confirm</span>
+              {isPending && <Loader className="size-4 animate-spin" />}
+            </Button>
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+}
 
 export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);

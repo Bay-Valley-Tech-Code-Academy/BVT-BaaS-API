@@ -9,11 +9,29 @@ async function regenerateApiKeyAndSecret(projectId) {
 }
 
 async function updateProjectName({ projectId, projectName }) {
-  const { data: result } = await await client.patch(
-    `/projects/${projectId}/name`,
-    { name: projectName },
-  );
+  const { data: result } = await client.patch(`/projects/${projectId}/name`, {
+    name: projectName,
+  });
   return result.data;
+}
+
+async function createProject(projectName) {
+  const { data: result } = await client.post("/projects", {
+    name: projectName,
+  });
+  return result.data;
+}
+
+export function useCreateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: createProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["projects"],
+      });
+    },
+  });
 }
 
 export function useRegenerateApiKeyAndSecret() {
