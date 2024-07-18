@@ -6,6 +6,7 @@ const {
   deleteProject,
   updateProjectName,
   getProjectsByOrganizationId,
+  createProject,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -24,7 +25,7 @@ async function getUsersPerProjectHandler(req, res) {
         const { project_id, name } = project;
         const users = await getUsersByProjectId(project_id);
         return { project_id, name, users };
-      })
+      }),
     );
     return res.status(200).json({
       success: true,
@@ -147,7 +148,7 @@ async function toggleDisableLoginFlagHandler(req, res) {
     const result = await toggleLoginDisabledFlag(
       userId,
       projectId,
-      newDisableLoginFlag
+      newDisableLoginFlag,
     );
     if (result.affectedRows === 0) {
       return res.status(400).json({
@@ -251,6 +252,35 @@ async function deleteProjectHandler(req, res) {
   }
 }
 
+async function createProjectHandler(req, res) {
+  try {
+    const organizationId = req.user.id;
+
+    const projectName = req.body.name;
+    if (!projectName) {
+      return res.status(400).json({
+        success: false,
+        error: "Project name is required.",
+      });
+    }
+
+    const { apiKey } = generateApiKey();
+
+    await createProject(projectName, apiKey, organizationId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Project created successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later.",
+    });
+  }
+}
+
 module.exports = {
   getUsersPerProjectHandler,
   getAllProjectsHandler,
@@ -258,4 +288,5 @@ module.exports = {
   deleteProjectHandler,
   toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
+  createProjectHandler,
 };
