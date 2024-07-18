@@ -12,25 +12,40 @@ import toast from "react-hot-toast";
 import ToastMessage from "../components/ToastMessage";
 
 export default function Users() {
-  const [input, setInput] = useState("");
-  const { data: users, isLoading } = useUsers();
+  const [searchValue, setSearchValue] = useState("");
+  const { data: projectUsers, isLoading } = useUsers();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
-  const currentSelectedProject = users ? users[0] : null;
+  const [selectedProjectId, setSelectedProjectId] = useState(null);
 
-  // Filtering users
-  const filteredUsers = currentSelectedProject
-    ? currentSelectedProject.users.filter((user) =>
-        user.email.toLowerCase().includes(input),
-      )
-    : [];
-  const handleChange = (e) => {
-    const newInput = e.target.value;
-    setInput(newInput.toLowerCase());
-  };
+  const selectedUsers = isLoading
+    ? []
+    : (selectedProjectId
+        ? projectUsers.filter(
+            (project) => project.project_id === selectedProjectId,
+          )
+        : projectUsers
+      ).reduce(
+        (acc, project) =>
+          acc.concat(
+            project.users.map((user) => ({
+              ...user,
+              projectName: project.name,
+              projectId: project.project_id,
+            })),
+          ),
+        [],
+      );
 
-  // Setting up pagination with Alan's custom pagination hook
+  const filteredUsers = isLoading
+    ? []
+    : searchValue
+      ? selectedUsers.filter((user) =>
+          user.email.toLowerCase().includes(searchValue),
+        )
+      : selectedUsers;
+
   const {
-    currPageItems,
+    currPageItems: users,
     nextPage,
     prevPage,
     currPage,
@@ -43,13 +58,33 @@ export default function Users() {
     itemsPerPage: 9,
   });
 
+  const handleChange = (e) => {
+    const newSearchValue = e.target.value;
+    setSearchValue(newSearchValue.toLowerCase());
+  };
+
+  function handleProjectChange(nextProjectId) {
+    setSelectedProjectId(+nextProjectId);
+    setSearchValue("");
+  }
+
   return (
     <div className="relative h-full flex-col">
-      <PageHeader
-        path="Dashboard / Users"
-        header="Users"
-        handleChange={handleChange}
-      />
+      <div className="flex items-center gap-12">
+        <div className="flex-1">
+          <PageHeader
+            searchValue={searchValue}
+            path="Dashboard / Users"
+            header="Users"
+            handleChange={handleChange}
+          />
+        </div>
+        <ProjectDropdown
+          onProjectChange={handleProjectChange}
+          projects={projectUsers || []}
+        />
+      </div>
+
       {isLoading && (
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
           <Loader className="animate-spin" size={48} />
@@ -61,6 +96,9 @@ export default function Users() {
             <table className="h-4/5 w-full table-auto">
               <thead>
                 <tr className="rounded-xl bg-gray-100 text-left">
+                  <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
+                    Project
+                  </th>
                   <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
                     Email Address
                   </th>
@@ -77,24 +115,25 @@ export default function Users() {
                 </tr>
               </thead>
               <tbody className="text-gray-700">
-                {currPageItems.map((obj) => {
+                {users.map((user) => {
                   return (
                     <tr
                       className="border-b border-gray-300 text-left"
-                      key={obj.user_id}
+                      key={user.user_id}
                     >
-                      <td className="p-4 text-base">{obj.email}</td>
+                      <td className="p-4 text-base">{user.projectName}</td>
+                      <td className="p-4 text-base">{user.email}</td>
                       <td className="p-4">
                         <button
                           onClick={() => {
                             mutate(
-                              { projectId: 1, userId: obj.user_id },
+                              { projectId: 1, userId: user.user_id },
                               {
                                 onSuccess: () => {
                                   toast.custom((t) => (
                                     <ToastMessage
                                       t={t}
-                                      message={`User has been successfully ${obj.disable_login_flag ? "enabled" : "disabled"}`}
+                                      message={`User has been successfully ${user.disable_login_flag ? "enabled" : "disabled"}`}
                                       variant="success"
                                     />
                                   ));
@@ -112,25 +151,25 @@ export default function Users() {
                             );
                           }}
                         >
-                          {obj.disable_login_flag ? <Inactive /> : <Active />}
+                          {user.disable_login_flag ? <Inactive /> : <Active />}
                         </button>
                       </td>
                       <td className="p-4 font-light">
                         <div className="flex flex-col gap-1 text-sm">
                           <span>
-                            {obj.last_signed_in
-                              ? moment(obj.last_signed_in).format("MM/DD/YYYY")
-                              : moment(obj.created_at).format("MM/DD/YYYY")}
+                            {user.last_signed_in
+                              ? moment(user.last_signed_in).format("MM/DD/YYYY")
+                              : moment(user.created_at).format("MM/DD/YYYY")}
                           </span>
                           <span>
-                            {obj.last_signed_in
-                              ? moment(obj.last_signed_in).format("hh:mm:ss A")
-                              : moment(obj.created_at).format(" hh:mm:ss A")}
+                            {user.last_signed_in
+                              ? moment(user.last_signed_in).format("hh:mm:ss A")
+                              : moment(user.created_at).format(" hh:mm:ss A")}
                           </span>
                         </div>
                       </td>
                       <td className="p-4 text-sm font-light">
-                        {moment(obj.created_at).format("MM/DD/YYYY")}
+                        {moment(user.created_at).format("MM/DD/YYYY")}
                       </td>
                       <td className="p-4 font-light">
                         <button className="hover:text-red-500">
@@ -168,5 +207,26 @@ export default function Users() {
         </>
       )}
     </div>
+  );
+}
+
+function ProjectDropdown({ projects, onProjectChange }) {
+  return (
+    <form className="max-w-sm">
+      <select
+        onChange={(e) => onProjectChange(e.target.value)}
+        id="projects"
+        className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+      >
+        <option value={null} defaultChecked>
+          Select Project{" "}
+        </option>
+        {projects.map((project) => (
+          <option key={project.project_id} value={project.project_id}>
+            {project.name}
+          </option>
+        ))}
+      </select>
+    </form>
   );
 }
