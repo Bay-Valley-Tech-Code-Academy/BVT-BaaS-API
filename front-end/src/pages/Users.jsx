@@ -16,6 +16,7 @@ export default function Users() {
   const { data: users, isLoading } = useUsers();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
   const currentSelectedProject = users ? users[0] : null;
+  console.log(users);
 
   // Filtering users
   const filteredUsers = currentSelectedProject
