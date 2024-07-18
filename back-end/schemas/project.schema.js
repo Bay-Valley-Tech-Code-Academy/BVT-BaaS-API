@@ -16,7 +16,7 @@ const toggleDisableLoginParams = {
         coerce: true,
         required_error: "projectId is required",
       }),
-    })
+    }),
   ),
 };
 const getUsersByProjectIdSchema = object({ ...params });
@@ -27,7 +27,13 @@ const toggleDisableLoginSchema = object({ ...toggleDisableLoginParams });
 const updateProjectNameSchema = object({
   ...params,
   body: object({
-    name: string({ required_error: "Project title is requred" }),
+    name: string({ required_error: "Project title is required" }),
+  }),
+});
+
+const createProjectSchema = object({
+  body: object({
+    name: string({ required_error: "Project title is required." }),
   }),
 });
 
@@ -37,4 +43,5 @@ module.exports = {
   deleteProjectSchema,
   toggleDisableLoginSchema,
   updateProjectNameSchema,
+  createProjectSchema,
 };

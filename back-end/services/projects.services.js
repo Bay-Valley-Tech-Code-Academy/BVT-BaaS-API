@@ -7,7 +7,7 @@ async function getProjectByApiKey(apiKey) {
   `,
     {
       apiKey,
-    }
+    },
   );
 
   if (result.length === 0) {
@@ -24,7 +24,7 @@ async function getProjectById(projectId) {
   `,
     {
       projectId,
-    }
+    },
   );
 
   if (result.length === 0) return false;
@@ -47,7 +47,7 @@ async function getUsersByProjectId(projectId) {
     `,
     {
       projectId,
-    }
+    },
   );
   return result;
 }
@@ -65,7 +65,7 @@ async function getProjectsByOrganizationId(organizationId) {
     `,
     {
       organizationId,
-    }
+    },
   );
   return result;
 }
@@ -80,7 +80,7 @@ async function updateApiKey(projectId, apiKey) {
     {
       apiKey,
       projectId,
-    }
+    },
   );
   return result;
 }
@@ -92,7 +92,7 @@ async function deleteProject(projectId) {
     `,
     {
       projectId,
-    }
+    },
   );
   return result;
 }
@@ -106,7 +106,7 @@ async function getUserByIdAndProject(userId, projectId) {
     {
       userId,
       projectId,
-    }
+    },
   );
 
   if (result.length === 0) return false;
@@ -122,11 +122,18 @@ async function updateProjectName(projectId, projectName) {
     {
       projectId,
       projectName,
-    }
+    },
   );
   return result;
 }
 
+async function createProject(projectName, apiKey, organizationId) {
+  const [result] = await db.query(
+    `INSERT INTO projects (name, api_key, organization_id) VALUES (?, ?, ?);`,
+    [projectName, apiKey, organizationId],
+  );
+  return result;
+}
 module.exports = {
   getProjectByApiKey,
   getProjectById,
@@ -136,4 +143,5 @@ module.exports = {
   deleteProject,
   getUserByIdAndProject,
   updateProjectName,
+  createProject,
 };
