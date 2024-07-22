@@ -125,7 +125,7 @@ async function toggleDisableLoginFlagHandler(req, res) {
     }
 
     // verify that the organization is the owner of the user.
-    if (req.user.id !== project.organizatoin_id) {
+    if (req.user.id !== project.organization_id) {
       return res.status(403).json({
         success: false,
         message: "Not authorized",
