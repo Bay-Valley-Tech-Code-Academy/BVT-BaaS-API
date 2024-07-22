@@ -30,7 +30,9 @@ async function getOrganizationByEmail(email) {
 async function getOrganizationById(organizationId) {
   const [result] = await db.query(
     `
-    SELECT * FROM organizations WHERE organization_id=:organizationId;
+    SELECT o.email, o.name, o.account_type, a.max_users, a.max_projects FROM
+    organizations o JOIN account_limits a  ON o.account_type = a.account_type
+    WHERE organization_id=:organizationId;
   `,
     {
       organizationId,
