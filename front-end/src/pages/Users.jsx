@@ -7,7 +7,7 @@ import { usePagination } from "../hooks/usePagination";
 
 import { useProjectUsers } from "../api/queries";
 import moment from "moment/moment";
-import { usetoggleDisableLoginFlag } from "../api/mutations";
+import { useDeleteUser, usetoggleDisableLoginFlag } from "../api/mutations";
 import toast from "react-hot-toast";
 import ToastMessage from "../components/ToastMessage";
 
@@ -16,6 +16,7 @@ export default function Users() {
   const { data: projectUsers, isLoading } = useProjectUsers();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
   const [selectedProjectId, setSelectedProjectId] = useState(null);
+  const { mutate: deleteUser, isPending: deleteUserPending } = useDeleteUser();
 
   const selectedUsers = isLoading
     ? []
@@ -66,6 +67,59 @@ export default function Users() {
   function handleProjectChange(nextProjectId) {
     setSelectedProjectId(+nextProjectId);
     setSearchValue("");
+  }
+
+  function handleUserDisableToggle() {
+    mutate(
+      { projectId: 1, userId: user.user_id },
+      {
+        onSuccess: () => {
+          toast.custom((t) => (
+            <ToastMessage
+              t={t}
+              message={`User has been successfully ${user.disable_login_flag ? "enabled" : "disabled"}`}
+              variant="success"
+            />
+          ));
+        },
+        onError: () => {
+          toast((t) => (
+            <ToastMessage
+              t={t}
+              message="Failed to disable user account. Please try again."
+              variant="error"
+            />
+          ));
+        },
+      },
+    );
+  }
+
+  function handleUserDelete({ projectId, userId }) {
+    console.log(projectId, userId);
+    deleteUser(
+      { projectId, userId },
+      {
+        onSuccess: () => {
+          toast.custom((t) => (
+            <ToastMessage
+              t={t}
+              message={`User has been successfully deleted.`}
+              variant="success"
+            />
+          ));
+        },
+        onError: () => {
+          toast((t) => (
+            <ToastMessage
+              t={t}
+              message="Failed to delete user. Please try again."
+              variant="error"
+            />
+          ));
+        },
+      },
+    );
   }
 
   return (
@@ -125,31 +179,8 @@ export default function Users() {
                       <td className="p-4 text-base">{user.email}</td>
                       <td className="p-4">
                         <button
-                          onClick={() => {
-                            mutate(
-                              { projectId: 1, userId: user.user_id },
-                              {
-                                onSuccess: () => {
-                                  toast.custom((t) => (
-                                    <ToastMessage
-                                      t={t}
-                                      message={`User has been successfully ${user.disable_login_flag ? "enabled" : "disabled"}`}
-                                      variant="success"
-                                    />
-                                  ));
-                                },
-                                onError: () => {
-                                  toast((t) => (
-                                    <ToastMessage
-                                      t={t}
-                                      message="Failed to disable user account. Please try again."
-                                      variant="error"
-                                    />
-                                  ));
-                                },
-                              },
-                            );
-                          }}
+                          disabled={isPending || deleteUserPending}
+                          onClick={handleUserDisableToggle}
                         >
                           {user.disable_login_flag ? <Inactive /> : <Active />}
                         </button>
@@ -172,7 +203,16 @@ export default function Users() {
                         {moment(user.created_at).format("MM/DD/YYYY")}
                       </td>
                       <td className="p-4 font-light">
-                        <button className="hover:text-red-500">
+                        <button
+                          onClick={() =>
+                            handleUserDelete({
+                              userId: user.user_id,
+                              projectId: user.projectId,
+                            })
+                          }
+                          disabled={isPending || deleteUserPending}
+                          className="hover:text-red-500"
+                        >
                           <Trash2 />
                         </button>
                       </td>

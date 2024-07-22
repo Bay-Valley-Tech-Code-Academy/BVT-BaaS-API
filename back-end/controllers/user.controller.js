@@ -77,10 +77,11 @@ async function deleteUserHandler(req, res) {
     const requestingUser = req.user;
 
     // Fetch the user and project
-    const [[user], project] = await Promise.all([
+    const [user, project] = await Promise.all([
       getUserById(userId),
       getProjectById(projectId),
     ]);
+
     if (!user) {
       return res.status(404).json({
         success: false,
