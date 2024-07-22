@@ -9,6 +9,7 @@ const {
   projectRoutes,
   accountRoutes,
 } = require("./routes");
+const requireAuth = require("./middleware/requireAuth");
 
 function createServer() {
   // Allows us to access the .env
@@ -24,10 +25,10 @@ function createServer() {
   app.use(cookieParser());
 
   app.use("/api/organizations", organizationRoutes);
-  app.use("/api/account", accountRoutes);
+  app.use("/api/account", requireAuth, accountRoutes);
   app.use("/api/users", userRoutes);
   app.use("/api/auth", authRoutes);
-  app.use("/api/projects", projectRoutes);
+  app.use("/api/projects", requireAuth, projectRoutes);
   return app;
 }
 

@@ -22,6 +22,22 @@ async function createProject(projectName) {
   return result.data;
 }
 
+async function deleteProject(projectId) {
+  const { data: result } = await client.delete(`/projects/${projectId}`);
+  return result.data;
+}
+
+export function useDeleteProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteProject,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryClient: ["projects"],
+      });
+    },
+  });
+}
 export function useCreateProject() {
   const queryClient = useQueryClient();
   return useMutation({

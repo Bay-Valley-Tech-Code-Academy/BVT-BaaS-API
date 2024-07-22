@@ -37,8 +37,14 @@ async function createUserHandler(req, res) {
       id: data.insertId,
       email: req.body.email,
     };
-    const accessToken = generateUserAccessToken(userPayload, project.secret);
-    const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const accessToken = generateUserAccessToken(
+      userPayload,
+      process.env.PROJECT_ACCESS_TOKEN_SECRET
+    );
+    const refreshToken = generateUserRefreshToken(
+      userPayload,
+      process.env.PROJECT_REFRESH_TOKEN_SECRET
+    );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
@@ -57,6 +63,7 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -70,10 +77,11 @@ async function deleteUserHandler(req, res) {
     const requestingUser = req.user;
 
     // Fetch the user and project
-    const [[user], project] = await Promise.all([
+    const [user, project] = await Promise.all([
       getUserById(userId),
       getProjectById(projectId),
     ]);
+
     if (!user) {
       return res.status(404).json({
         success: false,

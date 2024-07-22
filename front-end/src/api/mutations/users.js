@@ -8,6 +8,25 @@ async function toggleDisableLoginFlag({ projectId, userId }) {
   return result.data;
 }
 
+async function deleteUser({ userId, projectId }) {
+  const { data: result } = await client.delete(
+    `/users/${userId}/projects/${projectId}`,
+  );
+  return result.data;
+}
+
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryClient: ["users"],
+      });
+    },
+  });
+}
+
 export function usetoggleDisableLoginFlag() {
   const queryClient = useQueryClient();
   return useMutation({
