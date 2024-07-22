@@ -69,9 +69,9 @@ export default function Users() {
     setSearchValue("");
   }
 
-  function handleUserDisableToggle() {
+  function handleUserDisableToggle({ projectId, userId }) {
     mutate(
-      { projectId: 1, userId: user.user_id },
+      { projectId, userId },
       {
         onSuccess: () => {
           toast.custom((t) => (
@@ -96,7 +96,6 @@ export default function Users() {
   }
 
   function handleUserDelete({ projectId, userId }) {
-    console.log(projectId, userId);
     deleteUser(
       { projectId, userId },
       {
@@ -180,7 +179,12 @@ export default function Users() {
                       <td className="p-4">
                         <button
                           disabled={isPending || deleteUserPending}
-                          onClick={handleUserDisableToggle}
+                          onClick={() =>
+                            handleUserDisableToggle({
+                              userId: user.user_id,
+                              projectId: user.projectId,
+                            })
+                          }
                         >
                           {user.disable_login_flag ? <Inactive /> : <Active />}
                         </button>
