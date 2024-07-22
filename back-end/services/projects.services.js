@@ -7,7 +7,7 @@ async function getProjectByApiKey(apiKey) {
   `,
     {
       apiKey,
-    },
+    }
   );
 
   if (result.length === 0) {
@@ -24,7 +24,7 @@ async function getProjectById(projectId) {
   `,
     {
       projectId,
-    },
+    }
   );
 
   if (result.length === 0) return false;
@@ -47,7 +47,7 @@ async function getUsersByProjectId(projectId) {
     `,
     {
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -55,18 +55,19 @@ async function getUsersByProjectId(projectId) {
 async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
-      SELECT p.project_id, p.name, p.api_key, COUNT(*) as users,  a.max_users
+      SELECT p.project_id, p.name, p.api_key, COUNT(u.user_id) as users,  a.max_users
       FROM organizations o
       JOIN projects p  ON p.organization_id = o.organization_id
       JOIN account_limits a on o.account_type = a.account_type
-      JOIN users u on p.project_id = u.project_id
-      WHERE o.organization_id=1
+      LEFT JOIN users u on p.project_id = u.project_id
+      WHERE o.organization_id=:organizationId
       GROUP BY p.project_id, p.name, p.api_key,a.max_users
     `,
     {
       organizationId,
-    },
+    }
   );
+
   return result;
 }
 
@@ -80,7 +81,7 @@ async function updateApiKey(projectId, apiKey) {
     {
       apiKey,
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -92,7 +93,7 @@ async function deleteProject(projectId) {
     `,
     {
       projectId,
-    },
+    }
   );
   return result;
 }
@@ -106,7 +107,7 @@ async function getUserByIdAndProject(userId, projectId) {
     {
       userId,
       projectId,
-    },
+    }
   );
 
   if (result.length === 0) return false;
@@ -122,7 +123,7 @@ async function updateProjectName(projectId, projectName) {
     {
       projectId,
       projectName,
-    },
+    }
   );
   return result;
 }
@@ -130,7 +131,7 @@ async function updateProjectName(projectId, projectName) {
 async function createProject(projectName, apiKey, organizationId) {
   const [result] = await db.query(
     `INSERT INTO projects (name, api_key, organization_id) VALUES (?, ?, ?);`,
-    [projectName, apiKey, organizationId],
+    [projectName, apiKey, organizationId]
   );
   return result;
 }
