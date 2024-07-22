@@ -3,6 +3,7 @@ import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { Trash2, RefreshCw, Pencil, Loader, Plus } from "lucide-react";
 import {
+  useDeleteProject,
   useRegenerateApiKeyAndSecret,
   useUpdateProjectName,
 } from "../api/mutations";
@@ -61,10 +62,37 @@ export function CreateProjectModal({
 export function DeleteModal(props) {
   const [openModal, setOpenModal] = useState(false);
   const [deleteCondition, setDeleteCondition] = useState("");
+  const { mutate, isPending } = useDeleteProject();
 
   function handleOpen() {
     setDeleteCondition("");
     setOpenModal(true);
+  }
+
+  function handleMutation() {
+    mutate(props.projectId, {
+      onSuccess: () => {
+        toast.custom((t) => (
+          <ToastMessage
+            variant="success"
+            message="Project deleted sucessfully!"
+            t={t}
+          />
+        ));
+      },
+      onError: (err) => {
+        console.log(err);
+        toast.custom((t) => (
+          <ToastMessage
+            message="Failed to delete project.  Please try again."
+            t={t}
+          />
+        ));
+      },
+      onSettled: () => {
+        setOpenModal(false);
+      },
+    });
   }
 
   return (
@@ -83,7 +111,7 @@ export function DeleteModal(props) {
         popup
         position="top-center"
         className="backdrop-blur-[2px]"
-        dismissible
+        dismissible={!isPending}
       >
         <Modal.Header />
         <Modal.Body>
@@ -100,20 +128,29 @@ export function DeleteModal(props) {
               className="mb-5 text-center text-lg font-normal text-gray-500"
               placeholder={`Delete ${props.projectName}`}
               onChange={(event) => setDeleteCondition(event.target.value)}
+              disabled={isPending}
             />
             <div className="flex justify-center gap-4">
               <Button
                 color="failure"
-                onClick={() => setOpenModal(false)}
+                onClick={handleMutation}
+                className="flex items-center justify-center bg-purple-500 text-white"
                 disabled={
-                  deleteCondition == `Delete ${props.projectName}`
+                  (deleteCondition == `Delete ${props.projectName}`
                     ? false
-                    : true
+                    : true) || isPending
                 }
               >
-                Delete Project
+                <span className={`${isPending ? "invisible" : ""}`}>
+                  Delete Project
+                </span>
+                {isPending && <Loader className="size-4 animate-spin" />}
               </Button>
-              <Button color="gray" onClick={() => setOpenModal(false)}>
+              <Button
+                disabled={isPending}
+                color="gray"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </Button>
             </div>
