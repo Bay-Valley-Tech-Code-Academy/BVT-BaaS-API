@@ -171,6 +171,7 @@ export function RefreshModal(props) {
         toast.custom((t) => (
           <ToastMessage
             message="API key rotated successfully. Please update your applications with the new key."
+            variant="success"
             t={t}
           />
         ));
@@ -179,6 +180,7 @@ export function RefreshModal(props) {
         toast.custom((t) => (
           <ToastMessage
             message="Failed to rotate keys.  Please try again."
+            
             t={t}
           />
         ));

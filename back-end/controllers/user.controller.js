@@ -20,7 +20,12 @@ const {
 async function createUserHandler(req, res) {
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
-
+      if (!project) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized access, invalid API key",
+        });
+      }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -30,7 +35,7 @@ async function createUserHandler(req, res) {
     });
 
     if (data.affectedRows === 0) {
-      throw new Error();
+      throw new Error("User creation failed");
     }
 
     const userPayload = {
