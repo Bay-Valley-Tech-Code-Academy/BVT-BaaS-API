@@ -1,6 +1,6 @@
-const { createServer } = require("./server");
-
 require("dotenv").config();
+
+const { createServer } = require("./server");
 const port = process.env.PORT || 4000;
 
 const app = createServer();
