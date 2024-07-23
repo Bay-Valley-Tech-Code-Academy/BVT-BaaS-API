@@ -21,7 +21,6 @@ const { sendMail } = require("../lib/nodemailer");
 async function createUserHandler(req, res) {
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
-    console.log("Project:", project);
     if (!project) {
       console.error("Invalid API key");
       return res.status(400).json({ success: false, error: "Invalid API key" });
@@ -47,7 +46,6 @@ async function createUserHandler(req, res) {
       id: data.insertId,
       email: req.body.email,
     };
-    console.log("project.secret", project.api_key);
     const accessToken = generateUserAccessToken(userPayload, project.api_key);
     const refreshToken = generateUserRefreshToken(userPayload, project.api_key);
     const newExpirationDate = new Date();

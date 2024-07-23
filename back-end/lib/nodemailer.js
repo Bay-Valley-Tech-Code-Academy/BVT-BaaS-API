@@ -24,7 +24,7 @@ async function sendMail(email, verifyToken) {
     console.log("Verification Email Sent");
   } catch (error) {
     console.error("Error sending email:", error);
-    throw error; // Rethrow error to be caught in the handler
+    throw error; 
   }
 }
 
