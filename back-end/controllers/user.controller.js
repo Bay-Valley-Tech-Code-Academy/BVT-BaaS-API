@@ -16,10 +16,19 @@ const {
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
+const { sendMail } = require("../lib/nodemailer");
 
 async function createUserHandler(req, res) {
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
+    console.log("Project:", project);
+    if (!project) {
+      console.error("Invalid API key");
+      return res.status(400).json({ success: false, error: "Invalid API key" });
+    }
+
+    const { nanoid } = await import("nanoid");
+    const verifyToken = nanoid(10).toString();
 
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
@@ -27,18 +36,20 @@ async function createUserHandler(req, res) {
       ...req.body,
       password: hashedPassword,
       projectId: project.project_id,
+      verifyToken,
     });
 
     if (data.affectedRows === 0) {
-      throw new Error();
+      throw new Error("User creation failed");
     }
 
     const userPayload = {
       id: data.insertId,
       email: req.body.email,
     };
-    const accessToken = generateUserAccessToken(userPayload, project.secret);
-    const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    console.log("project.secret", project.api_key);
+    const accessToken = generateUserAccessToken(userPayload, project.api_key);
+    const refreshToken = generateUserRefreshToken(userPayload, project.api_key);
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
@@ -49,6 +60,16 @@ async function createUserHandler(req, res) {
       newExpirationDate
     );
 
+    try {
+      await sendMail(userPayload.email, verifyToken);
+    } catch (mailError) {
+      console.error("Error sending email:", mailError);
+      return res.status(500).json({
+        success: false,
+        error: "Error sending verification email",
+      });
+    }
+
     return res.status(201).json({
       success: true,
       data: {
@@ -57,6 +78,7 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.error("Error creating user:", e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",

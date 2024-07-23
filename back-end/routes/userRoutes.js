@@ -14,11 +14,7 @@ const {
 const requireAuth = require("../middleware/requireAuth");
 const checkProjectUserLimits = require("../middleware/checkProjectUserLimits");
 
-router.post(
-  "/signup",
-  [validate(createUserSchema), checkProjectUserLimits],
-  createUserHandler
-);
+router.post("/signup", [validate(createUserSchema)], createUserHandler);
 
 router.post("/login", validate(loginUserSchema), loginUserHandler);
 

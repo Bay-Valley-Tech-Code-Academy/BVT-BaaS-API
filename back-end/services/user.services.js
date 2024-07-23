@@ -6,11 +6,12 @@ async function createUser({
   phoneNumber,
   mfaMethod,
   projectId,
+  verifyToken,
 }) {
   const result = await db.query(
     `
-    INSERT INTO users (email, password, phone_number, mfa_method, project_id)
-    VALUES (:email, :password,:phoneNumber,:mfaMethod, :projectId);
+    INSERT INTO users (email, password, phone_number, mfa_method, project_id, verify_token)
+    VALUES (:email, :password, :phoneNumber, :mfaMethod, :projectId, :verifyToken);
   `,
     {
       email,
@@ -18,6 +19,7 @@ async function createUser({
       phoneNumber,
       mfaMethod,
       projectId,
+      verifyToken,
     }
   );
   return result[0];

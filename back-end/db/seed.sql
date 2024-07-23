@@ -21,34 +21,33 @@ VALUES
 ('Project Nine', 1, 'j5e6f7g8h9a0b1c2d3e4f5g6h7i8j9k0'),
 ('Project Ten', 1, 'k6f7g8h9a0b1c2d3e4f5g6h7i8j9k0l1');
 
-INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, disable_login_flag, project_id)
+INSERT INTO users (email, password, phone_number, mfa_method, staff_flag, verified, verify_token, disable_login_flag, project_id)
 VALUES
-('john.doe@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', '1234567890', 'sms', 0, 0, 1),
-('jane.smith@example.com', '$2b$10$EIX/4iBvwlbcBBVQNTw3/OZOyYQomj1HK3a/ZQp5K1y0N/B9O0mT2', '0987654321', 'email', 1, 0, 3),
-('admin@example.com', '$2b$10$S4ZjbW56h/8.fkbE2uK9Eup3lB.C5Pms1EVYzT7Qk0X29Vr/KF.lK', '5551234567', 'sms', 1, 1, 5),
-('alice.wonderland@example.com', '$2b$10$Xyz123Abc456Djk789Lmn123Opqr456Tuv789Wx', '3216549870', 'sms', 0, 0, 3),
-('bob.builder@example.com', '$2b$10$Aop456Lmn123Def789Ghi456Jkl789Mno123Pqr', '6549873210', 'email', 0, 0, 2),
-('charlie.brown@example.com', '$2b$10$UwLmn123Aop456Pqr789Xyz123Def456Ghi789', '9876543210', 'sms', 0, 1, 1),
-('dora.explorer@example.com', '$2b$10$Jkl789Abc123Mno456Def789Pqr123Ghi456', '8765432109', 'email', 1, 0, 5),
-('ernie.sesame@example.com', '$2b$10$Vwx123YzAop456Lmn789Def123Pqr456Ghi789', '7654321098', 'sms', 1, 1, 7),
-('fred.flintstone@example.com', '$2b$10$Abc123Xyz456Ghi789Mno123Pqr456Def789', '6543210987', 'email', 0, 0, 8),
-('george.jetson@example.com', '$2b$10$Xyz123Abc456Pqr789Mno123Def456Ghi789', '5432109876', 'sms', 1, 1, 9),
-('harry.potter@example.com', '$2b$10$Pqr789Def123Xyz456Mno123Abc456Ghi789', '4321098765', 'email', 0, 0, 10),
-('ian.fleming@example.com', '$2b$10$Mno123Abc456Pqr789Xyz456Ghi789Def123', '3210987654', 'sms', 0, 1, 4),
-('jack.sparrow@example.com', '$2b$10$Def456Xyz123Pqr789Mno456Abc789Ghi123', '2109876543', 'email', 1, 1, 3),
-('katniss.everdeen@example.com', '$2b$10$Pqr789Abc123Xyz456Def789Mno456Ghi123', '1098765432', 'sms', 0, 0, 3),
-('luke.skywalker@example.com', '$2b$10$Xyz123Def456Pqr789Mno123Abc456Ghi789', '0987654321', 'email', 0, 1, 4),
-('mario.bros@example.com', '$2b$10$Mno123Xyz456Abc789Pqr456Ghi123Def789', '9876543210', 'sms', 1, 0, 1),
-('nemo.fish@example.com', '$2b$10$Abc123Xyz456Pqr789Mno456Ghi123Def789', '8765432109', 'email', 1, 1, 2),
-('oliver.twist@example.com', '$2b$10$Ghi789Pqr123Mno456Abc789Xyz123Def456', '7654321098', 'sms', 0, 0, 8),
-('patrick.star@example.com', '$2b$10$Mno123Xyz456Pqr789Abc123Def456Ghi789', '6543210987', 'email', 0, 1, 10),
-('quincy.adams@example.com', '$2b$10$Abc123Xyz456Mno789Pqr456Def123Ghi789', '5432109876', 'sms', 1, 1, 9),
-('ron.weasley@example.com', '$2b$10$Pqr789Def123Xyz456Abc789Mno456Ghi123', '4321098765', 'email', 0, 0, 6),
-('shrek.ogre@example.com', '$2b$10$Mno123Abc456Pqr789Xyz456Ghi789Def123', '3210987654', 'sms', 0, 1, 7),
-('tom.jerry@example.com', '$2b$10$Abc456Xyz789Pqr123Mno456Ghi789Def123', '2109876543', 'email', 1, 1, 3),
-('ursula.sea@example.com', '$2b$10$Xyz123Pqr456Mno789Def123Abc456Ghi789', '1098765432', 'sms', 0, 0, 2),
-('vader.darth@example.com', '$2b$10$Pqr789Xyz123Def456Mno123Abc456Ghi789', '0987654321', 'email', 1, 1, 1);
-
+('john.doe@example.com', '$2b$10$e0NRbM2H/5K8xFkTxwEXXOQ93J9Wz7Q3/JXGsm5xLGeF6/Cvxg.', '1234567890', 'sms', 0, 0, 'token123', 0, 1),
+('jane.smith@example.com', '$2b$10$EIX/4iBvwlbcBBVQNTw3/OZOyYQomj1HK3a/ZQp5K1y0N/B9O0mT2', '0987654321', 'email', 1, 0, 'token124', 0, 3),
+('admin@example.com', '$2b$10$S4ZjbW56h/8.fkbE2uK9Eup3lB.C5Pms1EVYzT7Qk0X29Vr/KF.lK', '5551234567', 'sms', 1, 1, 'token125', 1, 5),
+('alice.wonderland@example.com', '$2b$10$Xyz123Abc456Djk789Lmn123Opqr456Tuv789Wx', '3216549870', 'sms', 0, 0, 'token126', 0, 3),
+('bob.builder@example.com', '$2b$10$Aop456Lmn123Def789Ghi456Jkl789Mno123Pqr', '6549873210', 'email', 0, 0, 'token127', 0, 2),
+('charlie.brown@example.com', '$2b$10$UwLmn123Aop456Pqr789Xyz123Def456Ghi789', '9876543210', 'sms', 0, 0, 'token128', 1, 1),
+('dora.explorer@example.com', '$2b$10$Jkl789Abc123Mno456Def789Pqr123Ghi456', '8765432109', 'email', 1, 0, 'token129', 0, 5),
+('ernie.sesame@example.com', '$2b$10$Vwx123YzAop456Lmn789Def123Pqr456Ghi789', '7654321098', 'sms', 1, 0, 'token130', 1, 7),
+('fred.flintstone@example.com', '$2b$10$Abc123Xyz456Ghi789Mno123Pqr456Def789', '6543210987', 'email', 0, 0, 'token131', 0, 8),
+('george.jetson@example.com', '$2b$10$Xyz123Abc456Pqr789Mno123Def456Ghi789', '5432109876', 'sms', 1, 0, 'token132', 1, 9),
+('harry.potter@example.com', '$2b$10$Pqr789Def123Xyz456Mno123Abc456Ghi789', '4321098765', 'email', 0, 0, 'token133', 0, 10),
+('ian.fleming@example.com', '$2b$10$Mno123Abc456Pqr789Xyz456Ghi789Def123', '3210987654', 'sms', 0, 0, 'token134', 1, 4),
+('jack.sparrow@example.com', '$2b$10$Def456Xyz123Pqr789Mno456Abc789Ghi123', '2109876543', 'email', 1, 0, 'token135', 1, 3),
+('katniss.everdeen@example.com', '$2b$10$Pqr789Abc123Xyz456Def789Mno456Ghi123', '1098765432', 'sms', 0, 0, 'token136', 0, 3),
+('luke.skywalker@example.com', '$2b$10$Xyz123Def456Pqr789Mno123Abc456Ghi789', '0987654321', 'email', 0, 0, 'token137', 1, 4),
+('mario.bros@example.com', '$2b$10$Mno123Xyz456Abc789Pqr456Ghi123Def789', '9876543210', 'sms', 1, 0, 'token138', 0, 1),
+('nemo.fish@example.com', '$2b$10$Abc123Xyz456Pqr789Mno456Ghi123Def789', '8765432109', 'email', 1, 0, 'token139', 1, 2),
+('oliver.twist@example.com', '$2b$10$Ghi789Pqr123Mno456Abc789Xyz123Def456', '7654321098', 'sms', 0, 0, 'token140', 0, 8),
+('patrick.star@example.com', '$2b$10$Mno123Xyz456Pqr789Abc123Def456Ghi789', '6543210987', 'email', 0, 0, 'token141', 1, 10),
+('quincy.adams@example.com', '$2b$10$Abc123Xyz456Mno789Pqr456Def123Ghi789', '5432109876', 'sms', 1, 0, 'token142', 1, 9),
+('ron.weasley@example.com', '$2b$10$Pqr789Def123Xyz456Abc789Mno456Ghi123', '4321098765', 'email', 0, 0, 'token143', 0, 6),
+('shrek.ogre@example.com', '$2b$10$Mno123Abc456Pqr789Xyz456Ghi789Def123', '3210987654', 'sms', 0, 0, 'token144', 1, 7),
+('tom.jerry@example.com', '$2b$10$Abc456Xyz789Pqr123Mno456Ghi789Def123', '2109876543', 'email', 1, 0, 'token145', 1, 3),
+('ursula.sea@example.com', '$2b$10$Xyz123Pqr456Mno789Def123Abc456Ghi789', '1098765432', 'sms', 0, 0, 'token146', 0, 2),
+('vader.darth@example.com', '$2b$10$Pqr789Xyz123Def456Mno123Abc456Ghi789', '0987654321', 'email', 1, 0, 'token147', 1, 1);
 
 INSERT INTO audits (audit_type, ip_address, user_id, project_id, created_at)
 VALUES
