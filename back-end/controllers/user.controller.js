@@ -16,17 +16,17 @@ const {
 const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
+const { createAudit } = require("../services/audit.services");
 
 async function createUserHandler(req, res) {
-  console.log("test");
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
-      if (!project) {
-        return res.status(401).json({
-          success: false,
-          message: "Unauthorized access, invalid API key",
-        });
-      }
+    if (!project) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access, invalid API key",
+      });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -69,7 +69,6 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -178,6 +177,12 @@ async function loginUserHandler(req, res) {
 
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
+      await createAudit({
+        projectId: project.project_id,
+        userId: user.user_id,
+        auditType: "login_failed",
+        ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+      });
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
@@ -200,12 +205,19 @@ async function loginUserHandler(req, res) {
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-    await updateOrCreateRefreshToken(
+    const refreshTokenPromise = updateOrCreateRefreshToken(
       userPayload.id,
       project.project_id,
       refreshToken,
       newExpirationDate
     );
+    const auditPromise = createAudit({
+      projectId: project.project_id,
+      userId: user.user_id,
+      auditType: "login_successful",
+      ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+    });
+    await Promise.all([refreshTokenPromise, auditPromise]);
     return res.status(200).json({
       success: true,
       data: {

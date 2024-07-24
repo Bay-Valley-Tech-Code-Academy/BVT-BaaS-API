@@ -8,6 +8,7 @@ const {
   userRoutes,
   projectRoutes,
   accountRoutes,
+  auditRoutes,
 } = require("./routes");
 const requireAuth = require("./middleware/requireAuth");
 
@@ -39,6 +40,7 @@ function createServer() {
   app.use("/api/users", userRoutes);
   app.use("/api/auth", authRoutes);
   app.use("/api/projects", requireAuth, projectRoutes);
+  app.use("/api/audits", requireAuth, auditRoutes);
   return app;
 }
 

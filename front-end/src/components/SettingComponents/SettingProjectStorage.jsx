@@ -1,10 +1,7 @@
 import { Flag } from "lucide-react";
 
 export default function SettingsProjectStorage({ projects, maxProjects }) {
-  const progress = Math.min(
-    Math.max(Math.round((projects / maxProjects) * 100), 100),
-    100,
-  );
+  const progress = Math.round((projects / maxProjects) * 100);
   return (
     <div>
       <div

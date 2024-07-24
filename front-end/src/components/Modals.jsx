@@ -81,7 +81,6 @@ export function DeleteModal(props) {
         ));
       },
       onError: (err) => {
-        console.log(err);
         toast.custom((t) => (
           <ToastMessage
             message="Failed to delete project.  Please try again."
@@ -180,7 +179,6 @@ export function RefreshModal(props) {
         toast.custom((t) => (
           <ToastMessage
             message="Failed to rotate keys.  Please try again."
-            
             t={t}
           />
         ));

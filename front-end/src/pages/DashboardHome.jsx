@@ -1,5 +1,5 @@
 import React from "react";
-import { useAudit, useUsers } from "../api/queries";
+import { useAudit, useProjectUsers } from "../api/queries";
 import LoginAttemptsBarChart from "../components/Charts/LoginAttemptsLineChart";
 import PageHeaderNoSearch from "../components/PageHeaderNoSearch";
 
@@ -17,7 +17,7 @@ const sortLogins = (data) => {
 
 export default function DashboardHome() {
   const { data: projectAudits, status: auditStatus } = useAudit();
-  const { data: projectUsers, status: userStatus } = useUsers();
+  const { data: projectUsers, status: userStatus } = useProjectUsers();
   const [selectedProjectId, setSelectedProjectId] = React.useState(null);
 
   function handleProjectChange(projectId) {
@@ -29,8 +29,6 @@ export default function DashboardHome() {
   if (auditStatus === "error" || userStatus === "error") {
     return <p>error...</p>;
   }
-
-  console.log(projectAudits);
 
   const attempts = selectedProjectId
     ? projectAudits
