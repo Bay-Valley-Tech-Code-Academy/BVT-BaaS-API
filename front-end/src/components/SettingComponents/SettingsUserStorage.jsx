@@ -1,10 +1,7 @@
 import { User } from "lucide-react";
 
 export default function SettingsUserStorage({ users, maxUsers }) {
-  const progress = Math.min(
-    Math.max(Math.round((users / maxUsers) * 100), 100),
-    100,
-  );
+  const progress = Math.round((users / maxUsers) * 100);
 
   return (
     <div>
