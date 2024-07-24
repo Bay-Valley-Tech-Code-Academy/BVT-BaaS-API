@@ -10,16 +10,23 @@ const { getUserById } = require("../services/user.services");
 
 const validateRefreshToken = async (req, res, next) => {
   const { api_key, refresh_token } = req.headers;
+
   try {
     const [refreshToken, project] = await Promise.all([
       getRefreshToken(refresh_token),
       getProjectByApiKey(api_key),
     ]);
-    // Either apiKey or refreshToken is invalid.
-    if (!refreshToken || !project) {
+
+    if (!refreshToken) {
       return res
         .status(401)
-        .json({ success: false, message: "Invalid API key or secret." });
+        .json({ success: false, message: "Invalid refresh token" });
+    }
+    // Either apiKey or refreshToken is invalid.
+    if (!project) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid API key" });
     }
 
     // Ensure that the refresh token is for this project.

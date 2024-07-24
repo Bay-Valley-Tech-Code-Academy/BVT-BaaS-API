@@ -16,9 +16,19 @@ function createServer() {
 
   const app = express();
 
+  const allowedOrigins = ["http://localhost:5173"];
+
   const corsOptions = {
-    origin: "http://localhost:5173", // Replace with your frontend URL
-    credentials: true, // Enable sending cookies from the frontend
+    origin: (origin, callback) => {
+      if (allowedOrigins.includes(origin) || !origin) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+    allowedHeaders: "Content-Type,Authorization",
   };
   app.use(cors(corsOptions));
   app.use(bodyParser.json());
