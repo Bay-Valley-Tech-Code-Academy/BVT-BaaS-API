@@ -55,18 +55,19 @@ async function getUsersByProjectId(projectId) {
 async function getProjectsByOrganizationId(organizationId) {
   const [result] = await db.query(
     `
-      SELECT p.project_id, p.name, p.api_key, COUNT(*) as users,  a.max_users
+      SELECT p.project_id, p.name, p.api_key, COUNT(u.user_id) as users,  a.max_users
       FROM organizations o
       JOIN projects p  ON p.organization_id = o.organization_id
       JOIN account_limits a on o.account_type = a.account_type
-      JOIN users u on p.project_id = u.project_id
-      WHERE o.organization_id=1
+      LEFT JOIN users u on p.project_id = u.project_id
+      WHERE o.organization_id=:organizationId
       GROUP BY p.project_id, p.name, p.api_key,a.max_users
     `,
     {
       organizationId,
     }
   );
+
   return result;
 }
 
@@ -127,6 +128,13 @@ async function updateProjectName(projectId, projectName) {
   return result;
 }
 
+async function createProject(projectName, apiKey, organizationId) {
+  const [result] = await db.query(
+    `INSERT INTO projects (name, api_key, organization_id) VALUES (?, ?, ?);`,
+    [projectName, apiKey, organizationId]
+  );
+  return result;
+}
 module.exports = {
   getProjectByApiKey,
   getProjectById,
@@ -136,4 +144,5 @@ module.exports = {
   deleteProject,
   getUserByIdAndProject,
   updateProjectName,
+  createProject,
 };

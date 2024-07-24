@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 
 export default function PageHeader(props) {
+  console.log(props.searchValue);
   return (
     <div className="mb-4 flex justify-between">
       <div className="flex-col">
@@ -20,6 +21,7 @@ export default function PageHeader(props) {
           <input
             type="text"
             name="q"
+            value={props.searchValue}
             disabled={props.disabled}
             className="w-[400px] rounded-xl py-2 pl-10 align-bottom text-sm focus:border-purple-700"
             placeholder="Search..."

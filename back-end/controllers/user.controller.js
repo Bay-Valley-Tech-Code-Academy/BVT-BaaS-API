@@ -18,9 +18,15 @@ const {
 } = require("../services/refreshToken.services");
 
 async function createUserHandler(req, res) {
+  console.log("test");
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
-
+      if (!project) {
+        return res.status(401).json({
+          success: false,
+          message: "Unauthorized access, invalid API key",
+        });
+      }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -30,15 +36,21 @@ async function createUserHandler(req, res) {
     });
 
     if (data.affectedRows === 0) {
-      throw new Error();
+      throw new Error("User creation failed");
     }
 
     const userPayload = {
       id: data.insertId,
       email: req.body.email,
     };
-    const accessToken = generateUserAccessToken(userPayload, project.secret);
-    const refreshToken = generateUserRefreshToken(userPayload, project.secret);
+    const accessToken = generateUserAccessToken(
+      userPayload,
+      process.env.PROJECT_ACCESS_TOKEN_SECRET
+    );
+    const refreshToken = generateUserRefreshToken(
+      userPayload,
+      process.env.PROJECT_REFRESH_TOKEN_SECRET
+    );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
@@ -57,6 +69,7 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -70,10 +83,11 @@ async function deleteUserHandler(req, res) {
     const requestingUser = req.user;
 
     // Fetch the user and project
-    const [[user], project] = await Promise.all([
+    const [user, project] = await Promise.all([
       getUserById(userId),
       getProjectById(projectId),
     ]);
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -146,6 +160,13 @@ async function loginUserHandler(req, res) {
       });
     }
 
+    if (user.disable_login_flag) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Your account has been disabled.",
+      });
+    }
+
     // if the user exist make sure he belongs to the project
     if (user.project_id !== project.project_id) {
       return res.status(403).json({
@@ -170,11 +191,11 @@ async function loginUserHandler(req, res) {
     };
     const accessToken = generateUserAccessToken(
       userPayload,
-      process.env.PROJECT_ACCESS_TOKEN
+      process.env.PROJECT_ACCESS_TOKEN_SECRET
     );
     const refreshToken = generateUserRefreshToken(
       userPayload,
-      process.env.PROJECT_REFRESH_TOKEN
+      process.env.PROJECT_REFRESH_TOKEN_SECRET
     );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
@@ -190,6 +211,8 @@ async function loginUserHandler(req, res) {
       data: {
         accessToken,
         refreshToken,
+        userId: userPayload.id,
+        email: user.email,
       },
     });
   } catch (e) {

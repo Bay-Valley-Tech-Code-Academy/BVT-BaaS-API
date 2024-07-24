@@ -8,30 +8,32 @@ async function toggleDisableLoginFlag({ projectId, userId }) {
   return result.data;
 }
 
+async function deleteUser({ userId, projectId }) {
+  const { data: result } = await client.delete(
+    `/users/${userId}/projects/${projectId}`,
+  );
+  return result.data;
+}
+
+export function useDeleteUser() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryClient: ["users"],
+      });
+    },
+  });
+}
+``;
 export function usetoggleDisableLoginFlag() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: toggleDisableLoginFlag,
-    onMutate: async ({ userId }) => {
-      await queryClient.cancelQueries({ queryKey: ["users"] });
-      const snapshot = queryClient.getQueryData(["users"]);
-      queryClient.setQueryData(["users"], (previousUsers) =>
-        previousUsers.map((user) => {
-          if (user.user_id === userId) {
-            return { ...user, disable_login_flag: !user.disable_login_flag };
-          }
-          return user;
-        }),
-      );
-
-      return { snapshot };
-    },
-    onError: (err, newTodo, context) => {
-      queryClient.setQueryData(["users"], context.snapshot);
-    },
-    onSettled: () => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["projects"],
+        queryClient: ["users"],
       });
     },
   });

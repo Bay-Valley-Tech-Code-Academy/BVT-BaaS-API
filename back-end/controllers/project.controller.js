@@ -6,6 +6,7 @@ const {
   deleteProject,
   updateProjectName,
   getProjectsByOrganizationId,
+  createProject,
 } = require("../services/projects.services");
 const {
   deleteRefreshTokensByProjectId,
@@ -17,8 +18,8 @@ const {
 
 async function getUsersPerProjectHandler(req, res) {
   try {
-    const organization = { id: 1 } | req.user;
-    const projects = await getProjectsByOrganizationId(organization.id);
+    const organizationId = req.user.id;
+    const projects = await getProjectsByOrganizationId(organizationId);
     const projectUsers = await Promise.all(
       projects.map(async (project) => {
         const { project_id, name } = project;
@@ -40,8 +41,7 @@ async function getUsersPerProjectHandler(req, res) {
 
 async function getAllProjectsHandler(req, res) {
   try {
-    // hardcode the id for development
-    const organizationId = 1 || req.user.id;
+    const organizationId = req.user.id;
     const projects = await getProjectsByOrganizationId(organizationId);
     return res.status(200).json({
       success: true,
@@ -68,14 +68,14 @@ async function regenerateProjectKeysHandler(req, res) {
       });
     }
     //   verify that the organization is the owner of this project
-    /*
-     if(req.user.id !== project.organization_id ){
-     return res.status(403).json({
-     success: false, 
-     message: "Unauthorized access",
-     })
-     }
-    */
+
+    if (req.user.id !== project.organization_id) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
     const { apiKey } = generateApiKey();
     const result = await updateApiKey(project.project_id, apiKey);
 
@@ -125,14 +125,12 @@ async function toggleDisableLoginFlagHandler(req, res) {
     }
 
     // verify that the organization is the owner of the user.
-    /*
-    if(req.user.id !== project.organizatoin_id){
+    if (req.user.id !== project.organization_id) {
       return res.status(403).json({
         success: false,
-        message: "Not authorized"
-      })
+        message: "Not authorized",
+      });
     }
-  */
 
     // You want to make sure that this user belongs to the project
     if (project.project_id !== user.project_id) {
@@ -182,14 +180,14 @@ async function updateProjectNameHandler(req, res) {
     }
 
     //   verify that the organization is the owner of this project
-    /*
-     if(req.user.id !== project.organization_id ){
-     return res.status(403).json({
-     success: false, 
-     message: "Unauthorized access",
-     })
-     }
-    */
+
+    if (req.user.id !== project.organization_id) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
     const result = await updateProjectName(project.project_id, projectName);
 
     if (result.affectedRows === 0) {
@@ -251,6 +249,35 @@ async function deleteProjectHandler(req, res) {
   }
 }
 
+async function createProjectHandler(req, res) {
+  try {
+    const organizationId = req.user.id;
+
+    const projectName = req.body.name;
+    if (!projectName) {
+      return res.status(400).json({
+        success: false,
+        error: "Project name is required.",
+      });
+    }
+
+    const { apiKey } = generateApiKey();
+
+    await createProject(projectName, apiKey, organizationId);
+
+    return res.status(200).json({
+      success: true,
+      message: "Project created successfully.",
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      error: "Server error, please try again later.",
+    });
+  }
+}
+
 module.exports = {
   getUsersPerProjectHandler,
   getAllProjectsHandler,
@@ -258,4 +285,5 @@ module.exports = {
   deleteProjectHandler,
   toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
+  createProjectHandler,
 };
