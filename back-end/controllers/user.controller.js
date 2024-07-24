@@ -18,6 +18,7 @@ const {
 } = require("../services/refreshToken.services");
 
 async function createUserHandler(req, res) {
+  console.log("test");
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
 
@@ -154,6 +155,13 @@ async function loginUserHandler(req, res) {
       });
     }
 
+    if (user.disable_login_flag) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Your account has been disabled.",
+      });
+    }
+
     // if the user exist make sure he belongs to the project
     if (user.project_id !== project.project_id) {
       return res.status(403).json({
@@ -178,11 +186,11 @@ async function loginUserHandler(req, res) {
     };
     const accessToken = generateUserAccessToken(
       userPayload,
-      process.env.PROJECT_ACCESS_TOKEN
+      process.env.PROJECT_ACCESS_TOKEN_SECRET
     );
     const refreshToken = generateUserRefreshToken(
       userPayload,
-      process.env.PROJECT_REFRESH_TOKEN
+      process.env.PROJECT_REFRESH_TOKEN_SECRET
     );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
@@ -198,6 +206,8 @@ async function loginUserHandler(req, res) {
       data: {
         accessToken,
         refreshToken,
+        userId: userPayload.id,
+        email: user.email,
       },
     });
   } catch (e) {

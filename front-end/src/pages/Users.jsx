@@ -181,6 +181,7 @@ export default function Users() {
                           disabled={isPending || deleteUserPending}
                           onClick={() =>
                             handleUserDisableToggle({
+                              loginStatus: user.disable_login_flag,
                               userId: user.user_id,
                               projectId: user.projectId,
                             })
