@@ -8,6 +8,7 @@ const {
   getUserByEmail,
   deleteUser,
   getUserById,
+  loginUser,
 } = require("../services/user.services");
 const {
   getProjectByApiKey,
@@ -26,16 +27,12 @@ async function createUserHandler(req, res) {
       return res.status(400).json({ success: false, error: "Invalid API key" });
     }
 
-    const { nanoid } = await import("nanoid");
-    const verifyToken = nanoid(10).toString();
-
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
       ...req.body,
       password: hashedPassword,
       projectId: project.project_id,
-      verifyToken,
     });
 
     if (data.affectedRows === 0) {
@@ -46,8 +43,14 @@ async function createUserHandler(req, res) {
       id: data.insertId,
       email: req.body.email,
     };
-    const accessToken = generateUserAccessToken(userPayload, project.api_key);
-    const refreshToken = generateUserRefreshToken(userPayload, project.api_key);
+    const accessToken = generateUserAccessToken(
+      userPayload,
+      process.env.PROJECT_ACCESS_TOKEN_SECRET,
+    );
+    const refreshToken = generateUserRefreshToken(
+      userPayload,
+      process.env.PROJECT_REFRESH_TOKEN_SECRET,
+    );
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
@@ -55,18 +58,8 @@ async function createUserHandler(req, res) {
       userPayload.id,
       project.project_id,
       refreshToken,
-      newExpirationDate
+      newExpirationDate,
     );
-
-    try {
-      await sendMail(userPayload.email, verifyToken);
-    } catch (mailError) {
-      console.error("Error sending email:", mailError);
-      return res.status(500).json({
-        success: false,
-        error: "Error sending verification email",
-      });
-    }
 
     return res.status(201).json({
       success: true,
@@ -76,7 +69,7 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.error("Error creating user:", e);
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -90,10 +83,11 @@ async function deleteUserHandler(req, res) {
     const requestingUser = req.user;
 
     // Fetch the user and project
-    const [[user], project] = await Promise.all([
+    const [user, project] = await Promise.all([
       getUserById(userId),
       getProjectById(projectId),
     ]);
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -183,28 +177,83 @@ async function loginUserHandler(req, res) {
       });
     }
 
+    const { nanoid } = await import("nanoid");
+    const verifyToken = nanoid(10).toString();
+
+    try {
+      // await sendMail(user.email, verifyToken);
+    } catch (error) {
+      console.error(
+        `Error sending verification email to ${user.email}:`,
+        error,
+      );
+      return res.status(500).json({
+        success: false,
+        error: "Error sending verification email",
+      });
+    }
+
+    try {
+      const loginUserResult = await loginUser(user.user_id, verifyToken);
+      if (loginUserResult.affectedRows === 0) {
+        console.error(
+          `Failed to update user with ID ${user.user_id} with verification token`,
+        );
+        return res.status(500).json({
+          success: false,
+          error: "Error updating user with verification token",
+        });
+      }
+    } catch (error) {
+      console.error(`Error updating user with verification token:`, error);
+      return res.status(500).json({
+        success: false,
+        error: "Error updating user with verification token",
+      });
+    }
+
     const userPayload = {
       id: user.user_id,
       email: user.email,
       project_id: user.project_id,
     };
+
     const accessToken = generateUserAccessToken(
       userPayload,
-      process.env.PROJECT_ACCESS_TOKEN
+      process.env.PROJECT_ACCESS_TOKEN_SECRET,
     );
     const refreshToken = generateUserRefreshToken(
       userPayload,
-      process.env.PROJECT_REFRESH_TOKEN
+      process.env.PROJECT_REFRESH_TOKEN_SECRET,
     );
+
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-    await updateOrCreateRefreshToken(
-      userPayload.id,
-      project.project_id,
-      refreshToken,
-      newExpirationDate
-    );
+    try {
+      const updateTokenResult = await updateOrCreateRefreshToken(
+        userPayload.id,
+        project.project_id,
+        refreshToken,
+        newExpirationDate,
+      );
+      if (updateTokenResult.affectedRows === 0) {
+        console.error(
+          `Failed to update or create refresh token for user with ID ${userPayload.id}`,
+        );
+        return res.status(500).json({
+          success: false,
+          error: "Error updating or creating refresh token",
+        });
+      }
+    } catch (error) {
+      console.error(`Error updating or creating refresh token:`, error);
+      return res.status(500).json({
+        success: false,
+        error: "Error updating or creating refresh token",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       data: {

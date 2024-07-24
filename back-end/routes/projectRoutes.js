@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 const validate = require("../middleware/validate");
 const {
-  getUsersByProjectIdSchema,
   regenerateProjectKeysSchema,
   deleteProjectSchema,
   toggleDisableLoginSchema,
   updateProjectNameSchema,
+  createProjectSchema,
 } = require("../schemas/project.schema");
 
 const {
@@ -16,8 +16,10 @@ const {
   deleteProjectHandler,
   toggleDisableLoginFlagHandler,
   updateProjectNameHandler,
+  createProjectHandler,
 } = require("../controllers/project.controller");
-const requireAuth = require("../middleware/requireAuth");
+
+router.post("/", validate(createProjectSchema), createProjectHandler);
 
 router.get("/users", getUsersPerProjectHandler);
 
@@ -31,7 +33,6 @@ router.get(
 
 router.delete(
   "/:projectId",
-  requireAuth,
   validate(deleteProjectSchema),
   deleteProjectHandler
 );

@@ -36,7 +36,7 @@ CREATE TABLE projects (
   mfa_method ENUM('sms', 'email'), 
   staff_flag TINYINT DEFAULT 0,
   verified TINYINT DEFAULT 0,
-  verify_token VARCHAR(10) NOT NULL,
+  verify_token VARCHAR(10) DEFAULT NULL,
   disable_login_flag TINYINT DEFAULT 0,
   project_id INT,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,

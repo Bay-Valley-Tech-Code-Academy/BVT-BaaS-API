@@ -1,11 +1,10 @@
-import { User } from "lucide-react";
+import { Flag } from "lucide-react";
 
-export default function SettingsUserStorage({ users, maxUsers }) {
+export default function SettingsProjectStorage({ projects, maxProjects }) {
   const progress = Math.min(
-    Math.max(Math.round((users / maxUsers) * 100), 100),
+    Math.max(Math.round((projects / maxProjects) * 100), 100),
     100,
   );
-
   return (
     <div>
       <div
@@ -17,15 +16,15 @@ export default function SettingsUserStorage({ users, maxUsers }) {
             id="cloud-check"
             className="relative mb-2 flex h-28 w-28 items-center justify-center rounded-full bg-dashboard-gray-100"
           >
-            <User className="text-dashboard-purple-300" size={48} />
+            <Flag className="text-dashboard-purple-300" size={48} />
           </div>
-          <h1 className="text-xl font-bold">User Storage</h1>
-          <p className="text-dashboard-gray-50">Supervise your user limit</p>
+          <h1 className="text-xl font-bold">Project Storage</h1>
+          <p className="text-dashboard-gray-50">Supervise your project limit</p>
         </div>
 
         <div id="progress-bar" className="w-full">
           <div className="flex justify-between">
-            <div>{users}</div> <div>{maxUsers}</div>
+            <div>{projects}</div> <div>{maxProjects}</div>
           </div>
           <div className="h-2.5 w-full rounded-full bg-gray-200 dark:bg-gray-700">
             <div

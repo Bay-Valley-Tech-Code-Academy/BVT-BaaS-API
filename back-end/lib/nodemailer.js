@@ -15,13 +15,12 @@ async function sendMail(email, verifyToken) {
   const mailOptions = {
     from: "BVT BaaS",
     to: email,
-    subject: "Email Verification",
-    html: `Click <a href="${process.env.SERVER_HOST}/verify/${verifyToken}">Here</a> to verify your email.`,
+    subject: "Multifactor Authentication Code",
+    html: `Your MFA Code is: ${verifyToken}`,
   };
 
   try {
     await Transport.sendMail(mailOptions);
-    console.log("Verification Email Sent");
   } catch (error) {
     console.error("Error sending email:", error);
     throw error; 
