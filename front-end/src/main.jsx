@@ -17,6 +17,7 @@ import LandingPage from "./components/LandingPage";
 import AuthLayout from "./components/AuthLayout";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
+import ResetPassword from "./components/ResetPassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
       { index: true, element: <Navigate to="/auth/login" replace /> },
       { path: "/auth/login", element: <Login /> },
       { path: "/auth/signup", element: <SignUp /> },
+      { path: "/auth/resetpassword", element: <ResetPassword /> },
     ],
   },
   {

@@ -3,7 +3,7 @@ import { Mail, LockKeyhole } from "lucide-react";
 import { useLoginOrganization } from "../api/mutations";
 import FormButton from "./FormButton";
 
-export default function Login() {
+export default function ResetPassword() {
   const { mutate, isPending, isError } = useLoginOrganization();
   const navigate = useNavigate();
   function handleSubmit(e) {
@@ -46,7 +46,7 @@ export default function Login() {
           </div>
           <div className="relative grid gap-2">
             <label htmlFor="password" className="font-light">
-              Password
+              New Password
             </label>
             <input
               className="rounded px-3 py-1.5 text-black outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
@@ -60,16 +60,24 @@ export default function Login() {
               <LockKeyhole className="size-5 text-white" />
             </div>
           </div>
-          <FormButton isPending={isPending}>Login</FormButton>
-          <Link
-          to="/auth/resetpassword"
-          className="
-          inline-flex w-full items-center justify-center rounded border hover:border-landing-turquoise hover:text-landing-turquoise bg-transparent py-1.5 outline-none focus-visible:ring 
-          focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100
-          "
-        >
-          reset password
-        </Link>
+          <div className="relative grid gap-2">
+            <label htmlFor="confirmPassword" className="font-light">
+              Confirm New Password
+            </label>
+            <input
+              className="rounded px-3 py-1.5 text-black outline-none focus-visible:ring focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="Enter your password"
+              required
+            />
+            <div className="absolute bottom-0 right-0 flex h-9 items-center justify-center rounded bg-landing-turquoise p-1 px-1.5">
+              <LockKeyhole className="size-5 text-white" />
+            </div>
+          </div>
+          <FormButton isPending={isPending}>Request Reset</FormButton>
+
           <div className="relative h-4">
             <div className="text-muted absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 bg-landing-blue-100 px-2 text-xs text-landing-gray-50">
               OR
