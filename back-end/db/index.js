@@ -9,6 +9,7 @@ const db = mysql.createPool({
   database: process.env.database,
   namedPlaceholders: true,
   multipleStatements: true,
+  timezone: "Z",
 });
 
 const closePool = async () => {

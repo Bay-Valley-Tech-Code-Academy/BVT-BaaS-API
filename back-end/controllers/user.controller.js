@@ -76,7 +76,6 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -160,6 +159,7 @@ async function loginUserHandler(req, res) {
 
     // we check if the user exist
     const user = await getUserByEmail(req.body.email, project.project_id);
+
     if (!user) {
       return res.status(401).json({
         success: false,
