@@ -27,6 +27,13 @@ async function createUserHandler(req, res) {
         message: "Unauthorized access, invalid API key",
       });
     }
+    const user = await getUserByEmail(req.body.email, project.project_id);
+    if (user) {
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exist for this project.",
+      });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -69,6 +76,7 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
+    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -151,7 +159,7 @@ async function loginUserHandler(req, res) {
     }
 
     // we check if the user exist
-    const user = await getUserByEmail(req.body.email);
+    const user = await getUserByEmail(req.body.email, project.project_id);
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -230,7 +238,7 @@ async function loginUserHandler(req, res) {
   } catch (e) {
     return res.status(500).json({
       success: false,
-      error: "Server error, please try again later",
+      message: "Server error, please try again later",
     });
   }
 }
