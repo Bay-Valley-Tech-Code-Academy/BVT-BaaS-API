@@ -29,7 +29,7 @@ export default function RecentLoginsTable({ recentLogins }) {
             color="gray"
             className="max-w-sm font-normal"
           >
-            Insights into Monthly User Signup Activity
+            Insights into Login Activity
           </Typography>
         </div>
       </CardHeader>
