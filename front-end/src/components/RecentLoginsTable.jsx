@@ -8,7 +8,6 @@ import { Clock } from "lucide-react";
 import moment from "moment";
 
 export default function RecentLoginsTable({ recentLogins }) {
-  console.log(recentLogins);
   return (
     <Card className="col-start-2 row-span-2">
       <CardHeader

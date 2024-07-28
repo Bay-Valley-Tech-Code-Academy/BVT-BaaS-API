@@ -6,8 +6,17 @@ import { useAccount, useProjectUsers } from "../api/queries";
 import SettingsProjectStorage from "../components/SettingComponents/SettingProjectStorage";
 
 export default function Settings() {
-  const { data: account, status: accountStatus } = useAccount();
-  const { data: projects, status: projectUserStatus } = useProjectUsers();
+  const {
+    data: account,
+    status: accountStatus,
+    error: accountError,
+  } = useAccount();
+  const {
+    data: projects,
+    status: projectUserStatus,
+    error: proejctError,
+  } = useProjectUsers();
+
   if (accountStatus === "pending" || projectUserStatus === "pending") {
     return <p>Loading....</p>;
   }

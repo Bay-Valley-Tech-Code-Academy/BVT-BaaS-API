@@ -3,7 +3,6 @@ import client from "../client";
 
 const getAccount = async () => {
   const { data: result } = await client.get("/account");
-
   return result.data;
 };
 
