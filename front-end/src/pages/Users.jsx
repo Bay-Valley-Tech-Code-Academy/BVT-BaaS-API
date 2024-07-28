@@ -11,6 +11,8 @@ import { useDeleteUser, usetoggleDisableLoginFlag } from "../api/mutations";
 import toast from "react-hot-toast";
 import ToastMessage from "../components/ToastMessage";
 
+import EmptyState from "../components/EmptyState";
+
 export default function Users() {
   const [searchValue, setSearchValue] = useState("");
   const { data: projectUsers, isLoading } = useProjectUsers();
@@ -143,115 +145,122 @@ export default function Users() {
           <Loader className="animate-spin" size={48} />
         </div>
       )}
-      {!isLoading && (
-        <>
-          <div className="mt-10 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
-            <table className="h-4/5 w-full table-auto">
-              <thead>
-                <tr className="rounded-xl bg-gray-100 text-left">
-                  <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
-                    Project
-                  </th>
-                  <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
-                    Email Address
-                  </th>
-                  <th className="flex p-2 pl-4 pr-5 font-medium text-gray-700">
-                    Status/Toggle
-                  </th>
-                  <th className="p-2 pl-4 pr-5 font-medium text-gray-700">
-                    Last Signed In
-                  </th>
-                  <th className="p-2 pl-4 pr-5 font-medium text-gray-700">
-                    Joined
-                  </th>
-                  <th className="rounded-tr-xl p-2 pl-4 pr-5 font-medium text-gray-700"></th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-700">
-                {users.map((user) => {
-                  return (
-                    <tr
-                      className="border-b border-gray-300 text-left"
-                      key={user.user_id}
-                    >
-                      <td className="p-4 text-base">{user.projectName}</td>
-                      <td className="p-4 text-base">{user.email}</td>
-                      <td className="p-4">
-                        <button
-                          disabled={isPending || deleteUserPending}
-                          onClick={() =>
-                            handleUserDisableToggle({
-                              loginStatus: user.disable_login_flag,
-                              userId: user.user_id,
-                              projectId: user.projectId,
-                            })
-                          }
-                        >
-                          {user.disable_login_flag ? <Inactive /> : <Active />}
-                        </button>
-                      </td>
-                      <td className="p-4 font-light">
-                        <div className="flex flex-col gap-1 text-sm">
-                          <span>
-                            {user.last_signed_in
-                              ? moment(user.last_signed_in).format("MM/DD/YYYY")
-                              : moment(user.created_at).format("MM/DD/YYYY")}
-                          </span>
-                          <span>
-                            {user.last_signed_in
-                              ? moment(user.last_signed_in).format("hh:mm:ss A")
-                              : moment(user.created_at).format(" hh:mm:ss A")}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="p-4 text-sm font-light">
-                        {moment(user.created_at).format("MM/DD/YYYY")}
-                      </td>
-                      <td className="p-4 font-light">
-                        <button
-                          onClick={() =>
-                            handleUserDelete({
-                              userId: user.user_id,
-                              projectId: user.projectId,
-                            })
-                          }
-                          disabled={isPending || deleteUserPending}
-                          className="hover:text-red-500"
-                        >
-                          <Trash2 />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="flex justify-between justify-self-end p-5">
-            <div>
-              <p>
-                Page {currPage} of {numPages}
-              </p>
-            </div>
-            <div className="flex justify-around">
-              <button
-                onClick={prevPage}
-                className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
-              >
-                Prev
-              </button>
-              <button
-                onClick={nextPage}
-                className={`ml-3 flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </>
+      {!isLoading && users.length > 0 ? (
+        <UsersTable />
+      ) : (
+        <EmptyState heading="No Users" text="No users to show you right now" />
       )}
     </div>
+  );
+}
+
+function UsersTable({ users }) {
+  return (
+    <>
+      <div className="mt-10 w-full overflow-y-auto rounded-2xl border-[1px] bg-white">
+        <table className="h-4/5 w-full table-auto">
+          <thead>
+            <tr className="rounded-xl bg-gray-100 text-left">
+              <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
+                Project
+              </th>
+              <th className="rounded-tl-xl p-2 pl-4 pr-5 font-medium text-gray-700">
+                Email Address
+              </th>
+              <th className="flex p-2 pl-4 pr-5 font-medium text-gray-700">
+                Status/Toggle
+              </th>
+              <th className="p-2 pl-4 pr-5 font-medium text-gray-700">
+                Last Signed In
+              </th>
+              <th className="p-2 pl-4 pr-5 font-medium text-gray-700">
+                Joined
+              </th>
+              <th className="rounded-tr-xl p-2 pl-4 pr-5 font-medium text-gray-700"></th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-700">
+            {users.map((user) => {
+              return (
+                <tr
+                  className="border-b border-gray-300 text-left"
+                  key={user.user_id}
+                >
+                  <td className="p-4 text-base">{user.projectName}</td>
+                  <td className="p-4 text-base">{user.email}</td>
+                  <td className="p-4">
+                    <button
+                      disabled={isPending || deleteUserPending}
+                      onClick={() =>
+                        handleUserDisableToggle({
+                          loginStatus: user.disable_login_flag,
+                          userId: user.user_id,
+                          projectId: user.projectId,
+                        })
+                      }
+                    >
+                      {user.disable_login_flag ? <Inactive /> : <Active />}
+                    </button>
+                  </td>
+                  <td className="p-4 font-light">
+                    <div className="flex flex-col gap-1 text-sm">
+                      <span>
+                        {user.last_signed_in
+                          ? moment(user.last_signed_in).format("MM/DD/YYYY")
+                          : moment(user.created_at).format("MM/DD/YYYY")}
+                      </span>
+                      <span>
+                        {user.last_signed_in
+                          ? moment(user.last_signed_in).format("hh:mm:ss A")
+                          : moment(user.created_at).format(" hh:mm:ss A")}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="p-4 text-sm font-light">
+                    {moment(user.created_at).format("MM/DD/YYYY")}
+                  </td>
+                  <td className="p-4 font-light">
+                    <button
+                      onClick={() =>
+                        handleUserDelete({
+                          userId: user.user_id,
+                          projectId: user.projectId,
+                        })
+                      }
+                      disabled={isPending || deleteUserPending}
+                      className="hover:text-red-500"
+                    >
+                      <Trash2 />
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      <div className="flex justify-between justify-self-end p-5">
+        <div>
+          <p>
+            Page {currPage} of {numPages}
+          </p>
+        </div>
+        <div className="flex justify-around">
+          <button
+            onClick={prevPage}
+            className={`flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasPrev ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
+          >
+            Prev
+          </button>
+          <button
+            onClick={nextPage}
+            className={`ml-3 flex w-[90px] justify-center rounded-lg p-1 align-middle font-medium shadow ${!hasNext ? "disabled cursor-default bg-transparent shadow-transparent" : "bg-white hover:shadow active:bg-gray-200"}`}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
 

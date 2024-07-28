@@ -6,9 +6,9 @@ import {
 } from "@material-tailwind/react";
 import { Clock } from "lucide-react";
 import moment from "moment";
-import momentTimezone from "moment-timezone";
 
 export default function RecentLoginsTable({ recentLogins }) {
+  console.log(recentLogins);
   return (
     <Card className="col-start-2 row-span-2">
       <CardHeader
@@ -78,6 +78,22 @@ export default function RecentLoginsTable({ recentLogins }) {
                   </tr>
                 );
               })}
+              {recentLogins.length < 10 &&
+                new Array(10 - recentLogins.length).fill(null).map((_, idx) => (
+                  <tr
+                    key={idx}
+                    class="h-12 border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800"
+                  >
+                    <th
+                      scope="row"
+                      class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    ></th>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

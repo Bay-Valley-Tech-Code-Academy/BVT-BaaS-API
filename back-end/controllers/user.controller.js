@@ -61,20 +61,30 @@ async function createUserHandler(req, res) {
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-    await updateOrCreateRefreshToken(
-      userPayload.id,
-      project.project_id,
-      refreshToken,
-      newExpirationDate
-    );
-
-    return res.status(201).json({
-      success: true,
-      data: {
-        accessToken,
-        refreshToken,
-      },
-    });
+     const refreshTokenPromise = updateOrCreateRefreshToken(
+       userPayload.id,
+       project.project_id,
+       refreshToken,
+       newExpirationDate
+     );
+     const auditPromise = createAudit({
+       projectId: project.project_id,
+       userId: user.user_id,
+       auditType: "login_successful",
+       ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+     });
+     await Promise.all([refreshTokenPromise, auditPromise]);
+     return res.status(201).json({
+       success: true,
+       data: {
+         accessToken,
+         refreshToken,
+         user: {
+           id: userPayload.id,
+           email: user.email,
+         },
+       },
+     });
   } catch (e) {
     return res.status(500).json({
       success: false,
@@ -231,8 +241,10 @@ async function loginUserHandler(req, res) {
       data: {
         accessToken,
         refreshToken,
-        userId: userPayload.id,
-        email: user.email,
+        user: {
+          id: userPayload.id,
+          email: user.email,
+        },
       },
     });
   } catch (e) {

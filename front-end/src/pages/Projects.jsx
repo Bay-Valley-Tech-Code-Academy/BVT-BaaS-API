@@ -6,6 +6,7 @@ import { usePagination } from "../hooks/usePagination";
 import { useState } from "react";
 import { CreateProjectModal } from "../components/Modals";
 import { useCreateProject } from "../api/mutations";
+import EmptyState from "../components/EmptyState";
 
 export default function Projects() {
   const { data: projects, isLoading } = useProjects();
@@ -71,9 +72,8 @@ export default function Projects() {
         onOpenChange={handleOpenChange}
         open={openModal}
       />
-      {isLoading ? (
-        <LoadingSpinner />
-      ) : (
+      {isLoading && <LoadingSpinner />}
+      {!isLoading && projects.length > 0 ? (
         <ProjectView
           projects={currPageItems}
           currPage={currPage}
@@ -82,6 +82,11 @@ export default function Projects() {
           hasNext={hasNext}
           prevPage={prevPage}
           nextPage={nextPage}
+        />
+      ) : (
+        <EmptyState
+          heading="No Projects"
+          text="No projects to show you right now"
         />
       )}
     </div>
