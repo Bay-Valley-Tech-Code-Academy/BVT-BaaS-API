@@ -6,7 +6,7 @@ import {
 } from "@material-tailwind/react";
 import { Clock } from "lucide-react";
 import moment from "moment";
-
+import momentTimezone from "moment-timezone";
 export default function RecentLoginsTable({ recentLogins }) {
   return (
     <Card className="col-start-2 row-span-2">

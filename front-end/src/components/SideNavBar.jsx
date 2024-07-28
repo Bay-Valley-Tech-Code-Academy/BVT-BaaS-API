@@ -9,12 +9,8 @@ export default function SideNavBar() {
   const queryClient = useQueryClient();
   function handleLogout() {
     mutate(null, {
-      onError: (err) => {
-        console.log(err);
-      },
+      onError: (err) => {},
       onSuccess: () => {
-        console.log("hello world");
-        console.log("test");
         queryClient.clear();
         navigate("/auth/login");
       },

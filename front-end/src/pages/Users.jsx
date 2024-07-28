@@ -67,9 +67,10 @@ export default function Users() {
 function UsersTable({ projectUsers, selectedProjectId, searchValue }) {
   const { mutate: deleteUser, isPending: deleteUserPending } = useDeleteUser();
   const { mutate, isPending } = usetoggleDisableLoginFlag();
+
   const selectedUsers = (
     selectedProjectId
-      ? projectsUsers.filter(
+      ? projectUsers.filter(
           (project) => project.project_id === selectedProjectId,
         )
       : projectUsers

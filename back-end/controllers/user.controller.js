@@ -61,30 +61,31 @@ async function createUserHandler(req, res) {
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-     const refreshTokenPromise = updateOrCreateRefreshToken(
-       userPayload.id,
-       project.project_id,
-       refreshToken,
-       newExpirationDate
-     );
-     const auditPromise = createAudit({
-       projectId: project.project_id,
-       userId: user.user_id,
-       auditType: "login_successful",
-       ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
-     });
-     await Promise.all([refreshTokenPromise, auditPromise]);
-     return res.status(201).json({
-       success: true,
-       data: {
-         accessToken,
-         refreshToken,
-         user: {
-           id: userPayload.id,
-           email: user.email,
-         },
-       },
-     });
+    const refreshTokenPromise = updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate
+    );
+
+    const auditPromise = createAudit({
+      projectId: project.project_id,
+      userId: userPayload.id,
+      auditType: "login_successful",
+      ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+    });
+    await Promise.all([refreshTokenPromise, auditPromise]);
+    return res.status(201).json({
+      success: true,
+      data: {
+        accessToken,
+        refreshToken,
+        user: {
+          id: userPayload.id,
+          email: user.email,
+        },
+      },
+    });
   } catch (e) {
     return res.status(500).json({
       success: false,
@@ -192,7 +193,6 @@ async function loginUserHandler(req, res) {
           "Access denied. You do not have permission to access this project.",
       });
     }
-
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
       await createAudit({
@@ -201,6 +201,7 @@ async function loginUserHandler(req, res) {
         auditType: "login_failed",
         ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
       });
+
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
