@@ -7,7 +7,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import React from "react";
 
 export default function DashboardLayout() {
-  const { isLoading, isError } = useAuth();
+  const { isLoading, isError, error } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -16,7 +16,10 @@ export default function DashboardLayout() {
       queryKey: ["auth"],
     });
   }, [location, queryClient]);
+
   React.useEffect(() => {
+    console.log(isError);
+    console.log(error);
     if (isError) {
       navigate("/auth/login");
     }
