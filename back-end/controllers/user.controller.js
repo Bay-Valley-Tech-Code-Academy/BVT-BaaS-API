@@ -82,7 +82,7 @@ async function createUserHandler(req, res) {
         refreshToken,
         user: {
           id: userPayload.id,
-          email: user.email,
+          email: userPayload.email,
         },
       },
     });
