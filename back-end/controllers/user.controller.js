@@ -295,8 +295,70 @@ async function loginUserHandler(req, res) {
   }
 }
 
+async function userMfaHandler(req, res) {
+  try {
+    const mfaCode = req.body.mfaCode;
+    const userId = req.user.id; // Assuming req.user contains the authenticated user ID from JWT
+
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.mfa_code !== mfaCode) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid MFA code",
+      });
+    }
+
+    // MFA code matches, proceed with login
+    const userPayload = {
+      id: user.user_id,
+      email: user.email,
+      project_id: user.project_id,
+    };
+
+    const accessToken = generateUserAccessToken(
+      userPayload,
+      process.env.PROJECT_ACCESS_TOKEN_SECRET,
+    );
+    const refreshToken = generateUserRefreshToken(
+      userPayload,
+      process.env.PROJECT_REFRESH_TOKEN_SECRET,
+    );
+    const newExpirationDate = new Date();
+    newExpirationDate.setDate(newExpirationDate.getDate() + 7);
+
+    await updateOrCreateRefreshToken(
+      userPayload.id,
+      user.project_id,
+      refreshToken,
+      newExpirationDate,
+    );
+    return res.status(200).json({
+      success: true,
+      data: {
+        accessToken,
+        refreshToken,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server error, please try again later",
+    });
+  }
+}
+
 module.exports = {
   createUserHandler,
   deleteUserHandler,
   loginUserHandler,
+  userMfaHandler,
 };

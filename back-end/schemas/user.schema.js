@@ -21,6 +21,12 @@ const loginPayload = {
   body: payload.body.omit({ phoneNumber: true, mfaMethod: true }),
 };
 
+const MfaPayload = {
+  body: object({
+    mfaCode: number({ coerce: true, required_error: "MFA Code is required" }),
+  }),
+};
+
 const headers = {
   headers: object({
     api_key: string(),
@@ -50,8 +56,11 @@ const loginUserSchema = object({
   ...headers,
 });
 
+const userMfaSchema = object({ ...MfaPayload });
+
 module.exports = {
   createUserSchema,
   deleteUserSchema,
   loginUserSchema,
+  userMfaSchema,
 };
