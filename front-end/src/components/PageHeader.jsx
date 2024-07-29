@@ -1,7 +1,6 @@
 import { Search } from "lucide-react";
 
 export default function PageHeader(props) {
-  console.log(props.searchValue);
   return (
     <div className="mb-4 flex justify-between">
       <div className="flex-col">

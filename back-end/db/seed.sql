@@ -1,7 +1,7 @@
 
 INSERT INTO account_limits (account_type, max_projects, max_users) VALUES
-('free', 1, 1),
-('basic', 5, 10),
+('free', 10, 100),
+('basic', 200, 1000),
 ('pro', NULL, NULL);
 
 

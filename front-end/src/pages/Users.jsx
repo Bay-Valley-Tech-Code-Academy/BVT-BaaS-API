@@ -69,7 +69,7 @@ export default function Users() {
     setSearchValue("");
   }
 
-  function handleUserDisableToggle({ projectId, userId }) {
+  function handleUserDisableToggle({ projectId, userId, loginStatus }) {
     mutate(
       { projectId, userId },
       {
@@ -77,7 +77,7 @@ export default function Users() {
           toast.custom((t) => (
             <ToastMessage
               t={t}
-              message={`User has been successfully ${user.disable_login_flag ? "enabled" : "disabled"}`}
+              message={`User has been successfully ${loginStatus ? "enabled" : "disabled"}`}
               variant="success"
             />
           ));
@@ -181,6 +181,7 @@ export default function Users() {
                           disabled={isPending || deleteUserPending}
                           onClick={() =>
                             handleUserDisableToggle({
+                              loginStatus: user.disable_login_flag,
                               userId: user.user_id,
                               projectId: user.projectId,
                             })

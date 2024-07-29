@@ -18,15 +18,17 @@ const {
   updateOrCreateRefreshToken,
 } = require("../services/refreshToken.services");
 const { sendMail } = require("../lib/nodemailer");
+const { createAudit } = require("../services/audit.services");
 
 async function createUserHandler(req, res) {
   try {
     const project = await getProjectByApiKey(req.headers.api_key);
     if (!project) {
-      console.error("Invalid API key");
-      return res.status(400).json({ success: false, error: "Invalid API key" });
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access, invalid API key",
+      });
     }
-
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -69,7 +71,6 @@ async function createUserHandler(req, res) {
       },
     });
   } catch (e) {
-    console.log(e);
     return res.status(500).json({
       success: false,
       error: "Server error, please try again later",
@@ -160,6 +161,13 @@ async function loginUserHandler(req, res) {
       });
     }
 
+    if (user.disable_login_flag) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied. Your account has been disabled.",
+      });
+    }
+
     // if the user exist make sure he belongs to the project
     if (user.project_id !== project.project_id) {
       return res.status(403).json({
@@ -171,6 +179,12 @@ async function loginUserHandler(req, res) {
 
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
+      await createAudit({
+        projectId: project.project_id,
+        userId: user.user_id,
+        auditType: "login_failed",
+        ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+      });
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
@@ -230,35 +244,26 @@ async function loginUserHandler(req, res) {
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-    try {
-      const updateTokenResult = await updateOrCreateRefreshToken(
-        userPayload.id,
-        project.project_id,
-        refreshToken,
-        newExpirationDate,
-      );
-      if (updateTokenResult.affectedRows === 0) {
-        console.error(
-          `Failed to update or create refresh token for user with ID ${userPayload.id}`,
-        );
-        return res.status(500).json({
-          success: false,
-          error: "Error updating or creating refresh token",
-        });
-      }
-    } catch (error) {
-      console.error(`Error updating or creating refresh token:`, error);
-      return res.status(500).json({
-        success: false,
-        error: "Error updating or creating refresh token",
-      });
-    }
-
+    const refreshTokenPromise = updateOrCreateRefreshToken(
+      userPayload.id,
+      project.project_id,
+      refreshToken,
+      newExpirationDate,
+    );
+    const auditPromise = createAudit({
+      projectId: project.project_id,
+      userId: user.user_id,
+      auditType: "login_successful",
+      ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+    });
+    await Promise.all([refreshTokenPromise, auditPromise]);
     return res.status(200).json({
       success: true,
       data: {
         accessToken,
         refreshToken,
+        userId: userPayload.id,
+        email: user.email,
       },
     });
   } catch (e) {

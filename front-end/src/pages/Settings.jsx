@@ -18,14 +18,15 @@ export default function Settings() {
     (acc, project) => acc + project.users.length,
     0,
   );
-  console.log(users);
-  console.log(account.max_users);
 
   return (
     <>
       <PageHeaderNoSearch path="Dashboard / Settings" header="Settings" />
       <div className="flex">
-        <SettingsUserStorage users={users} maxUsers={account.max_users} />
+        <SettingsUserStorage
+          users={users}
+          maxUsers={account.max_users * account.max_projects}
+        />
         <SettingsProjectStorage
           projects={projects.length}
           maxProjects={account.max_projects}
