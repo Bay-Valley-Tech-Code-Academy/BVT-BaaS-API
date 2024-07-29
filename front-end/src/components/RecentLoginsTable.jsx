@@ -6,8 +6,7 @@ import {
 } from "@material-tailwind/react";
 import { Clock } from "lucide-react";
 import moment from "moment";
-import LoginAttemptsLineChart from "./Charts/LoginAttemptsLineChart";
-
+import momentTimezone from "moment-timezone";
 export default function RecentLoginsTable({ recentLogins }) {
   return (
     <Card className="col-start-2 row-span-2">
@@ -29,7 +28,7 @@ export default function RecentLoginsTable({ recentLogins }) {
             color="gray"
             className="max-w-sm font-normal"
           >
-            Insights into Monthly User Signup Activity
+            Insights into Login Activity
           </Typography>
         </div>
       </CardHeader>
@@ -57,8 +56,12 @@ export default function RecentLoginsTable({ recentLogins }) {
             </thead>
             <tbody>
               {recentLogins.map((login) => {
-                const date = moment(login.created_at).format("MM/DD/YYYY");
-                const time = moment(login.created_at).format("h:mma");
+                const adjustedWithTimezone = moment.tz(
+                  login.created_at,
+                  "America/Los_Angeles",
+                );
+                const date = moment(adjustedWithTimezone).format("MM/DD/YYYY");
+                const time = moment(adjustedWithTimezone).format("h:mma");
                 return (
                   <tr class="border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800">
                     <th
@@ -74,6 +77,22 @@ export default function RecentLoginsTable({ recentLogins }) {
                   </tr>
                 );
               })}
+              {recentLogins.length < 10 &&
+                new Array(10 - recentLogins.length).fill(null).map((_, idx) => (
+                  <tr
+                    key={idx}
+                    class="h-12 border-b odd:bg-white even:bg-gray-50 dark:border-gray-700 odd:dark:bg-gray-900 even:dark:bg-gray-800"
+                  >
+                    <th
+                      scope="row"
+                      class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white"
+                    ></th>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                    <td class="px-6 py-4"></td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>

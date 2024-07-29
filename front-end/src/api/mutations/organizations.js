@@ -3,7 +3,7 @@ import client from "../client";
 
 let authInterceptorId;
 
-const authInterceptor = (config) => {
+const authInterceptor = (config, data) => {
   config.headers["Authorization"] = `Bearer ${data.accessToken}`;
   return config;
 };
@@ -28,10 +28,7 @@ export function useLoginOrganization() {
     mutationFn: loginOrganization,
     onSuccess: (data) => {
       authInterceptorId = client.interceptors.request.use(
-        (config) => {
-          config.headers["Authorization"] = `Bearer ${data.accessToken}`;
-          return config;
-        },
+        (config) => authInterceptor(config, data),
         (error) => {
           // Handle the error
           return Promise.reject(error);
@@ -46,7 +43,7 @@ export function useSignupOrganization() {
     mutationFn: signupOrganization,
     onSuccess: (data) => {
       authInterceptorId = client.interceptors.request.use(
-        authInterceptor,
+        (config) => authInterceptor(config, data),
         (error) => {
           // Handle the error
           return Promise.reject(error);
@@ -60,7 +57,6 @@ export function useLogoutOrganization() {
   return useMutation({
     mutationFn: logoutOrganization,
     onSuccess: () => {
-      console.log("hello world");
       client.interceptors.request.eject(authInterceptorId);
     },
   });

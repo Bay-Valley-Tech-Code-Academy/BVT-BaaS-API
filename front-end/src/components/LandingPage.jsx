@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
+import LandingPageImg from "../assets/landing.png";
 
 export default function LandingPage() {
   return (
@@ -33,13 +34,7 @@ export default function LandingPage() {
         </div>
         <DashboardSnippet />
       </div>
-      <div className="mx-auto max-w-screen-xl pt-40">
-        <div className="md grid grid-cols-1 items-center gap-4 px-6 py-4 sm:grid-cols-2 md:grid-cols-8">
-          <div className="col-span-1 h-16 w-full rounded-md bg-gray-500 md:col-span-2"></div>
-          <div className="col-span-1 h-16 w-full rounded-md bg-gray-500 md:col-span-2"></div>
-          <div className="col-span-1 h-16 w-full rounded-md bg-gray-500 md:col-span-2"></div>
-          <div className="col-span-1 h-16 w-full rounded-md bg-gray-500 md:col-span-2"></div>
-        </div>
+      <div className="mx-auto max-w-screen-xl pt-10">
         <div className="space-y-4 px-6 pb-8 pt-20 text-center">
           <h2 className="text-[calc(1.5rem+1vw)] font-bold text-landing-gray-300">
             Our Solution For Your Business
@@ -460,13 +455,13 @@ const LandingNav = () => {
         <span className="font-bold text-white">BVTAuth</span>
         <div>
           <Link
-            to="/login"
+            to="/auth/login"
             className="mr-2 inline-flex items-center justify-center rounded-md border px-4 py-2 text-white outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
           >
             Login
           </Link>
           <Link
-            to="/signup"
+            to="/auth/signup"
             className="inline-flex items-center justify-center rounded-md bg-white px-4 py-2 text-landing-purple-200 outline-none hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-landing-blue-100"
           >
             Sign up
@@ -479,10 +474,11 @@ const LandingNav = () => {
 
 const DashboardSnippet = () => {
   return (
-    <div className="absolute -bottom-16 left-1/2 h-[400px] w-full max-w-[550px] -translate-x-1/2 p-4">
-      <div className="h-full overflow-hidden rounded-md bg-landing-gray-200 shadow-xl">
-        <div className="h-full w-1/2 bg-white"></div>
-      </div>
+    <div className="absolute left-1/2 h-[400px] w-full max-w-3xl -translate-x-1/2 p-4 shadow">
+      <img
+        className="h-full w-full rounded object-cover"
+        src={LandingPageImg}
+      />
     </div>
   );
 };

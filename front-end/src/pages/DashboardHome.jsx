@@ -5,8 +5,7 @@ import PageHeaderNoSearch from "../components/PageHeaderNoSearch";
 
 import UserSignupsLineChart from "../components/Charts/UserSignupsBarChart";
 import moment from "moment";
-import { Card } from "flowbite-react";
-import { CardBody, CardHeader, Typography } from "@material-tailwind/react";
+
 import RecentLoginsTable from "../components/RecentLoginsTable";
 
 const sortLogins = (data) => {
@@ -52,7 +51,6 @@ export default function DashboardHome() {
       const { name } = projectAudits.find(
         (project) => project.project_id === login.project_id,
       );
-
       const { email } = users.find((user) => user.user_id === login.user_id);
       return { ...login, email, projectName: name };
     });

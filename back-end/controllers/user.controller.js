@@ -29,6 +29,13 @@ async function createUserHandler(req, res) {
         message: "Unauthorized access, invalid API key",
       });
     }
+    const user = await getUserByEmail(req.body.email, project.project_id);
+    if (user) {
+      return res.status(409).json({
+        success: false,
+        message: "User with this email already exist for this project.",
+      });
+    }
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const data = await createUser({
@@ -56,18 +63,29 @@ async function createUserHandler(req, res) {
     const newExpirationDate = new Date();
     newExpirationDate.setDate(newExpirationDate.getDate() + 7);
 
-    await updateOrCreateRefreshToken(
+    const refreshTokenPromise = updateOrCreateRefreshToken(
       userPayload.id,
       project.project_id,
       refreshToken,
       newExpirationDate,
     );
 
+    const auditPromise = createAudit({
+      projectId: project.project_id,
+      userId: userPayload.id,
+      auditType: "login_successful",
+      ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
+    });
+    await Promise.all([refreshTokenPromise, auditPromise]);
     return res.status(201).json({
       success: true,
       data: {
         accessToken,
         refreshToken,
+        user: {
+          id: userPayload.id,
+          email: userPayload.email,
+        },
       },
     });
   } catch (e) {
@@ -153,7 +171,8 @@ async function loginUserHandler(req, res) {
     }
 
     // we check if the user exist
-    const user = await getUserByEmail(req.body.email);
+    const user = await getUserByEmail(req.body.email, project.project_id);
+
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -176,7 +195,6 @@ async function loginUserHandler(req, res) {
           "Access denied. You do not have permission to access this project.",
       });
     }
-
     const match = await bcrypt.compare(req.body.password, user.password);
     if (!match) {
       await createAudit({
@@ -185,6 +203,7 @@ async function loginUserHandler(req, res) {
         auditType: "login_failed",
         ipAddress: req.ip === "::1" ? "127.0.0.1" : req.ip,
       });
+
       return res.status(401).json({
         success: false,
         message: "Invalid email or password.",
@@ -262,14 +281,16 @@ async function loginUserHandler(req, res) {
       data: {
         accessToken,
         refreshToken,
-        userId: userPayload.id,
-        email: user.email,
+        user: {
+          id: userPayload.id,
+          email: user.email,
+        },
       },
     });
   } catch (e) {
     return res.status(500).json({
       success: false,
-      error: "Server error, please try again later",
+      message: "Server error, please try again later",
     });
   }
 }

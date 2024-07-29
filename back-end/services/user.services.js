@@ -31,8 +31,8 @@ async function loginUser(userId, verifyToken) {
     { userId, verifyToken },
   );
 
-  if (result.affectedRows === 0) return false
-  return result
+  if (result.affectedRows === 0) return false;
+  return result;
 }
 
 async function deleteUser(userId) {
@@ -49,13 +49,14 @@ async function deleteUser(userId) {
   return result;
 }
 
-async function getUserByEmail(email) {
+async function getUserByEmail(email, projectId) {
   const [result] = await db.query(
     `
-    SELECT * FROM users WHERE email=:email;
+    SELECT * FROM users WHERE email=:email AND project_id=:projectId;
   `,
     {
       email,
+      projectId,
     },
   );
   if (result.length === 0) return false;
